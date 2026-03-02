@@ -14,6 +14,7 @@ public sealed partial class GeocodingService : IDisposable
 	private readonly HttpClient _httpClient;
 	private const string BaseUrl = "https://geocoding-api.open-meteo.com/v1/search";
 	private const string NominatimUrl = "https://nominatim.openstreetmap.org/search";
+	private const int MinSearchLength = 3;
 
 	[GeneratedRegex(@"^\d{5}(-\d{4})?$")]
 	private static partial Regex UsZipCodeRegex();
@@ -43,6 +44,11 @@ public sealed partial class GeocodingService : IDisposable
 			}
 
 			var trimmedQuery = query.Trim();
+
+			if (trimmedQuery.Length < MinSearchLength)
+			{
+				return [];
+			}
 
 			// Check if input looks like a postal code
 			if (IsPostalCode(trimmedQuery))
