@@ -79,7 +79,7 @@ namespace Microsoft.CmdPal.Ext.Weather {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The default location to show weather for.
+        ///   Looks up a localized string similar to Postal or zip code for the default weather location.
         /// </summary>
         public static string default_location_description {
             get {
@@ -88,7 +88,7 @@ namespace Microsoft.CmdPal.Ext.Weather {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter city name.
+        ///   Looks up a localized string similar to Enter a postal or zip code (e.g. 98101).
         /// </summary>
         public static string default_location_placeholder {
             get {
@@ -286,7 +286,16 @@ namespace Microsoft.CmdPal.Ext.Weather {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search for a city....
+        ///   Looks up a localized string similar to Enter at least 3 characters to search.
+        /// </summary>
+        public static string search_min_chars {
+            get {
+                return ResourceManager.GetString("search_min_chars", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a postal code or city name....
         /// </summary>
         public static string search_placeholder {
             get {
