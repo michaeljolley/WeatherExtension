@@ -54,8 +54,27 @@ WeatherExtension/
 
 **Build Status:** ✅ Compiles successfully (test project has accessibility issues with internal types)
 
+### Resource Key Prefix Cleanup
+
+**Decision:** Removed `Microsoft_plugin_weather_` prefix from all 36 resource keys in Resources.resx. This was a PowerToys naming convention no longer needed in the standalone extension.
+
+**Files modified (8 total):**
+- `WeatherExtension/Properties/Resources.resx` — 36 resource keys renamed (e.g., `Microsoft_plugin_weather_celsius` → `celsius`)
+- `WeatherExtension/Properties/Resources.Designer.cs` — All auto-generated property names and GetString calls updated to match
+- `WeatherExtension/WeatherCommandsProvider.cs` — 2 references updated
+- `WeatherExtension/Services/WeatherSettingsManager.cs` — 20 references updated
+- `WeatherExtension/Pages/WeatherContentPage.cs` — 4 references updated
+- `WeatherExtension/Pages/WeatherDetailPage.cs` — 14 references updated
+- `WeatherExtension/Pages/WeatherListPage.cs` — 4 references updated
+- `WeatherExtension/DockBands/CurrentWeatherBand.cs` — 6 references updated
+
+**Pattern:** Resource keys now use clean snake_case without namespace prefixes (e.g., `plugin_name`, `celsius`, `default_location_title`). Two pre-existing keys (`extension_name`, `extension_description`) already had clean names and were not touched.
+
+**Build:** ✅ Passes with only pre-existing warnings (CA1824, CsWinRT1028, CA1859).
+
 ## Cross-Agent Updates
 
 📌 Team update (2026-03-01T23:45:00Z): Test project now includes MSTest 3.7.0 + Moq 4.20.72 in central package management, 63 unit tests migrated with 68/71 passing — decided by Snake Eyes
 
+📌 Team update (2026-03-02T00:18:00Z): Resource key prefix removed from all 36 keys across 8 source files, build passes, 68/71 tests pass (same baseline) — decided by Scarlett
 
