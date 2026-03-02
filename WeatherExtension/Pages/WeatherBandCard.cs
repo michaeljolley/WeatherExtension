@@ -18,15 +18,18 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
 	private readonly WeatherSettingsManager _settings;
 	private readonly FormContent _weatherForm = new();
 	private readonly CancellationTokenSource _cts = new();
+	private readonly GeocodingResult? _fixedLocation;
 
 	public WeatherBandCard(
 		OpenMeteoService weatherService,
 		GeocodingService geocodingService,
-		WeatherSettingsManager settings)
+		WeatherSettingsManager settings,
+		GeocodingResult? fixedLocation = null)
 	{
 		_weatherService = weatherService ?? throw new ArgumentNullException(nameof(weatherService));
 		_geocodingService = geocodingService ?? throw new ArgumentNullException(nameof(geocodingService));
 		_settings = settings ?? throw new ArgumentNullException(nameof(settings));
+		_fixedLocation = fixedLocation;
 
 		Id = "com.baldbeardedbuilder.cmdpal.weather.card";
 		Name = Resources.plugin_name;
@@ -47,18 +50,27 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
 	{
 		try
 		{
-			var locations = await _geocodingService.SearchLocationAsync(
-				_settings.DefaultLocation, _cts.Token);
+			GeocodingResult location;
 
-			if (locations.Count == 0)
+			if (_fixedLocation != null)
 			{
-				_weatherForm.DataJson = GetErrorData(
-					Resources.location_not_found);
-				RaiseItemsChanged();
-				return;
+				location = _fixedLocation;
 			}
+			else
+			{
+				var locations = await _geocodingService.SearchLocationAsync(
+					_settings.DefaultLocation, _cts.Token);
 
-			var location = locations[0];
+				if (locations.Count == 0)
+				{
+					_weatherForm.DataJson = GetErrorData(
+						Resources.location_not_found);
+					RaiseItemsChanged();
+					return;
+				}
+
+				location = locations[0];
+			}
 			var weather = await _weatherService.GetCurrentWeatherAsync(
 				location.Latitude,
 				location.Longitude,
@@ -72,7 +84,14 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
 				_settings.TemperatureUnit,
 				_cts.Token);
 
-			_weatherForm.DataJson = BuildWeatherData(location, weather, forecast);
+			var hourly = await _weatherService.GetHourlyForecastAsync(
+				location.Latitude,
+				location.Longitude,
+				_settings.TemperatureUnit,
+				_settings.WindSpeedUnit,
+				_cts.Token);
+
+			_weatherForm.DataJson = BuildWeatherData(location, weather, forecast, hourly);
 			RaiseItemsChanged();
 		}
 		catch (Exception ex)
@@ -91,7 +110,8 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
 	private string BuildWeatherData(
 		GeocodingResult location,
 		WeatherData? weather,
-		ForecastData? forecast)
+		ForecastData? forecast,
+		HourlyForecastData? hourly)
 	{
 		var tempUnit = _settings.TemperatureUnit == "celsius" ? "\u00B0C" : "\u00B0F";
 		var windUnit = _settings.WindSpeedUnit == "mph" ? "mph" : "km/h";
@@ -121,6 +141,69 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
 			var high = forecast.Daily.TemperatureMax[0];
 			var low = forecast.Daily.TemperatureMin[0];
 			todayHighLow = $"{high:F0}{tempUnit} / {low:F0}{tempUnit}";
+		}
+
+		var hour1Time = "--";
+		var hour1Icon = currentIcon;
+		var hour1Temp = "--";
+		var hour1Precip = "--";
+		var hour2Time = "--";
+		var hour2Icon = currentIcon;
+		var hour2Temp = "--";
+		var hour2Precip = "--";
+		var hour3Time = "--";
+		var hour3Icon = currentIcon;
+		var hour3Temp = "--";
+		var hour3Precip = "--";
+
+		if (hourly?.Hourly != null)
+		{
+			var now = DateTime.Now;
+			var hoursAdded = 0;
+
+			for (var i = 0; i < (hourly.Hourly.Time?.Count ?? 0) && hoursAdded < 3; i++)
+			{
+				var timeStr = hourly.Hourly.Time?[i];
+				if (timeStr == null || !DateTime.TryParse(timeStr, CultureInfo.InvariantCulture, DateTimeStyles.None, out var hourTime))
+				{
+					continue;
+				}
+
+				if (hourTime <= now)
+				{
+					continue;
+				}
+
+				var time = hourTime.ToString("h tt", CultureInfo.CurrentCulture);
+				var weatherCode = hourly.Hourly.WeatherCode?[i] ?? 0;
+				var icon = GetEmojiForWeatherCode(weatherCode);
+				var temp = $"{hourly.Hourly.Temperature?[i]:F0}{tempUnit}";
+				var precip = $"{hourly.Hourly.PrecipitationProbability?[i] ?? 0}%";
+
+				if (hoursAdded == 0)
+				{
+					hour1Time = time;
+					hour1Icon = icon;
+					hour1Temp = temp;
+					hour1Precip = precip;
+				}
+				else if (hoursAdded == 1)
+				{
+					hour2Time = time;
+					hour2Icon = icon;
+					hour2Temp = temp;
+					hour2Precip = precip;
+				}
+				else if (hoursAdded == 2)
+				{
+					hour3Time = time;
+					hour3Icon = icon;
+					hour3Temp = temp;
+					hour3Precip = precip;
+				}
+
+				hoursAdded++;
+			}
 		}
 
 		var day1Name = "--";
@@ -193,6 +276,18 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
             "todayHighLow": "{{todayHighLow}}",
             "humidity": "{{humidity}}",
             "wind": "{{wind}}",
+            "hour1Time": "{{hour1Time}}",
+            "hour1Icon": "{{hour1Icon}}",
+            "hour1Temp": "{{hour1Temp}}",
+            "hour1Precip": "{{hour1Precip}}",
+            "hour2Time": "{{hour2Time}}",
+            "hour2Icon": "{{hour2Icon}}",
+            "hour2Temp": "{{hour2Temp}}",
+            "hour2Precip": "{{hour2Precip}}",
+            "hour3Time": "{{hour3Time}}",
+            "hour3Icon": "{{hour3Icon}}",
+            "hour3Temp": "{{hour3Temp}}",
+            "hour3Precip": "{{hour3Precip}}",
             "day1Name": "{{day1Name}}",
             "day1Icon": "{{day1Icon}}",
             "day1Condition": "{{day1Condition}}",
@@ -242,6 +337,18 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
             "todayHighLow": "--",
             "humidity": "--",
             "wind": "--",
+            "hour1Time": "--",
+            "hour1Icon": "🌤️",
+            "hour1Temp": "--",
+            "hour1Precip": "--",
+            "hour2Time": "--",
+            "hour2Icon": "🌤️",
+            "hour2Temp": "--",
+            "hour2Precip": "--",
+            "hour3Time": "--",
+            "hour3Icon": "🌤️",
+            "hour3Temp": "--",
+            "hour3Precip": "--",
             "day1Name": "--",
             "day1Icon": "🌤️",
             "day1Condition": "--",
@@ -270,6 +377,18 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
             "todayHighLow": "--",
             "humidity": "--",
             "wind": "--",
+            "hour1Time": "--",
+            "hour1Icon": "🌤️",
+            "hour1Temp": "--",
+            "hour1Precip": "--",
+            "hour2Time": "--",
+            "hour2Icon": "🌤️",
+            "hour2Temp": "--",
+            "hour2Precip": "--",
+            "hour3Time": "--",
+            "hour3Icon": "🌤️",
+            "hour3Temp": "--",
+            "hour3Precip": "--",
             "day1Name": "--",
             "day1Icon": "🌤️",
             "day1Condition": "--",
@@ -302,50 +421,130 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                 },
                 {
                     "type": "ColumnSet",
-                    "style": "emphasis",
+                    "spacing": "large",
                     "columns": [
                         {
                             "type": "Column",
-                            "width": "auto",
-                            "verticalContentAlignment": "center",
+                            "width": "3",
                             "items": [
                                 {
                                     "type": "TextBlock",
-                                    "text": "${currentIcon}",
-                                    "size": "extraLarge",
-                                    "horizontalAlignment": "center"
-                                },
-                                {
-                                    "type": "TextBlock",
-                                    "text": "${currentTemp}",
-                                    "size": "extraLarge",
+                                    "text": "Current",
                                     "weight": "bolder",
-                                    "horizontalAlignment": "center",
-                                    "spacing": "small"
-                                },
-                                {
-                                    "type": "TextBlock",
-                                    "text": "${currentCondition}",
-                                    "horizontalAlignment": "center",
-                                    "wrap": true,
-                                    "spacing": "small"
+                                    "size": "large"
                                 }
                             ]
                         },
                         {
                             "type": "Column",
-                            "width": "stretch",
-                            "verticalContentAlignment": "center",
+                            "width": "3",
+                            "spacing": "medium",
                             "items": [
                                 {
-                                    "type": "FactSet",
-                                    "facts": [
-                                        { "title": "Feels like", "value": "${feelsLike}" },
-                                        { "title": "High / Low", "value": "${todayHighLow}" },
-                                        { "title": "Humidity", "value": "${humidity}" },
-                                        { "title": "Wind", "value": "${wind}" }
+                                    "type": "TextBlock",
+                                    "text": "Next Three Hours",
+                                    "weight": "bolder",
+                                    "size": "large"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "ColumnSet",
+                    "columns": [
+                        {
+                            "type": "Column",
+                            "width": "3",
+                            "style": "emphasis",
+                            "items": [
+                                {
+                                    "type": "ColumnSet",
+                                    "columns": [
+                                        {
+                                            "type": "Column",
+                                            "width": "1",
+                                            "verticalContentAlignment": "center",
+                                            "horizontalAlignment": "center",
+                                            "items": [
+                                                {
+                                                    "type": "TextBlock",
+                                                    "text": "${currentIcon}",
+                                                    "size": "extraLarge",
+                                                    "horizontalAlignment": "center"
+                                                },
+                                                {
+                                                    "type": "TextBlock",
+                                                    "text": "${currentTemp}",
+                                                    "size": "extraLarge",
+                                                    "weight": "bolder",
+                                                    "horizontalAlignment": "center",
+                                                    "spacing": "none"
+                                                },
+                                                {
+                                                    "type": "TextBlock",
+                                                    "text": "${currentCondition}",
+                                                    "horizontalAlignment": "center",
+                                                    "wrap": true,
+                                                    "spacing": "none"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "Column",
+                                            "width": "1",
+                                            "spacing": "large",
+                                            "verticalContentAlignment": "center",
+                                            "items": [
+                                                {
+                                                    "type": "FactSet",
+                                                    "facts": [
+                                                        { "title": "Feels like", "value": "${feelsLike}" },
+                                                        { "title": "High / Low", "value": "${todayHighLow}" },
+                                                        { "title": "Humidity", "value": "${humidity}" },
+                                                        { "title": "Wind", "value": "${wind}" }
+                                                    ]
+                                                }
+                                            ]
+                                        }
                                     ]
                                 }
+                            ]
+                        },
+                        {
+                            "type": "Column",
+                            "width": "1",
+                            "spacing": "medium",
+                            "style": "emphasis",
+                            "verticalContentAlignment": "center",
+                            "items": [
+                                { "type": "TextBlock", "text": "${hour1Time}", "weight": "bolder", "horizontalAlignment": "center" },
+                                { "type": "TextBlock", "text": "${hour1Icon}", "horizontalAlignment": "center", "size": "large", "spacing": "small" },
+                                { "type": "TextBlock", "text": "${hour1Temp} / ${hour1Precip}", "horizontalAlignment": "center", "weight": "bolder", "spacing": "small" }
+                            ]
+                        },
+                        {
+                            "type": "Column",
+                            "width": "1",
+                            "spacing": "small",
+                            "style": "emphasis",
+                            "verticalContentAlignment": "center",
+                            "items": [
+                                { "type": "TextBlock", "text": "${hour2Time}", "weight": "bolder", "horizontalAlignment": "center" },
+                                { "type": "TextBlock", "text": "${hour2Icon}", "horizontalAlignment": "center", "size": "large", "spacing": "small" },
+                                { "type": "TextBlock", "text": "${hour2Temp} / ${hour2Precip}", "horizontalAlignment": "center", "weight": "bolder", "spacing": "small" }
+                            ]
+                        },
+                        {
+                            "type": "Column",
+                            "width": "1",
+                            "spacing": "small",
+                            "style": "emphasis",
+                            "verticalContentAlignment": "center",
+                            "items": [
+                                { "type": "TextBlock", "text": "${hour3Time}", "weight": "bolder", "horizontalAlignment": "center" },
+                                { "type": "TextBlock", "text": "${hour3Icon}", "horizontalAlignment": "center", "size": "large", "spacing": "small" },
+                                { "type": "TextBlock", "text": "${hour3Temp} / ${hour3Precip}", "horizontalAlignment": "center", "weight": "bolder", "spacing": "small" }
                             ]
                         }
                     ]

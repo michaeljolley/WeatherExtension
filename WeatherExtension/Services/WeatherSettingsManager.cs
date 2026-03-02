@@ -18,7 +18,7 @@ public sealed class WeatherSettingsManager : JsonSettingsManager
         Namespaced(nameof(DefaultLocation)),
         Resources.default_location_title,
         Resources.default_location_description,
-        "Seattle")
+        "98101")
     {
         Placeholder = Resources.default_location_placeholder,
     };
@@ -58,7 +58,7 @@ public sealed class WeatherSettingsManager : JsonSettingsManager
             new ChoiceSetSetting.Choice(Resources.sixty_minutes, "60"),
         ]);
 
-    public string DefaultLocation => _defaultLocation.Value ?? "Seattle";
+    public string DefaultLocation => _defaultLocation.Value ?? "98101";
 
     public string TemperatureUnit => _temperatureUnit.Value ?? "celsius";
 
@@ -71,6 +71,21 @@ public sealed class WeatherSettingsManager : JsonSettingsManager
     public WeatherSettingsManager()
     {
         FilePath = SettingsJsonPath();
+
+        Settings.Add(_defaultLocation);
+        Settings.Add(_temperatureUnit);
+        Settings.Add(_windSpeedUnit);
+        Settings.Add(_showForecast);
+        Settings.Add(_updateInterval);
+
+        LoadSettings();
+
+        Settings.SettingsChanged += (_, _) => SaveSettings();
+    }
+
+    internal WeatherSettingsManager(string filePath)
+    {
+        FilePath = filePath;
 
         Settings.Add(_defaultLocation);
         Settings.Add(_temperatureUnit);

@@ -21,6 +21,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
     private readonly IWeatherService _weatherService;
     private readonly GeocodingService _geocodingService;
     private readonly WeatherSettingsManager _settingsManager;
+    private readonly PinnedLocationsManager _pinnedLocationsManager;
     private readonly Lock _sync = new();
     private readonly CancellationTokenSource _cts = new();
 
@@ -31,15 +32,18 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
     public WeatherListPage(
         IWeatherService weatherService,
         GeocodingService geocodingService,
-        WeatherSettingsManager settingsManager)
+        WeatherSettingsManager settingsManager,
+        PinnedLocationsManager pinnedLocationsManager)
     {
         ArgumentNullException.ThrowIfNull(weatherService);
         ArgumentNullException.ThrowIfNull(geocodingService);
         ArgumentNullException.ThrowIfNull(settingsManager);
+        ArgumentNullException.ThrowIfNull(pinnedLocationsManager);
 
         _weatherService = weatherService;
         _geocodingService = geocodingService;
         _settingsManager = settingsManager;
+        _pinnedLocationsManager = pinnedLocationsManager;
 
         Name = "Weather";
         Title = "Weather";
@@ -137,6 +141,20 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
             _weatherService,
             _settingsManager);
 
+        var moreCommands = new List<ICommandContextItem>
+        {
+            new CommandContextItem(new RefreshWeatherCommand(this)),
+        };
+
+        if (_pinnedLocationsManager.IsPinned(location))
+        {
+            moreCommands.Add(new CommandContextItem(new UnpinFromDockCommand(location, _pinnedLocationsManager)));
+        }
+        else
+        {
+            moreCommands.Add(new CommandContextItem(new PinToDockCommand(location, _pinnedLocationsManager)));
+        }
+
         var item = new ListItem(detailPage)
         {
             Title = location.DisplayName,
@@ -153,10 +171,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
                     new DetailsElement { Key = "Wind Direction", Data = new DetailsLink(GetWindDirection(current.WindDirection)) },
                 ],
             },
-            MoreCommands =
-            [
-                new CommandContextItem(new RefreshWeatherCommand(this)),
-            ],
+            MoreCommands = moreCommands.ToArray(),
         };
 
         return item;

@@ -71,7 +71,7 @@
     <value>Current weather and forecast</value>
   </data>
   <data name="search_placeholder" xml:space="preserve">
-    <value>Search for a city...</value>
+    <value>Enter a postal code or city name...</value>
   </data>
   <data name="no_locations_found" xml:space="preserve">
     <value>No locations found</value>
@@ -135,10 +135,10 @@
     <value>Default Location</value>
   </data>
   <data name="default_location_description" xml:space="preserve">
-    <value>The default location to show weather for</value>
+    <value>Postal or zip code for the default weather location</value>
   </data>
   <data name="default_location_placeholder" xml:space="preserve">
-    <value>Enter city name</value>
+    <value>Enter a postal or zip code (e.g. 98101)</value>
   </data>
   <data name="temperature_unit_title" xml:space="preserve">
     <value>Temperature Unit</value>

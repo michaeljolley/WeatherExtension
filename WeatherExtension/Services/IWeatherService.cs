@@ -12,4 +12,6 @@ public interface IWeatherService
     Task<WeatherData?> GetCurrentWeatherAsync(double latitude, double longitude, string temperatureUnit = "celsius", string windSpeedUnit = "kmh", CancellationToken ct = default);
 
     Task<ForecastData?> GetForecastAsync(double latitude, double longitude, string temperatureUnit = "celsius", CancellationToken ct = default);
+
+    Task<HourlyForecastData?> GetHourlyForecastAsync(double latitude, double longitude, string temperatureUnit = "celsius", string windSpeedUnit = "kmh", CancellationToken ct = default);
 }

@@ -2,6 +2,7 @@
 // Bald Bearded Builder LLC licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using Microsoft.CmdPal.Ext.Weather.Models;
 using Microsoft.CmdPal.Ext.Weather.Pages;
 using Microsoft.CmdPal.Ext.Weather.Services;
 using Microsoft.CommandPalette.Extensions.Toolkit;
@@ -9,32 +10,31 @@ using Timer = System.Timers.Timer;
 
 namespace Microsoft.CmdPal.Ext.Weather.DockBands;
 
-internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
+internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 {
+	private readonly GeocodingResult _location;
 	private readonly OpenMeteoService _weatherService;
-	private readonly GeocodingService _geocodingService;
 	private readonly WeatherSettingsManager _settings;
 	private readonly WeatherBandCard _contentPage;
 	private readonly Timer _updateTimer;
 	private bool _isDisposed;
 
-	public CurrentWeatherBand(
+	public PinnedWeatherBand(
+		GeocodingResult location,
 		OpenMeteoService weatherService,
-		GeocodingService geocodingService,
 		WeatherSettingsManager settings,
 		WeatherBandCard contentPage)
 	{
+		_location = location ?? throw new ArgumentNullException(nameof(location));
 		_weatherService = weatherService ?? throw new ArgumentNullException(nameof(weatherService));
-		_geocodingService = geocodingService ?? throw new ArgumentNullException(nameof(geocodingService));
 		_settings = settings ?? throw new ArgumentNullException(nameof(settings));
 		_contentPage = contentPage ?? throw new ArgumentNullException(nameof(contentPage));
 
 		Command = _contentPage;
 		Icon = Icons.WeatherIcon;
 		Title = Resources.loading;
-		Subtitle = Resources.dockband_title;
+		Subtitle = _location.DisplayName;
 
-		// Initialize timer with update interval from settings
 		var intervalMs = _settings.UpdateIntervalMinutes * 60 * 1000;
 		_updateTimer = new Timer(intervalMs);
 		_updateTimer.Elapsed += async (s, e) => await UpdateWeatherAsync();
@@ -42,7 +42,6 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 
 		_settings.Settings.SettingsChanged += OnSettingsChanged;
 
-		// Fetch weather immediately on startup
 		_ = UpdateWeatherAsync();
 	}
 
@@ -55,20 +54,9 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 
 		try
 		{
-			// Get coordinates for default location
-			var locations = await _geocodingService.SearchLocationAsync(_settings.DefaultLocation);
-
-			if (locations.Count == 0)
-			{
-				Title = "--";
-				Subtitle = Resources.location_not_found;
-				return;
-			}
-
-			var location = locations[0];
 			var weather = await _weatherService.GetCurrentWeatherAsync(
-				location.Latitude,
-				location.Longitude,
+				_location.Latitude,
+				_location.Longitude,
 				_settings.TemperatureUnit,
 				_settings.WindSpeedUnit);
 
@@ -79,10 +67,9 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 				Title = $"{weather.Current.Temperature:F0}{unit} {condition}";
 				Icon = Icons.GetIconForWeatherCode(weather.Current.WeatherCode);
 
-				// Fetch today's forecast for high/low
 				var forecast = await _weatherService.GetForecastAsync(
-					location.Latitude,
-					location.Longitude,
+					_location.Latitude,
+					_location.Longitude,
 					_settings.TemperatureUnit);
 
 				if (forecast?.Daily?.TemperatureMax?.Count > 0 &&
@@ -90,31 +77,30 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 				{
 					var high = forecast.Daily.TemperatureMax[0];
 					var low = forecast.Daily.TemperatureMin[0];
-					Subtitle = $"H: {high:F0}{unit}  L: {low:F0}{unit}";
+					Subtitle = $"{_location.DisplayName} — H: {high:F0}{unit}  L: {low:F0}{unit}";
 				}
 				else
 				{
-					Subtitle = location.Name ?? _settings.DefaultLocation;
+					Subtitle = _location.DisplayName;
 				}
 			}
 			else
 			{
 				Title = "--";
-				Subtitle = Resources.unavailable;
+				Subtitle = $"{_location.DisplayName} — {Resources.unavailable}";
 			}
 		}
 		catch (Exception ex)
 		{
 			ExtensionHost.LogMessage(new LogMessage
 			{
-				Message = $"Band weather update error: {ex.Message}",
+				Message = $"Pinned band weather update error: {ex.Message}",
 			});
 
-			// Keep last known values on error, or show unavailable if this is first load
 			if (Title == Resources.loading)
 			{
 				Title = "--";
-				Subtitle = Resources.unavailable;
+				Subtitle = $"{_location.DisplayName} — {Resources.unavailable}";
 			}
 		}
 	}
