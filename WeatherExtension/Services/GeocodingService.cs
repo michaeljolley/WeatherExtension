@@ -81,7 +81,7 @@ public sealed partial class GeocodingService : IDisposable
 				}
 			}
 
-			return cityResults;
+			return RankResults(trimmedQuery, cityResults);
 		}
 		catch (Exception ex)
 		{
@@ -144,6 +144,41 @@ public sealed partial class GeocodingService : IDisposable
 			});
 			return [];
 		}
+	}
+
+	internal static List<GeocodingResult> RankResults(string query, List<GeocodingResult> results)
+	{
+		if (string.IsNullOrWhiteSpace(query) || results.Count <= 1)
+		{
+			return results;
+		}
+
+		// Use just the city part for matching (everything before the first comma)
+		var cityPart = query.Contains(',') ? query.Split(',')[0].Trim() : query.Trim();
+
+		return [.. results.OrderByDescending(r => ScoreResult(cityPart, r))];
+	}
+
+	private static int ScoreResult(string cityQuery, GeocodingResult result)
+	{
+		var name = result.Name ?? string.Empty;
+
+		if (string.Equals(name, cityQuery, StringComparison.OrdinalIgnoreCase))
+		{
+			return 3;
+		}
+
+		if (name.StartsWith(cityQuery, StringComparison.OrdinalIgnoreCase))
+		{
+			return 2;
+		}
+
+		if (name.Contains(cityQuery, StringComparison.OrdinalIgnoreCase))
+		{
+			return 1;
+		}
+
+		return 0;
 	}
 
 	private static string ExtractCountryFromDisplayName(string? displayName)
