@@ -76,6 +76,9 @@
   <data name="no_locations_found" xml:space="preserve">
     <value>No locations found</value>
   </data>
+  <data name="search_min_chars" xml:space="preserve">
+    <value>Enter at least 3 characters to search</value>
+  </data>
   <data name="no_results_for" xml:space="preserve">
     <value>No results for '{0}'</value>
     <comment>Placeholder {0} will be replaced with the search query</comment>

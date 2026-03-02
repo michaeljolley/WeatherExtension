@@ -17,6 +17,7 @@ namespace Microsoft.CmdPal.Ext.Weather.Pages;
 internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 {
     private static readonly CompositeFormat NoResultsFormat = CompositeFormat.Parse(Resources.no_results_for);
+    private const int MinSearchLength = 3;
 
     private readonly IWeatherService _weatherService;
     private readonly GeocodingService _geocodingService;
@@ -196,6 +197,24 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
             var ct = ResetSearchToken();
             _lastSearchQuery = string.Empty;
             LoadDefaultLocationWeather(ct);
+            return;
+        }
+
+        if (newSearch.Trim().Length < MinSearchLength)
+        {
+            ResetSearchToken();
+            _lastSearchQuery = newSearch;
+            var minCharsItem = new ListItem(new NoOpCommand())
+            {
+                Title = Resources.search_min_chars,
+                Icon = Icons.WeatherIcon,
+            };
+            lock (_sync)
+            {
+                _items = [minCharsItem];
+            }
+
+            RaiseItemsChanged();
             return;
         }
 
