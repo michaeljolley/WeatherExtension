@@ -275,4 +275,159 @@ Implemented two features per Duke's architecture plan:
 4. Unpin a location — should remove from dock
 5. Restart extension — pinned locations should persist
 
+**Build Status:** ✅ Compiles successfully with 2 pre-existing warnings (NETSDK1198 publish profile, KillRunningExecutable not found).
+
+## Testing Notes
+
+**Manual Testing Required:**
+1. Search with postal code (e.g., "98101") — should resolve via Open-Meteo or Nominatim
+2. Search with city name (e.g., "Seattle") — should use existing Open-Meteo flow
+3. Pin a location via MoreCommands — should appear in dock
+4. Unpin a location — should remove from dock
+5. Restart extension — pinned locations should persist
+
 **Unit Tests:** Not included in this implementation. Snake Eyes can add tests for PinnedLocationsManager (Pin, Unpin, IsPinned, persistence), postal code regex patterns, and Nominatim response parsing.
+
+---
+
+### 2026-03-02: Hourly Forecast Implementation — Feature Complete
+
+**Author:** Scarlett (Core Dev), Flint (UI Dev), Snake Eyes (Tester)  
+**Date:** 2026-03-02T19:43:19Z  
+**Status:** ✅ Implemented
+
+## Summary
+
+Completed hourly forecast feature with full stack: models, API, UI, and tests. Extends weather detail view and dock band card to show next 3 hours of weather.
+
+## Implementation Details
+
+### Data Models
+
+**HourlyForecastData & HourlyForecast** (in `ForecastData.cs`):
+```csharp
+public class HourlyForecastData
+{
+    [JsonPropertyName("time")]
+    public List<string> Time { get; set; }
+
+    [JsonPropertyName("temperature_2m")]
+    public List<decimal> Temperature { get; set; }
+
+    [JsonPropertyName("apparent_temperature")]
+    public List<decimal> ApparentTemperature { get; set; }
+
+    [JsonPropertyName("weather_code")]
+    public List<int> WeatherCode { get; set; }
+
+    [JsonPropertyName("precipitation_probability")]
+    public List<int?> PrecipitationProbability { get; set; }
+
+    [JsonPropertyName("wind_speed_10m")]
+    public List<decimal> WindSpeed { get; set; }
+
+    [JsonPropertyName("relative_humidity_2m")]
+    public List<int> RelativeHumidity { get; set; }
+}
+
+public class HourlyForecast
+{
+    [JsonPropertyName("hourly")]
+    public HourlyForecastData Hourly { get; set; }
+}
+```
+
+### Service API
+
+**IWeatherService interface enhancement:**
+```csharp
+Task<HourlyForecast> GetHourlyForecastAsync(
+    decimal latitude,
+    decimal longitude,
+    string temperatureUnit,
+    string windSpeedUnit,
+    CancellationToken cancellationToken = default
+);
+```
+
+**OpenMeteoService implementation:**
+- 15-minute cache with composite key: `{latitude},{longitude},{temperatureUnit},{windSpeedUnit}`
+- Fetches next 24 hours from Open-Meteo API endpoint: `&hourly=temperature_2m,apparent_temperature,weather_code,precipitation_probability,wind_speed_10m,relative_humidity_2m&forecast_days=1`
+- Cache fields: `_cachedHourly`, `_hourlyCacheTime`, `_hourlyCacheKey`
+- Pattern: Identical to existing current weather caching strategy
+
+### User Interface
+
+**HourlyForecastPage** (ListPage):
+- Displays remaining hours from current time through midnight
+- Filters past hours: `if (time < DateTime.Now) continue;`
+- Item view: time (h:mm tt format), weather condition icon, temperature
+- Details pane:
+  - Temperature and "feels like" temperature
+  - Precipitation probability (%)
+  - Wind speed
+  - Relative humidity (%)
+
+**ViewHourlyCommand:**
+- InvokableCommand that navigates to HourlyForecastPage
+- Takes location, weather service, and settings manager
+- Returns `CommandResult.GoToPage()` for navigation
+
+**WeatherDetailPage Integration:**
+- Modified `CreateCurrentWeatherItem()` to use `HourlyForecastPage` as the command
+- Current weather item now navigates to hourly forecast when selected
+- Pattern: Pages act as commands (constructor `ListItem(command)` handles navigation)
+
+**WeatherBandCard Dock Band:**
+- Split current weather section into 50/50 two-column layout
+- Left column: Current weather (icon, temperature, condition)
+- Right column: Next 3 hours (time, icon, temperature, precipitation probability)
+- Time display: 12-hour format (h tt)
+- Data fields: `hour1Time`, `hour1Icon`, `hour1Temp`, `hour1Precip` (variants for hours 2 & 3)
+- Layout: ColumnSets for each hour with proper alignment and spacing
+- Follows adaptive card patterns: equal-width columns use `"width": "1"`
+
+## Key Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| 15-minute cache with composite key | Matches existing current weather pattern; prevents unnecessary API calls |
+| Filter past hours client-side | Simplifies UI logic; all hourly data available for edge cases |
+| Time format: h:mm tt | Consistent with existing time displays; readable 12-hour format |
+| Separate HourlyForecastPage | Follows existing navigation pattern (WeatherDetailPage → WeatherListPage) |
+| 50/50 dock band split | Balances current weather prominence with forward-looking hourly data |
+| Emoji weather icons | Uses existing Icons pattern from codebase |
+
+## Files Changed
+
+**Modified (6):**
+- `WeatherExtension/Models/ForecastData.cs` — Added HourlyForecastData and HourlyForecast
+- `WeatherExtension/Services/IWeatherService.cs` — Added GetHourlyForecastAsync method
+- `WeatherExtension/Services/OpenMeteoService.cs` — Implemented hourly API with caching
+- `WeatherExtension/Services/WeatherJsonContext.cs` — Registered HourlyForecastData for serialization
+- `WeatherExtension/Pages/WeatherDetailPage.cs` — Wired HourlyForecastPage to current weather
+- `WeatherExtension/DockBands/WeatherBandCard.cs` — Split layout with next 3 hours
+
+**Created (4):**
+- `WeatherExtension/Pages/HourlyForecastPage.cs` — List page for hourly forecast
+- `WeatherExtension/Commands/ViewHourlyCommand.cs` — Navigation command
+- `WeatherExtension.Tests/HourlyForecastDataTests.cs` — 4 deserialization tests
+- `WeatherExtension.Tests/WeatherServiceInterfaceTests.cs` — 1 interface contract test
+
+## Build Status
+
+✅ **90/90 tests passing**
+✅ **Compiles successfully**
+✅ **No new warnings introduced** (1 pre-existing: KillRunningExecutable not found)
+
+## Test Coverage
+
+**HourlyForecastDataTests:**
+1. ValidJsonDeserialization_AllFieldsPopulated — Full hourly data with all properties
+2. MissingHourlyBlock_HandlesGracefully — Null hourly block
+3. EmptyArrays_AllListsEmptyButNotNull — Empty collections
+4. PartialDataDeserialization_TimeAndTempOnly — Minimal fields
+
+**WeatherServiceInterfaceTests:**
+1. IWeatherServiceHasGetHourlyForecastAsync_VerifyMethodSignature — Method existence and parameter count via reflection
+

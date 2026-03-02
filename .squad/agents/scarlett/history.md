@@ -126,3 +126,57 @@ WeatherExtension/
 
 📌 Team update (2026-03-02T18-24): Snake Eyes completed 14 unit tests (8 PinnedLocationsManager, 6 Pin/UnpinCommands), fixed test isolation via temp file paths, all 85 tests passing — decided by Snake Eyes
 
+### 2026-03-02: Hourly Forecast Implementation
+
+**Features Implemented:**
+
+1. **Hourly Forecast Data Model:**
+   - Extended `Models/ForecastData.cs` with `HourlyForecastData` and `HourlyForecast` classes
+   - Properties: time, temperature, apparent temperature, weather code, precipitation probability, wind speed, relative humidity
+   - Registered `HourlyForecastData` in `WeatherJsonContext` for source-generated JSON serialization
+
+2. **Hourly Forecast API:**
+   - Added `GetHourlyForecastAsync()` method to `IWeatherService` interface
+   - Implemented in `OpenMeteoService` with 15-minute caching (follows existing pattern)
+   - API URL: `&hourly=temperature_2m,apparent_temperature,weather_code,precipitation_probability,wind_speed_10m,relative_humidity_2m&forecast_days=1`
+   - Cache fields: `_cachedHourly`, `_hourlyCacheTime`, `_hourlyCacheKey`
+
+3. **HourlyForecastPage:**
+   - New `ListPage` at `Pages/HourlyForecastPage.cs`
+   - Displays remaining hours from current time through end of day
+   - Each item shows: formatted time (h:mm tt), condition, temperature
+   - Details pane: temperature, feels like, precipitation chance, wind speed, humidity
+   - Filters out past hours (only shows time >= DateTime.Now)
+
+4. **ViewHourlyCommand:**
+   - New `InvokableCommand` at `Commands/ViewHourlyCommand.cs`
+   - Takes location, weather service, settings manager
+   - Returns `CommandResult.GoToPage()` to navigate to hourly forecast page
+
+5. **Integration:**
+   - Modified `WeatherDetailPage.CreateCurrentWeatherItem()` to use `HourlyForecastPage` as the command
+   - Current weather item now navigates to hourly forecast when selected (follows existing pattern from WeatherListPage)
+
+**Key Patterns:**
+- **Page Navigation:** Pages can act as commands — passed to `ListItem()` constructor, which automatically handles navigation
+- **Time Filtering:** `if (time < DateTime.Now) continue;` filters past hours in hourly forecast
+- **Caching Strategy:** 15-minute cache expiration with `latitude,longitude,tempUnit,windUnit` composite key (matches current weather pattern)
+- **JSON Context:** All new models registered in source-generated `WeatherJsonContext` for AOT compatibility
+
+**Files Modified (5):**
+- `WeatherExtension/Models/ForecastData.cs` — Added HourlyForecastData and HourlyForecast models
+- `WeatherExtension/Services/IWeatherService.cs` — Added GetHourlyForecastAsync method
+- `WeatherExtension/Services/OpenMeteoService.cs` — Implemented hourly forecast API with caching
+- `WeatherExtension/Services/WeatherJsonContext.cs` — Registered HourlyForecastData for JSON serialization
+- `WeatherExtension/Pages/WeatherDetailPage.cs` — Wired HourlyForecastPage to current weather item
+
+**Files Created (2):**
+- `WeatherExtension/Pages/HourlyForecastPage.cs` — Hourly forecast list page
+- `WeatherExtension/Commands/ViewHourlyCommand.cs` — Command to navigate to hourly forecast (created but not directly used)
+
+**Build Status:** ✅ Compiles successfully with 1 pre-existing warning (KillRunningExecutable not found).
+
+## Cross-Agent Updates
+
+📌 Team update (2026-03-02T19:43:19Z): Hourly forecast feature complete — HourlyForecastData models, GetHourlyForecastAsync API with 15-min caching, HourlyForecastPage list page, ViewHourlyCommand, integrated into WeatherDetailPage current weather item — decided by Scarlett
+

@@ -56,8 +56,48 @@
 
 **Build Status:** ✅ 85/85 tests passing
 
+### Hourly Forecast Tests (2026-03-02)
+
+**Test Files Created:**
+- `HourlyForecastDataTests.cs` — 4 tests for JSON deserialization of hourly forecast data from Open-Meteo
+- `WeatherServiceInterfaceTests.cs` — 1 test verifying `GetHourlyForecastAsync` method signature on IWeatherService interface
+
+**Test Coverage:**
+- Valid JSON deserialization with all fields populated (time, temperature, apparent_temperature, weather_code, precipitation_probability, wind_speed, relative_humidity)
+- Missing hourly block handling (Hourly property is null)
+- Empty arrays handling (all lists are empty but not null)
+- Partial data handling (only time and temperature provided, other arrays are null)
+- Interface method signature verification via reflection (5 parameters: latitude, longitude, temperatureUnit, windSpeedUnit, CancellationToken)
+
+**Build Status:** ✅ 90/90 tests passing
+
 ## Cross-Agent Updates
 
 📌 Team update (2026-03-02T18-24): Scarlett completed postal code and pin-to-dock implementation (14 files created/modified), DockBands API integration, WeatherListPage MoreCommands integration, build passes with 0 errors — decided by Scarlett
+
+### Hourly Forecast Tests (2026-03-02)
+
+**Test Files Created:**
+- `HourlyForecastDataTests.cs` — 4 tests for JSON deserialization of hourly forecast data from Open-Meteo
+- `WeatherServiceInterfaceTests.cs` — 1 test verifying `GetHourlyForecastAsync` method signature on IWeatherService interface
+
+**Test Coverage:**
+- Valid JSON deserialization with all fields populated (time, temperature, apparent_temperature, weather_code, precipitation_probability, wind_speed, relative_humidity)
+- Missing hourly block handling (Hourly property is null)
+- Empty arrays handling (all lists are empty but not null)
+- Partial data handling (only time and temperature provided, other arrays are null)
+- Interface method signature verification via reflection (5 parameters: latitude, longitude, temperatureUnit, windSpeedUnit, CancellationToken)
+
+**Implementation Status:**
+- Scarlett has already implemented `HourlyForecastData` and `HourlyForecast` models in `ForecastData.cs`
+- `IWeatherService.GetHourlyForecastAsync` method exists with correct signature
+- `WeatherJsonContext` includes serialization context for HourlyForecastData
+- Tests follow existing patterns from `WeatherDataModelTests.cs` (MSTest, deserialization with WeatherJsonContext)
+- Build currently blocked by unrelated integration work in `WeatherBandCard.cs` (BuildWeatherData method needs hourly parameter)
+
+**Test Pattern Notes:**
+- Tests written based on architecture plan before complete integration
+- Tests will compile and pass once Scarlett completes WeatherBandCard integration
+- Follows 3-line copyright header, no `#nullable enable`, PascalCase method names, Microsoft.CmdPal.Ext.Weather.UnitTests namespace
 
 
