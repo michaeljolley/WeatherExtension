@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="extension_name" xml:space="preserve">
+    <value>Weather</value>
+  </data>
+  <data name="extension_description" xml:space="preserve">
+    <value>Get current weather and forecast information</value>
+  </data>
+  <data name="plugin_name" xml:space="preserve">
+    <value>Weather</value>
+  </data>
+  <data name="plugin_description" xml:space="preserve">
+    <value>Current weather and forecast</value>
+  </data>
+  <data name="search_placeholder" xml:space="preserve">
+    <value>Search for a city...</value>
+  </data>
+  <data name="no_locations_found" xml:space="preserve">
+    <value>No locations found</value>
+  </data>
+  <data name="no_results_for" xml:space="preserve">
+    <value>No results for '{0}'</value>
+    <comment>Placeholder {0} will be replaced with the search query</comment>
+  </data>
+  <data name="no_data_available" xml:space="preserve">
+    <value>No weather data available</value>
+  </data>
+  <data name="current_weather" xml:space="preserve">
+    <value>Current Weather</value>
+  </data>
+  <data name="loading_data" xml:space="preserve">
+    <value>Loading weather data...</value>
+  </data>
+  <data name="today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="tomorrow" xml:space="preserve">
+    <value>Tomorrow</value>
+  </data>
+  <data name="temperature" xml:space="preserve">
+    <value>Temperature</value>
+  </data>
+  <data name="feels_like" xml:space="preserve">
+    <value>Feels Like</value>
+  </data>
+  <data name="humidity" xml:space="preserve">
+    <value>Humidity</value>
+  </data>
+  <data name="wind_speed" xml:space="preserve">
+    <value>Wind Speed</value>
+  </data>
+  <data name="wind_direction" xml:space="preserve">
+    <value>Wind Direction</value>
+  </data>
+  <data name="high" xml:space="preserve">
+    <value>High</value>
+  </data>
+  <data name="low" xml:space="preserve">
+    <value>Low</value>
+  </data>
+  <data name="precipitation" xml:space="preserve">
+    <value>Precipitation</value>
+  </data>
+  <data name="loading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="dockband_title" xml:space="preserve">
+    <value>Weather</value>
+  </data>
+  <data name="unavailable" xml:space="preserve">
+    <value>Weather unavailable</value>
+  </data>
+  <data name="location_not_found" xml:space="preserve">
+    <value>Location not found</value>
+  </data>
+  <data name="default_location_title" xml:space="preserve">
+    <value>Default Location</value>
+  </data>
+  <data name="default_location_description" xml:space="preserve">
+    <value>The default location to show weather for</value>
+  </data>
+  <data name="default_location_placeholder" xml:space="preserve">
+    <value>Enter city name</value>
+  </data>
+  <data name="temperature_unit_title" xml:space="preserve">
+    <value>Temperature Unit</value>
+  </data>
+  <data name="temperature_unit_description" xml:space="preserve">
+    <value>Choose temperature unit</value>
+  </data>
+  <data name="celsius" xml:space="preserve">
+    <value>Celsius</value>
+  </data>
+  <data name="fahrenheit" xml:space="preserve">
+    <value>Fahrenheit</value>
+  </data>
+  <data name="wind_speed_unit_title" xml:space="preserve">
+    <value>Wind Speed Unit</value>
+  </data>
+  <data name="wind_speed_unit_description" xml:space="preserve">
+    <value>Choose wind speed unit</value>
+  </data>
+  <data name="kmh" xml:space="preserve">
+    <value>km/h</value>
+  </data>
+  <data name="mph" xml:space="preserve">
+    <value>mph</value>
+  </data>
+  <data name="show_forecast_title" xml:space="preserve">
+    <value>Show Forecast</value>
+  </data>
+  <data name="show_forecast_description" xml:space="preserve">
+    <value>Show multi-day weather forecast</value>
+  </data>
+  <data name="update_interval_title" xml:space="preserve">
+    <value>Update Interval</value>
+  </data>
+  <data name="update_interval_description" xml:space="preserve">
+    <value>How often to refresh weather data</value>
+  </data>
+  <data name="ten_minutes" xml:space="preserve">
+    <value>10 minutes</value>
+  </data>
+  <data name="fifteen_minutes" xml:space="preserve">
+    <value>15 minutes</value>
+  </data>
+  <data name="thirty_minutes" xml:space="preserve">
+    <value>30 minutes</value>
+  </data>
+  <data name="sixty_minutes" xml:space="preserve">
+    <value>60 minutes</value>
+  </data>
+</root>

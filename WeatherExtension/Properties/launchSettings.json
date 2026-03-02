@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "WeatherExtension (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": true
+    },
+    "WeatherExtension (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

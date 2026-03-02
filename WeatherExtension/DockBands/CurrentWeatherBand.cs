@@ -1,0 +1,137 @@
+// Copyright (c) Bald Bearded Builder LLC
+// Bald Bearded Builder LLC licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using Microsoft.CmdPal.Ext.Weather.Pages;
+using Microsoft.CmdPal.Ext.Weather.Services;
+using Microsoft.CommandPalette.Extensions.Toolkit;
+using System.Timers;
+
+namespace Microsoft.CmdPal.Ext.Weather.DockBands;
+
+internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
+{
+	private readonly OpenMeteoService _weatherService;
+	private readonly GeocodingService _geocodingService;
+	private readonly WeatherSettingsManager _settings;
+	private readonly WeatherBandCard _contentPage;
+	private readonly Timer _updateTimer;
+	private bool _isDisposed;
+
+	public CurrentWeatherBand(
+		OpenMeteoService weatherService,
+		GeocodingService geocodingService,
+		WeatherSettingsManager settings,
+		WeatherBandCard contentPage)
+	{
+		_weatherService = weatherService ?? throw new ArgumentNullException(nameof(weatherService));
+		_geocodingService = geocodingService ?? throw new ArgumentNullException(nameof(geocodingService));
+		_settings = settings ?? throw new ArgumentNullException(nameof(settings));
+		_contentPage = contentPage ?? throw new ArgumentNullException(nameof(contentPage));
+
+		Command = _contentPage;
+		Icon = Icons.WeatherIcon;
+		Title = Resources.loading;
+		Subtitle = Resources.dockband_title;
+
+		// Initialize timer with update interval from settings
+		var intervalMs = _settings.UpdateIntervalMinutes * 60 * 1000;
+		_updateTimer = new Timer(intervalMs);
+		_updateTimer.Elapsed += async (s, e) => await UpdateWeatherAsync();
+		_updateTimer.Start();
+
+		_settings.Settings.SettingsChanged += OnSettingsChanged;
+
+		// Fetch weather immediately on startup
+		_ = UpdateWeatherAsync();
+	}
+
+	private async Task UpdateWeatherAsync()
+	{
+		if (_isDisposed)
+		{
+			return;
+		}
+
+		try
+		{
+			// Get coordinates for default location
+			var locations = await _geocodingService.SearchLocationAsync(_settings.DefaultLocation);
+
+			if (locations.Count == 0)
+			{
+				Title = "--";
+				Subtitle = Resources.location_not_found;
+				return;
+			}
+
+			var location = locations[0];
+			var weather = await _weatherService.GetCurrentWeatherAsync(
+				location.Latitude,
+				location.Longitude,
+				_settings.TemperatureUnit,
+				_settings.WindSpeedUnit);
+
+			if (weather?.Current != null)
+			{
+				var unit = _settings.TemperatureUnit == "celsius" ? "°C" : "°F";
+				var condition = Icons.GetWeatherDescription(weather.Current.WeatherCode);
+				Title = $"{weather.Current.Temperature:F0}{unit} {condition}";
+				Icon = Icons.GetIconForWeatherCode(weather.Current.WeatherCode);
+
+				// Fetch today's forecast for high/low
+				var forecast = await _weatherService.GetForecastAsync(
+					location.Latitude,
+					location.Longitude,
+					_settings.TemperatureUnit);
+
+				if (forecast?.Daily?.TemperatureMax?.Count > 0 &&
+					forecast.Daily.TemperatureMin?.Count > 0)
+				{
+					var high = forecast.Daily.TemperatureMax[0];
+					var low = forecast.Daily.TemperatureMin[0];
+					Subtitle = $"H: {high:F0}{unit}  L: {low:F0}{unit}";
+				}
+				else
+				{
+					Subtitle = location.Name ?? _settings.DefaultLocation;
+				}
+			}
+			else
+			{
+				Title = "--";
+				Subtitle = Resources.unavailable;
+			}
+		}
+		catch (Exception ex)
+		{
+			ExtensionHost.LogMessage(new LogMessage
+			{
+				Message = $"Band weather update error: {ex.Message}",
+			});
+
+			// Keep last known values on error, or show unavailable if this is first load
+			if (Title == Resources.loading)
+			{
+				Title = "--";
+				Subtitle = Resources.unavailable;
+			}
+		}
+	}
+
+	private async void OnSettingsChanged(object sender, Settings args)
+	{
+		await UpdateWeatherAsync();
+	}
+
+	public void Dispose()
+	{
+		if (!_isDisposed)
+		{
+			_isDisposed = true;
+			_settings.Settings.SettingsChanged -= OnSettingsChanged;
+			_updateTimer?.Stop();
+			_updateTimer?.Dispose();
+		}
+	}
+}

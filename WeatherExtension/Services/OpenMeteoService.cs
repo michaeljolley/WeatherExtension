@@ -1,0 +1,147 @@
+// Copyright (c) Bald Bearded Builder LLC
+// Bald Bearded Builder LLC licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading;
+using Microsoft.CmdPal.Ext.Weather.Models;
+using Microsoft.CommandPalette.Extensions.Toolkit;
+
+namespace Microsoft.CmdPal.Ext.Weather.Services;
+
+public sealed class OpenMeteoService : IWeatherService, IDisposable
+{
+    private readonly HttpClient _httpClient;
+    private const string BaseUrl = "https://api.open-meteo.com/v1/forecast";
+    private const int CacheExpirationMinutes = 15;
+
+    private WeatherData? _cachedWeather;
+    private DateTime _weatherCacheTime;
+    private string _weatherCacheKey = string.Empty;
+
+    private ForecastData? _cachedForecast;
+    private DateTime _forecastCacheTime;
+    private string _forecastCacheKey = string.Empty;
+
+    public OpenMeteoService()
+    {
+        _httpClient = new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(10),
+        };
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", "PowerToys-CmdPal-Weather/1.0");
+    }
+
+    public async Task<WeatherData?> GetCurrentWeatherAsync(
+        double latitude,
+        double longitude,
+        string temperatureUnit = "celsius",
+        string windSpeedUnit = "kmh",
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var cacheKey = $"{latitude},{longitude},{temperatureUnit},{windSpeedUnit}";
+            if (_cachedWeather != null &&
+                _weatherCacheKey == cacheKey &&
+                (DateTime.UtcNow - _weatherCacheTime).TotalMinutes < CacheExpirationMinutes)
+            {
+                return _cachedWeather;
+            }
+
+            var url = $"{BaseUrl}?latitude={latitude}&longitude={longitude}" +
+                     $"&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m" +
+                     $"&temperature_unit={temperatureUnit}&wind_speed_unit={windSpeedUnit}&timezone=auto";
+
+            var response = await _httpClient.GetAsync(url, ct).ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ExtensionHost.LogMessage(new LogMessage
+                {
+                    Message = $"Weather API returned status {response.StatusCode}",
+                });
+                return null;
+            }
+
+            var content = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+            var weatherData = JsonSerializer.Deserialize(content, WeatherJsonContext.Default.WeatherData);
+
+            if (weatherData != null)
+            {
+                _cachedWeather = weatherData;
+                _weatherCacheTime = DateTime.UtcNow;
+                _weatherCacheKey = cacheKey;
+            }
+
+            return weatherData;
+        }
+        catch (Exception ex)
+        {
+            ExtensionHost.LogMessage(new LogMessage
+            {
+                Message = $"Weather fetch error: {ex.Message}",
+            });
+            return null;
+        }
+    }
+
+    public async Task<ForecastData?> GetForecastAsync(
+        double latitude,
+        double longitude,
+        string temperatureUnit = "celsius",
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var cacheKey = $"{latitude},{longitude},{temperatureUnit}";
+            if (_cachedForecast != null &&
+                _forecastCacheKey == cacheKey &&
+                (DateTime.UtcNow - _forecastCacheTime).TotalMinutes < CacheExpirationMinutes)
+            {
+                return _cachedForecast;
+            }
+
+            var url = $"{BaseUrl}?latitude={latitude}&longitude={longitude}" +
+                     $"&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max" +
+                     $"&temperature_unit={temperatureUnit}&timezone=auto";
+
+            var response = await _httpClient.GetAsync(url, ct).ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ExtensionHost.LogMessage(new LogMessage
+                {
+                    Message = $"Forecast API returned status {response.StatusCode}",
+                });
+                return null;
+            }
+
+            var content = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+            var forecastData = JsonSerializer.Deserialize(content, WeatherJsonContext.Default.ForecastData);
+
+            if (forecastData != null)
+            {
+                _cachedForecast = forecastData;
+                _forecastCacheTime = DateTime.UtcNow;
+                _forecastCacheKey = cacheKey;
+            }
+
+            return forecastData;
+        }
+        catch (Exception ex)
+        {
+            ExtensionHost.LogMessage(new LogMessage
+            {
+                Message = $"Forecast fetch error: {ex.Message}",
+            });
+            return null;
+        }
+    }
+
+    public void Dispose()
+    {
+        _httpClient?.Dispose();
+    }
+}
