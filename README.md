@@ -4,7 +4,7 @@ A weather extension for [Microsoft Command Palette](https://github.com/microsoft
 (PowerToys) that provides current conditions, hourly forecasts, and multi-day
 forecasts right from your desktop.
 
-![Screenshot placeholder — main search view](<!-- TODO: Add screenshot -->)
+<img width="1027" height="627" alt="image" src="https://github.com/user-attachments/assets/f91171da-e491-46aa-b520-4c5112042d62" />
 
 ## Features
 
@@ -24,19 +24,19 @@ forecasts right from your desktop.
 
 ### Search & Current Conditions
 
-![Screenshot placeholder — current conditions detail](<!-- TODO: Add screenshot -->)
+<img width="1023" height="624" alt="image" src="https://github.com/user-attachments/assets/4cbdfb54-a081-41b3-b4ee-1da1274f09da" />
 
 ### Dock Band Card
 
-![Screenshot placeholder — dock band card](<!-- TODO: Add screenshot -->)
+<img width="1112" height="669" alt="image" src="https://github.com/user-attachments/assets/57d4aba6-f788-4a79-b730-82ece6be2148" />
 
 ### Hourly Forecast
 
-![Screenshot placeholder — hourly forecast](<!-- TODO: Add screenshot -->)
+<img width="1023" height="622" alt="image" src="https://github.com/user-attachments/assets/d87e8810-bc70-4ad4-b3ed-feea30b03e9f" />
 
 ### Settings
 
-![Screenshot placeholder — settings page](<!-- TODO: Add screenshot -->)
+<img width="1027" height="673" alt="image" src="https://github.com/user-attachments/assets/01962a91-ccdf-42e3-aa28-19e3bcf493a3" />
 
 ## Getting Started
 
