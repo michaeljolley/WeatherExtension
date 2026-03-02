@@ -57,7 +57,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
         _settingsManager.Settings.SettingsChanged += OnSettingsChanged;
     }
 
-    private async void LoadDefaultLocationWeather()
+    private async void LoadDefaultLocationWeather(CancellationToken searchCt = default)
     {
         try
         {
@@ -67,11 +67,16 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
                 return;
             }
 
-            var locations = await _geocodingService.SearchLocationAsync(defaultLocation, _cts.Token).ConfigureAwait(false);
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(searchCt, _cts.Token);
+            var locations = await _geocodingService.SearchLocationAsync(defaultLocation, linkedCts.Token).ConfigureAwait(false);
             if (locations.Count > 0)
             {
-                await LoadWeatherForLocation(locations[0], _cts.Token).ConfigureAwait(false);
+                await LoadWeatherForLocation(locations[0], linkedCts.Token).ConfigureAwait(false);
             }
+        }
+        catch (OperationCanceledException)
+        {
+            // Expected when cancelled by a newer search or page is disposed
         }
         catch (Exception ex)
         {
@@ -188,9 +193,9 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
     {
         if (string.IsNullOrWhiteSpace(newSearch))
         {
-            _ = ResetSearchToken();
+            var ct = ResetSearchToken();
             _lastSearchQuery = string.Empty;
-            LoadDefaultLocationWeather();
+            LoadDefaultLocationWeather(ct);
             return;
         }
 
@@ -200,16 +205,18 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
         }
 
         _lastSearchQuery = newSearch;
-        var ct = ResetSearchToken();
-        _ = PerformDebouncedSearchAsync(newSearch, ct);
+        var searchCt = ResetSearchToken();
+        _ = PerformDebouncedSearchAsync(newSearch, searchCt);
     }
 
     private CancellationToken ResetSearchToken()
     {
         var oldCts = _searchCts;
         _searchCts = new CancellationTokenSource();
+        // Cancel but do not dispose immediately: the fire-and-forget debounced task may still be
+        // executing callbacks on oldCts.Token, and disposing it while those callbacks are in flight
+        // would throw ObjectDisposedException.  The GC will reclaim it once no references remain.
         oldCts.Cancel();
-        oldCts.Dispose();
         return _searchCts.Token;
     }
 
@@ -218,7 +225,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
         try
         {
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(searchCt, _cts.Token);
-            await Task.Delay(300, linkedCts.Token).ConfigureAwait(false);
+            await Task.Delay(150, linkedCts.Token).ConfigureAwait(false);
             await PerformSearchAsync(query, linkedCts.Token).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
@@ -307,7 +314,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
         }
         else
         {
-            LoadDefaultLocationWeather();
+            LoadDefaultLocationWeather(ct);
         }
     }
 
