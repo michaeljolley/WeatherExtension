@@ -10,11 +10,9 @@
   IgnorableNamespaces="uap uap3 rescap">
 
   <Identity
-    Name="BaldBeardedBuilder.WeatherExtension"
-    Publisher="CN=Bald Bearded Builder LLC, O=Bald Bearded Builder LLC, L=Odenville, S=Alabama, C=US"
-    Version="0.0.1.0" />
-  <!-- When you're ready to publish your extension, you'll need to change the
-       Publisher= to match your own identity -->
+    Name="BaldBeardedBuilder.WeatherforCommandPalette"
+    Publisher="CN=A8D6094E-1226-4E9C-B256-B81D585303AC"
+    Version="1.0.0.0" />
 
   <Properties>
     <DisplayName>Weather for Command Palette</DisplayName>
@@ -76,6 +74,5 @@
 
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
-	<uap7:Capability Name="globalMediaControl" />
   </Capabilities>
 </Package>
