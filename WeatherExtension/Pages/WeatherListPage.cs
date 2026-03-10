@@ -261,7 +261,10 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 
             // Re-check cancellation after the async call returns so that stale results
             // from an earlier query are never shown when the user has already typed more.
-            ct.ThrowIfCancellationRequested();
+            if (ct.IsCancellationRequested)
+            {
+                return;
+            }
 
             if (locations.Count == 0)
             {
@@ -304,7 +307,10 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
             }
 
             // Final cancellation check before committing results to the UI.
-            ct.ThrowIfCancellationRequested();
+            if (ct.IsCancellationRequested)
+            {
+                return;
+            }
 
             lock (_sync)
             {
