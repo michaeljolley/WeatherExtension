@@ -244,7 +244,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
         try
         {
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(searchCt, _cts.Token);
-            await Task.Delay(150, linkedCts.Token).ConfigureAwait(false);
+            await Task.Delay(300, linkedCts.Token).ConfigureAwait(false);
             await PerformSearchAsync(query, linkedCts.Token).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
@@ -258,6 +258,10 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
         try
         {
             var locations = await _geocodingService.SearchLocationAsync(query, ct).ConfigureAwait(false);
+
+            // Re-check cancellation after the async call returns so that stale results
+            // from an earlier query are never shown when the user has already typed more.
+            ct.ThrowIfCancellationRequested();
 
             if (locations.Count == 0)
             {
@@ -298,6 +302,9 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
                     items.Add(CreateWeatherItem(location, weatherData));
                 }
             }
+
+            // Final cancellation check before committing results to the UI.
+            ct.ThrowIfCancellationRequested();
 
             lock (_sync)
             {
