@@ -27,6 +27,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
     private readonly CancellationTokenSource _cts = new();
 
     private IListItem[] _items = [];
+    private bool _isLoading;
     private string _lastSearchQuery = string.Empty;
     private CancellationTokenSource _searchCts = new();
 
@@ -101,6 +102,12 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 
             if (weatherData?.Current == null)
             {
+                lock (_sync)
+                {
+                    _isLoading = false;
+                }
+
+                RaiseItemsChanged();
                 return;
             }
 
@@ -112,16 +119,24 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
             lock (_sync)
             {
                 _items = items.ToArray();
+                _isLoading = false;
             }
 
             RaiseItemsChanged();
         }
         catch (Exception ex)
         {
+            lock (_sync)
+            {
+                _isLoading = false;
+            }
+
             ExtensionHost.LogMessage(new LogMessage
             {
                 Message = $"Failed to load weather for location: {ex.Message}",
             });
+
+            RaiseItemsChanged();
         }
     }
 
@@ -212,6 +227,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
             lock (_sync)
             {
                 _items = [minCharsItem];
+                _isLoading = false;
             }
 
             RaiseItemsChanged();
@@ -244,7 +260,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
         try
         {
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(searchCt, _cts.Token);
-            await Task.Delay(150, linkedCts.Token).ConfigureAwait(false);
+            await Task.Delay(300, linkedCts.Token).ConfigureAwait(false);
             await PerformSearchAsync(query, linkedCts.Token).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
@@ -257,7 +273,27 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
     {
         try
         {
+            lock (_sync)
+            {
+                _isLoading = true;
+            }
+
+            RaiseItemsChanged();
+
             var locations = await _geocodingService.SearchLocationAsync(query, ct).ConfigureAwait(false);
+
+            // Re-check cancellation after the async call returns so that stale results
+            // from an earlier query are never shown when the user has already typed more.
+            if (ct.IsCancellationRequested)
+            {
+                lock (_sync)
+                {
+                    _isLoading = false;
+                }
+
+                RaiseItemsChanged();
+                return;
+            }
 
             if (locations.Count == 0)
             {
@@ -271,6 +307,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
                 lock (_sync)
                 {
                     _items = [noResultsItem];
+                    _isLoading = false;
                 }
 
                 RaiseItemsChanged();
@@ -299,9 +336,22 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
                 }
             }
 
+            // Final cancellation check before committing results to the UI.
+            if (ct.IsCancellationRequested)
+            {
+                lock (_sync)
+                {
+                    _isLoading = false;
+                }
+
+                RaiseItemsChanged();
+                return;
+            }
+
             lock (_sync)
             {
                 _items = items.ToArray();
+                _isLoading = false;
             }
 
             RaiseItemsChanged();
@@ -309,13 +359,26 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
         catch (OperationCanceledException)
         {
             // Expected when the search is cancelled by a newer query or page is disposed
+            lock (_sync)
+            {
+                _isLoading = false;
+            }
+
+            RaiseItemsChanged();
         }
         catch (Exception ex)
         {
+            lock (_sync)
+            {
+                _isLoading = false;
+            }
+
             ExtensionHost.LogMessage(new LogMessage
             {
                 Message = $"Search error: {ex.Message}",
             });
+
+            RaiseItemsChanged();
         }
     }
 
@@ -341,6 +404,18 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
     {
         lock (_sync)
         {
+            if (_isLoading)
+            {
+                return
+                [
+                    new ListItem(new NoOpCommand())
+                    {
+                        Title = Resources.loading_data,
+                        Icon = Icons.WeatherIcon,
+                    },
+                ];
+            }
+
             return _items;
         }
     }
