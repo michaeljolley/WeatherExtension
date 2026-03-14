@@ -227,6 +227,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
             lock (_sync)
             {
                 _items = [minCharsItem];
+                _isLoading = false;
             }
 
             RaiseItemsChanged();
@@ -285,6 +286,12 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
             // from an earlier query are never shown when the user has already typed more.
             if (ct.IsCancellationRequested)
             {
+                lock (_sync)
+                {
+                    _isLoading = false;
+                }
+
+                RaiseItemsChanged();
                 return;
             }
 
@@ -352,6 +359,12 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
         catch (OperationCanceledException)
         {
             // Expected when the search is cancelled by a newer query or page is disposed
+            lock (_sync)
+            {
+                _isLoading = false;
+            }
+
+            RaiseItemsChanged();
         }
         catch (Exception ex)
         {
