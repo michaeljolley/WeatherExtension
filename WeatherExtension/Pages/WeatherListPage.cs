@@ -332,6 +332,12 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
             // Final cancellation check before committing results to the UI.
             if (ct.IsCancellationRequested)
             {
+                lock (_sync)
+                {
+                    _isLoading = false;
+                }
+
+                RaiseItemsChanged();
                 return;
             }
 
