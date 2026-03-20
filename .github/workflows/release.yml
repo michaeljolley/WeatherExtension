@@ -1,0 +1,161 @@
+name: Release to Microsoft Store
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup .NET 9 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      
+      - name: Extract and format version from release tag
+        id: version
+        shell: pwsh
+        run: |
+          $tag = "${{ github.event.release.tag_name }}"
+          $version = $tag -replace '^v', ''
+          
+          # Ensure 4-part version (X.Y.Z.0)
+          $parts = $version -split '\.'
+          if ($parts.Length -eq 3) {
+            $version = "$version.0"
+          }
+          
+          Write-Host "Version: $version"
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+      
+      - name: Update Package.appxmanifest version
+        shell: pwsh
+        run: |
+          $manifestPath = "WeatherExtension/Package.appxmanifest"
+          $version = "${{ steps.version.outputs.version }}"
+          
+          [xml]$manifest = Get-Content $manifestPath
+          $manifest.Package.Identity.Version = $version
+          $manifest.Save($manifestPath)
+          
+          Write-Host "Updated Package.appxmanifest to version $version"
+      
+      - name: Restore dependencies
+        run: dotnet restore WeatherExtension.slnx
+      
+      - name: Build x64
+        run: dotnet build WeatherExtension/WeatherExtension.csproj -c Release -r win-x64 --no-restore
+      
+      - name: Build ARM64
+        run: dotnet build WeatherExtension/WeatherExtension.csproj -c Release -r win-arm64 --no-restore
+      
+      - name: Run tests
+        run: dotnet test WeatherExtension.Tests/ -c Release -r win-x64 --no-build
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            WeatherExtension/bin/
+            WeatherExtension/obj/
+            WeatherExtension.Tests/bin/
+            WeatherExtension.Tests/obj/
+            WeatherExtension/Package.appxmanifest
+          retention-days: 1
+
+  package:
+    needs: build-and-test
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup .NET 9 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+      
+      - name: Restore dependencies
+        run: dotnet restore WeatherExtension.slnx
+      
+      - name: Publish x64 MSIX
+        run: dotnet publish WeatherExtension/WeatherExtension.csproj -c Release -r win-x64 /p:PublishProfile=win-x64
+      
+      - name: Publish ARM64 MSIX
+        run: dotnet publish WeatherExtension/WeatherExtension.csproj -c Release -r win-arm64 /p:PublishProfile=win-arm64
+      
+      - name: Find and upload MSIX packages
+        shell: pwsh
+        run: |
+          $msixFiles = Get-ChildItem -Path "WeatherExtension/AppPackages" -Filter "*.msix" -Recurse
+          
+          foreach ($file in $msixFiles) {
+            Write-Host "Found MSIX: $($file.FullName)"
+          }
+          
+          if ($msixFiles.Count -eq 0) {
+            Write-Error "No MSIX packages found!"
+            exit 1
+          }
+      
+      - name: Upload MSIX artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: msix-packages
+          path: WeatherExtension/AppPackages/**/*.msix
+          retention-days: 7
+
+  store-submit:
+    needs: package
+    runs-on: windows-latest
+    
+    steps:
+      - name: Download MSIX artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: msix-packages
+          path: msix-packages
+      
+      - name: Setup Microsoft Store CLI
+        uses: microsoft/microsoft-store-apppublisher@v1.2
+      
+      - name: Configure Store credentials
+        shell: pwsh
+        run: |
+          msstore reconfigure `
+            --tenantId "${{ secrets.PARTNER_CENTER_TENANT_ID }}" `
+            --sellerId "${{ secrets.PARTNER_CENTER_SELLER_ID }}" `
+            --clientId "${{ secrets.PARTNER_CENTER_CLIENT_ID }}" `
+            --clientSecret "${{ secrets.PARTNER_CENTER_CLIENT_SECRET }}"
+      
+      - name: Submit to Microsoft Store
+        shell: pwsh
+        run: |
+          msstore publish msix-packages --id "${{ secrets.STORE_PRODUCT_ID }}"
+      
+      - name: Upload MSIX packages to GitHub Release
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $msixFiles = Get-ChildItem -Path "msix-packages" -Filter "*.msix" -Recurse
+          
+          foreach ($file in $msixFiles) {
+            Write-Host "Uploading $($file.Name) to release..."
+            gh release upload "${{ github.event.release.tag_name }}" "$($file.FullName)" --clobber
+          }
