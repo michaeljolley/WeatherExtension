@@ -17,6 +17,7 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 	private readonly WeatherBandCard _contentPage;
 	private readonly Timer _updateTimer;
 	private bool _isDisposed;
+	private int _isUpdating;
 
 	public CurrentWeatherBand(
 		OpenMeteoService weatherService,
@@ -48,7 +49,7 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 
 	private async Task UpdateWeatherAsync()
 	{
-		if (_isDisposed)
+		if (_isDisposed || Interlocked.CompareExchange(ref _isUpdating, 1, 0) != 0)
 		{
 			return;
 		}
@@ -62,46 +63,50 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 			{
 				Title = "--";
 				Subtitle = Resources.location_not_found;
-				return;
-			}
-
-			var location = locations[0];
-			var weather = await _weatherService.GetCurrentWeatherAsync(
-				location.Latitude,
-				location.Longitude,
-				_settings.TemperatureUnit,
-				_settings.WindSpeedUnit);
-
-			if (weather?.Current != null)
-			{
-				var unit = _settings.TemperatureUnit == "celsius" ? "°C" : "°F";
-				var condition = Icons.GetWeatherDescription(weather.Current.WeatherCode);
-				Title = $"{weather.Current.Temperature:F0}{unit} {condition}";
-				Icon = Icons.GetIconForWeatherCode(weather.Current.WeatherCode);
-
-				// Fetch today's forecast for high/low
-				var forecast = await _weatherService.GetForecastAsync(
-					location.Latitude,
-					location.Longitude,
-					_settings.TemperatureUnit);
-
-				if (forecast?.Daily?.TemperatureMax?.Count > 0 &&
-					forecast.Daily.TemperatureMin?.Count > 0)
-				{
-					var high = forecast.Daily.TemperatureMax[0];
-					var low = forecast.Daily.TemperatureMin[0];
-					Subtitle = $"H: {high:F0}{unit}  L: {low:F0}{unit}";
-				}
-				else
-				{
-					Subtitle = location.Name ?? _settings.DefaultLocation;
-				}
 			}
 			else
 			{
-				Title = "--";
-				Subtitle = Resources.unavailable;
+				var location = locations[0];
+				var weather = await _weatherService.GetCurrentWeatherAsync(
+					location.Latitude,
+					location.Longitude,
+					_settings.TemperatureUnit,
+					_settings.WindSpeedUnit);
+
+				if (weather?.Current != null)
+				{
+					var unit = _settings.TemperatureUnit == "celsius" ? "°C" : "°F";
+					var condition = Icons.GetWeatherDescription(weather.Current.WeatherCode);
+					Title = $"{weather.Current.Temperature:F0}{unit} {condition}";
+					Icon = Icons.GetIconForWeatherCode(weather.Current.WeatherCode);
+
+					// Fetch today's forecast for high/low
+					var forecast = await _weatherService.GetForecastAsync(
+						location.Latitude,
+						location.Longitude,
+						_settings.TemperatureUnit);
+
+					if (forecast?.Daily?.TemperatureMax?.Count > 0 &&
+						forecast.Daily.TemperatureMin?.Count > 0)
+					{
+						var high = forecast.Daily.TemperatureMax[0];
+						var low = forecast.Daily.TemperatureMin[0];
+						Subtitle = $"H: {high:F0}{unit}  L: {low:F0}{unit}";
+					}
+					else
+					{
+						Subtitle = location.Name ?? _settings.DefaultLocation;
+					}
+				}
+				else
+				{
+					Title = "--";
+					Subtitle = Resources.unavailable;
+				}
 			}
+
+			// Refresh the expanded content page to stay in sync with the band
+			await _contentPage.LoadWeatherDataAsync();
 		}
 		catch (Exception ex)
 		{
@@ -116,6 +121,10 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 				Title = "--";
 				Subtitle = Resources.unavailable;
 			}
+		}
+		finally
+		{
+			Interlocked.Exchange(ref _isUpdating, 0);
 		}
 	}
 
