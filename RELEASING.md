@@ -21,7 +21,18 @@ This project uses an automated release pipeline via GitHub Actions. Creating a G
 1. **Seller ID:** Partner Center → **Account Settings** → **Organization profile** → **Identifiers**
 2. **Product ID:** Partner Center → **Apps and Games** → select "Weather for Command Palette" → note the App ID from the URL
 
-### 3. WinGet Token
+### 3. Code Signing Certificate
+
+The MSIX packages must be signed for WinGet distribution. You need a code signing certificate (PFX) whose subject matches the `Publisher` in `Package.appxmanifest` (`CN=A8D6094E-1226-4E9C-B256-B81D585303AC`).
+
+1. Base64-encode the PFX file:
+   ```powershell
+   [Convert]::ToBase64String([IO.File]::ReadAllBytes("path\to\cert.pfx")) | Set-Clipboard
+   ```
+2. Store as a GitHub secret named `SIGNING_CERTIFICATE`
+3. Store the PFX password as a GitHub secret named `SIGNING_CERTIFICATE_PASSWORD`
+
+### 4. WinGet Token
 
 1. Go to [GitHub → Settings → Developer Settings → Personal access tokens → Tokens (classic)](https://github.com/settings/tokens)
 2. Click **Generate new token (classic)**
@@ -31,7 +42,7 @@ This project uses an automated release pipeline via GitHub Actions. Creating a G
 
 > **Note:** The WinGet package identifier is `BaldBeardedBuilder.WeatherForCmdPal`. Before the first automated release, you must manually submit the initial package manifest to [microsoft/winget-pkgs](https://github.com/microsoft/winget-pkgs) using [`wingetcreate new`](https://github.com/microsoft/winget-create). Subsequent releases will be handled automatically.
 
-### 4. GitHub Repository Secrets
+### 5. GitHub Repository Secrets
 
 Go to the repo **Settings** → **Secrets and variables** → **Actions** → **New repository secret**. Add:
 
@@ -42,6 +53,8 @@ Go to the repo **Settings** → **Secrets and variables** → **Actions** → **
 | `PARTNER_CENTER_CLIENT_SECRET` | Entra ID → Client secret value |
 | `PARTNER_CENTER_SELLER_ID` | Partner Center → Seller ID |
 | `STORE_PRODUCT_ID` | Partner Center → Product/App ID |
+| `SIGNING_CERTIFICATE` | Base64-encoded PFX certificate |
+| `SIGNING_CERTIFICATE_PASSWORD` | PFX certificate password |
 | `WINGET_TOKEN` | GitHub PAT with `public_repo` scope |
 
 ## How to Release
