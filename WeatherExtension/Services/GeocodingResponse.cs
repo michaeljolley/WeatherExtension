@@ -3,10 +3,12 @@
 // See the LICENSE file in the project root for more information.
 
 using Microsoft.CmdPal.Ext.Weather.Models;
+using System.Text.Json.Serialization;
 
 namespace Microsoft.CmdPal.Ext.Weather.Services;
 
 internal sealed class GeocodingResponse
 {
+    [JsonPropertyName("results")]
     public List<GeocodingResult>? Results { get; set; }
 }
