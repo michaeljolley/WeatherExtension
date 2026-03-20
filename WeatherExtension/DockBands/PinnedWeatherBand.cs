@@ -5,6 +5,7 @@
 using Microsoft.CmdPal.Ext.Weather.Models;
 using Microsoft.CmdPal.Ext.Weather.Pages;
 using Microsoft.CmdPal.Ext.Weather.Services;
+using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using Timer = System.Timers.Timer;
 
@@ -18,6 +19,8 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 	private readonly WeatherBandCard _contentPage;
 	private readonly Timer _updateTimer;
 	private bool _isDisposed;
+
+	internal ICommandItem? DockItem { get; set; }
 
 	public PinnedWeatherBand(
 		GeocodingResult location,
@@ -66,6 +69,11 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 				var condition = Icons.GetWeatherDescription(weather.Current.WeatherCode);
 				Title = $"{weather.Current.Temperature:F0}{unit} {condition}";
 				Icon = Icons.GetIconForWeatherCode(weather.Current.WeatherCode);
+
+				if (DockItem is CommandItem dockCommandItem)
+				{
+					dockCommandItem.Icon = Icon;
+				}
 
 				var forecast = await _weatherService.GetForecastAsync(
 					_location.Latitude,

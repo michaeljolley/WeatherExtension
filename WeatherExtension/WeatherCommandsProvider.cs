@@ -59,9 +59,12 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 			"com.baldbeardedbuilder.cmdpal.weather.dockBand",
 			"Weather");
 
+		wrappedBand.Icon = Icons.WeatherIcon;
+		_currentWeatherBand.DockItem = wrappedBand;
+
 		dockItems.Add(wrappedBand);
 
-		var pinnedLocations = _pinnedLocationsManager.GetPinnedLocations();
+		var pinnedLocations= _pinnedLocationsManager.GetPinnedLocations();
 		foreach (var pinnedLocation in pinnedLocations)
 		{
 			var location = pinnedLocation.ToGeocodingResult();
@@ -73,6 +76,9 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 				[pinnedBand],
 				$"com.baldbeardedbuilder.cmdpal.weather.pinnedBand.{pinnedLocation.Latitude}_{pinnedLocation.Longitude}",
 				$"Weather - {pinnedLocation.DisplayName}");
+
+			pinnedWrappedBand.Icon = Icons.WeatherIcon;
+			pinnedBand.DockItem = pinnedWrappedBand;
 
 			dockItems.Add(pinnedWrappedBand);
 		}
