@@ -58,6 +58,8 @@ public sealed class WeatherSettingsManager : JsonSettingsManager
             new ChoiceSetSetting.Choice(Resources.twelve_hours, "720"),
         ]);
 
+    private static readonly HashSet<string> _validIntervals = ["60", "180", "360", "720"];
+
     public string DefaultLocation => _defaultLocation.Value ?? "98101";
 
     public string TemperatureUnit => _temperatureUnit.Value ?? "celsius";
@@ -79,6 +81,7 @@ public sealed class WeatherSettingsManager : JsonSettingsManager
         Settings.Add(_updateInterval);
 
         LoadSettings();
+        MigrateUpdateInterval();
 
         Settings.SettingsChanged += (_, _) => SaveSettings();
     }
@@ -94,8 +97,19 @@ public sealed class WeatherSettingsManager : JsonSettingsManager
         Settings.Add(_updateInterval);
 
         LoadSettings();
+        MigrateUpdateInterval();
 
         Settings.SettingsChanged += (_, _) => SaveSettings();
+    }
+
+    private void MigrateUpdateInterval()
+    {
+        var current = _updateInterval.Value;
+        if (current != null && !_validIntervals.Contains(current))
+        {
+            _updateInterval.Value = "60";
+            SaveSettings();
+        }
     }
 
     private static string SettingsJsonPath()
