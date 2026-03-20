@@ -4,6 +4,7 @@
 
 using Microsoft.CmdPal.Ext.Weather.Pages;
 using Microsoft.CmdPal.Ext.Weather.Services;
+using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using Timer = System.Timers.Timer;
 
@@ -17,6 +18,8 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 	private readonly WeatherBandCard _contentPage;
 	private readonly Timer _updateTimer;
 	private bool _isDisposed;
+
+	internal ICommandItem? DockItem { get; set; }
 
 	public CurrentWeatherBand(
 		OpenMeteoService weatherService,
@@ -78,6 +81,11 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 				var condition = Icons.GetWeatherDescription(weather.Current.WeatherCode);
 				Title = $"{weather.Current.Temperature:F0}{unit} {condition}";
 				Icon = Icons.GetIconForWeatherCode(weather.Current.WeatherCode);
+
+				if (DockItem is CommandItem dockCommandItem)
+				{
+					dockCommandItem.Icon = Icon;
+				}
 
 				// Fetch today's forecast for high/low
 				var forecast = await _weatherService.GetForecastAsync(
