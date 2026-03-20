@@ -56,14 +56,13 @@ jobs:
       - name: Restore dependencies
         run: |
           dotnet restore WeatherExtension/WeatherExtension.csproj -r win-x64
-          dotnet restore WeatherExtension/WeatherExtension.csproj -r win-arm64
           dotnet restore WeatherExtension.Tests/WeatherExtension.Tests.csproj -r win-x64
       
       - name: Build x64
         run: dotnet build WeatherExtension/WeatherExtension.csproj -c Release -r win-x64 --no-restore
       
       - name: Build ARM64
-        run: dotnet build WeatherExtension/WeatherExtension.csproj -c Release -r win-arm64 --no-restore
+        run: dotnet build WeatherExtension/WeatherExtension.csproj -c Release -r win-arm64
 
       - name: Build tests
         run: dotnet build WeatherExtension.Tests/WeatherExtension.Tests.csproj -c Release -r win-x64 --no-restore
