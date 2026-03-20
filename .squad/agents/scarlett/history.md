@@ -180,3 +180,46 @@ WeatherExtension/
 
 📌 Team update (2026-03-02T19:43:19Z): Hourly forecast feature complete — HourlyForecastData models, GetHourlyForecastAsync API with 15-min caching, HourlyForecastPage list page, ViewHourlyCommand, integrated into WeatherDetailPage current weather item — decided by Scarlett
 
+### 2026-03-02: Issue #14 Fix - Geocoding Deserialization
+
+**Root Cause:**
+- `GeocodingResponse.Results` property was missing `[JsonPropertyName("results")]` attribute
+- Open-Meteo API returns lowercase `"results"` in JSON, but C# property was PascalCase `Results`
+- Source-generated JSON serializers (`WeatherJsonContext`) don't do case-insensitive matching by default
+- Deserialization silently returned null → empty location list → "Weather unavailable" for all users
+
+**Fixes Applied (3 total):**
+
+1. **Fix 1 (P0 — Root Cause):**
+   - **File:** `WeatherExtension/Services/GeocodingResponse.cs`
+   - Added `[JsonPropertyName("results")]` attribute to `Results` property
+   - Added `using System.Text.Json.Serialization;` import
+   - Ensures JSON property name matches API response field name
+
+2. **Fix 2 (P1 — Improved Logging):**
+   - **Files:** `WeatherExtension/Services/OpenMeteoService.cs` (3 methods), `WeatherExtension/Services/GeocodingService.cs` (2 methods)
+   - Added null guard logging when deserialization succeeds (200 OK) but returns null object
+   - Logs include: HTTP status code, content length, method name (weather/forecast/hourly/geocoding/nominatim)
+   - For geocoding specifically, includes 200-character content preview for diagnostics
+   - Pattern: Check for null after deserialize, log via `ExtensionHost.LogMessage(new LogMessage { ... })`, then proceed with existing null handling
+
+3. **Fix 3 (P1 — Defensive Null Guard):**
+   - **File:** `WeatherExtension/Services/GeocodingService.cs`
+   - Added explicit null check on deserialized `GeocodingResponse` wrapper object in `SearchLocationCoreAsync()`
+   - Logs when wrapper is null (with content preview), returns empty list instead of crashing
+   - Split `nominatimResults == null || nominatimResults.Count == 0` into two separate checks with logging for null case
+   - Defensive: prevents null reference exceptions if API changes format or serialization fails
+
+**Key Patterns:**
+- **JsonPropertyName Requirement:** Source-generated serializers require explicit JSON property name mapping when C# casing differs from API
+- **Silent Deserialization Failures:** HTTP 200 + null deserialization result = invisible bug without logging
+- **Null Guard Logging:** Log diagnostic info (status, content length, content preview) to help debug future API changes
+- **Worktree Workflow:** All changes made in `D:\sources\michaeljolley\WeatherExtension-issue-14` worktree (not main checkout)
+
+**Files Modified (3):**
+- `WeatherExtension/Services/GeocodingResponse.cs` — Added JsonPropertyName attribute + using statement
+- `WeatherExtension/Services/OpenMeteoService.cs` — Added null logging in 3 deserialization methods (GetCurrentWeatherAsync, GetForecastAsync, GetHourlyForecastAsync)
+- `WeatherExtension/Services/GeocodingService.cs` — Added null wrapper guard in SearchLocationCoreAsync, split null checks in SearchPostalCodeAsync
+
+**Build Status:** Not run per instructions (build happens in later step).
+

@@ -21,3 +21,25 @@
 ## Cross-Agent Updates
 
 📌 Team update (2026-03-02T18-24): Postal code preference and pin-to-dock features completed — Scarlett implemented all components, Snake Eyes wrote 14 tests, 85/85 passing, architecture decision merged to decisions.md — decided by Scarlett & Snake Eyes
+
+## Issue #14 Root Cause Analysis (2026-03-19)
+
+**Problem:** "Weather unavailable" on fresh install despite API functionality
+**Root Cause:** Missing `[JsonPropertyName("results")]` attribute on `GeocodingResponse.Results` property causes JSON deserialization to fail with source-generated serializers
+**Key Findings:**
+- Open-Meteo APIs are fully functional (verified via direct HTTP tests)
+- Source generation with `PropertyNameCaseInsensitive = true` has limited reliability for case-insensitive matching
+- Deserialization returns null → empty location list → "Weather unavailable" cascade
+- Error logging exists but provides insufficient diagnostic context
+
+**Architecture Decision:** Always use explicit `[JsonPropertyName]` attributes for all DTO properties when using source-generated JSON serializers, regardless of case-insensitivity settings. This ensures reliable deserialization across all compilation modes (AOT, JIT, trimmed).
+
+**Fix Plan:**
+1. Add `[JsonPropertyName("results")]` to `GeocodingResponse.Results` (P0)
+2. Enhance error logging to log deserialization failures with content samples (P1)
+3. Add null guards after deserialization calls (P1)
+4. Differentiate error messages in UI ("Location not found" vs "Service unavailable") (P2)
+
+**Testing Requirements:** Unit tests for JSON deserialization of all API response types, integration tests for end-to-end flow from geocoding to weather display.
+
+**Blast Radius:** Low risk — single line fix to root cause, defensive improvements to error handling. No breaking changes.
