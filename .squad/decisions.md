@@ -431,3 +431,433 @@ Task<HourlyForecast> GetHourlyForecastAsync(
 **WeatherServiceInterfaceTests:**
 1. IWeatherServiceHasGetHourlyForecastAsync_VerifyMethodSignature — Method existence and parameter count via reflection
 
+
+
+---
+
+### Issue #14 Root Cause Analysis & Implementation Plan
+
+# Issue #14 Root Cause Analysis & Implementation Plan
+
+**Issue:** "Weather unavailable" since first install with default settings
+**Reporter:** DZAladan
+**Labels:** type:spike, go:needs-research, release:v1.0.1
+**Status:** Multiple users confirmed
+
+## Investigation Summary
+
+### APIs are Functional
+Testing confirms both Open-Meteo APIs are working correctly:
+- Geocoding API: Returns proper results for postal code "98101"
+- Weather API: Returns valid weather data for Seattle coordinates
+- No network connectivity or firewall issues detected
+
+### Data Flow Analysis
+
+**Normal Flow:**
+1. User opens Command Palette → WeatherListPage.LoadDefaultLocationWeather()
+2. GeocodingService.SearchLocationAsync("98101") → calls Open-Meteo geocoding API
+3. OpenMeteoService.GetCurrentWeatherAsync(lat, lon) → calls Open-Meteo weather API
+4. WeatherListPage.CreateWeatherItem() → displays weather data
+5. DockBand: CurrentWeatherBand.UpdateWeatherAsync() follows same flow
+
+**Failure Points Identified:**
+
+## Root Cause: JSON Deserialization Issue with Source Generation
+
+### PRIMARY ISSUE: Missing JsonPropertyName Attribute
+
+**File:** `WeatherExtension/Services/GeocodingResponse.cs`
+**Problem:** The `Results` property lacks a `[JsonPropertyName("results")]` attribute.
+
+```csharp
+// CURRENT (BUGGY):
+internal sealed class GeocodingResponse
+{
+    public List<GeocodingResult>? Results { get; set; }  // ❌ No JsonPropertyName!
+}
+```
+
+The API returns JSON with lowercase `"results"`, but the property is `Results` (capital R).
+
+**Why This Breaks:**
+- The `WeatherJsonContext` uses source generation with `PropertyNameCaseInsensitive = true`
+- HOWEVER, source-generated serializers have LIMITED support for case-insensitive matching
+- Case-insensitive matching primarily works for DIRECT property mapping
+- For nested objects and when using Native AOT, case-insensitive matching may NOT work reliably
+- Result: The deserializer fails to map `"results"` → `Results`, returning `null`
+- This causes `locations.Count == 0`, triggering "Weather unavailable"
+
+### SECONDARY ISSUES:
+
+#### 2. Silent Null Returns Mask the Problem
+**Files:** 
+- `OpenMeteoService.cs` (lines 68, 120, 174)
+- `GeocodingService.cs` (lines 200-206)
+
+When HTTP calls fail (4xx/5xx) or deserialization returns null, the services:
+- Log a message using `ExtensionHost.LogMessage`
+- Return `null` or empty list
+- The error is swallowed and becomes generic "Weather unavailable"
+
+**Impact:** Users and developers cannot diagnose the real issue. The extension appears to work (no crashes) but shows no data.
+
+#### 3. Insufficient Error Context
+**File:** `CurrentWeatherBand.cs` (lines 101-104, 114-118)
+
+The DockBand shows "Weather unavailable" but doesn't distinguish between:
+- Geocoding failure (location not found)
+- Weather API failure (API error)
+- Network timeout
+- Deserialization error
+
+#### 4. Default Location Edge Case
+**File:** `WeatherSettingsManager.cs` (line 21)
+
+Default location is "98101" (postal code). While postal code detection was added:
+- Postal code regex patterns may not match all international formats
+- If postal code detection fails, it falls through to city name search
+- Open-Meteo CAN resolve "98101" as a city name (it returns Seattle), BUT only if JSON deserialization works
+
+## Proposed Fix Plan
+
+### Fix 1: Add JsonPropertyName to GeocodingResponse (CRITICAL)
+**Priority:** P0 - Must fix  
+**File:** `WeatherExtension/Services/GeocodingResponse.cs`
+
+```csharp
+using System.Text.Json.Serialization;
+using Microsoft.CmdPal.Ext.Weather.Models;
+
+namespace Microsoft.CmdPal.Ext.Weather.Services;
+
+internal sealed class GeocodingResponse
+{
+    [JsonPropertyName("results")]
+    public List<GeocodingResult>? Results { get; set; }
+}
+```
+
+**Rationale:** Explicit `JsonPropertyName` attribute ensures reliable deserialization regardless of source generation mode or case-insensitivity settings.
+
+### Fix 2: Improve Error Logging (RECOMMENDED)
+**Priority:** P1 - Should fix  
+**Files:** 
+- `OpenMeteoService.cs`
+- `GeocodingService.cs`
+
+Add detailed error logging when deserialization fails:
+
+```csharp
+// In OpenMeteoService.GetCurrentWeatherAsync():
+var content = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+var weatherData = JsonSerializer.Deserialize(content, WeatherJsonContext.Default.WeatherData);
+
+if (weatherData == null)
+{
+    ExtensionHost.LogMessage(new LogMessage
+    {
+        Message = $"Weather API deserialization failed. Status: {response.StatusCode}, Content length: {content.Length}",
+    });
+    return null;
+}
+```
+
+**Rationale:** Helps diagnose future issues faster by logging when API calls succeed but deserialization fails.
+
+### Fix 3: Distinguish Error Types in UI (OPTIONAL)
+**Priority:** P2 - Nice to have  
+**Files:** 
+- `CurrentWeatherBand.cs`
+- `WeatherListPage.cs`
+
+Add more specific error messages:
+- "Location not found" vs "Weather unavailable"
+- "Network error" vs "Service unavailable"
+
+**Resources.resx additions:**
+```xml
+<data name="geocoding_error" xml:space="preserve">
+  <value>Cannot find location</value>
+</data>
+<data name="weather_service_error" xml:space="preserve">
+  <value>Weather service unavailable</value>
+</data>
+```
+
+**Rationale:** Better user experience, clearer diagnostics.
+
+### Fix 4: Add Null Guard in GeocodingService (DEFENSIVE)
+**Priority:** P1 - Should fix  
+**File:** `GeocodingService.cs` (line 210)
+
+```csharp
+private async Task<List<GeocodingResult>> SearchLocationCoreAsync(string query, CancellationToken ct)
+{
+    var url = $"{BaseUrl}?name={Uri.EscapeDataString(query)}&count=10&language=en&format=json";
+    var response = await _httpClient.GetAsync(url, ct).ConfigureAwait(false);
+
+    if (!response.IsSuccessStatusCode)
+    {
+        ExtensionHost.LogMessage(new LogMessage
+        {
+            Message = $"Geocoding API returned status {response.StatusCode}",
+        });
+        return [];
+    }
+
+    var content = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+    var wrapper = JsonSerializer.Deserialize<GeocodingResponse>(content, WeatherJsonContext.Default.GeocodingResponse);
+
+    // ADD THIS NULL CHECK:
+    if (wrapper == null)
+    {
+        ExtensionHost.LogMessage(new LogMessage
+        {
+            Message = $"Geocoding deserialization failed. Content: {content.Substring(0, Math.Min(200, content.Length))}",
+        });
+        return [];
+    }
+
+    return wrapper.Results ?? [];
+}
+```
+
+**Rationale:** Defensive programming against future deserialization issues.
+
+## Dependencies Between Fixes
+
+```mermaid
+graph TD
+    Fix1[Fix 1: JsonPropertyName] --> Test[Run Tests]
+    Fix2[Fix 2: Error Logging] --> Test
+    Fix4[Fix 4: Null Guard] --> Test
+    Test --> Fix3[Fix 3: Better UI Messages]
+```
+
+**Order of Implementation:**
+1. Fix 1 (JsonPropertyName) - This solves the root cause
+2. Fix 2 (Error Logging) - Helps diagnose any remaining issues
+3. Fix 4 (Null Guard) - Defensive improvement
+4. Fix 3 (UI Messages) - Polish (optional)
+
+## Testing Recommendations
+
+### Unit Tests (Snake Eyes)
+1. **GeocodingResponse Deserialization Test**
+   ```csharp
+   [TestMethod]
+   public void GeocodingResponse_Deserializes_CaseInsensitive()
+   {
+       var json = @"{""results"":[{""name"":""Seattle"",""latitude"":47.6,""longitude"":-122.3}]}";
+       var response = JsonSerializer.Deserialize<GeocodingResponse>(json, WeatherJsonContext.Default.GeocodingResponse);
+       Assert.IsNotNull(response);
+       Assert.IsNotNull(response.Results);
+       Assert.AreEqual(1, response.Results.Count);
+       Assert.AreEqual("Seattle", response.Results[0].Name);
+   }
+   ```
+
+2. **WeatherData Deserialization Test**
+   ```csharp
+   [TestMethod]
+   public void WeatherData_Deserializes_ValidResponse()
+   {
+       var json = @"{""current"":{""temperature_2m"":15.5,""relative_humidity_2m"":80,""apparent_temperature"":14.2,""weather_code"":3,""wind_speed_10m"":10.5,""wind_direction_10m"":180}}";
+       var weather = JsonSerializer.Deserialize<WeatherData>(json, WeatherJsonContext.Default.WeatherData);
+       Assert.IsNotNull(weather);
+       Assert.IsNotNull(weather.Current);
+       Assert.AreEqual(15.5, weather.Current.Temperature, 0.1);
+   }
+   ```
+
+3. **Null Handling Test**
+   ```csharp
+   [TestMethod]
+   public void GeocodingService_HandlesNullDeserialization_ReturnsEmptyList()
+   {
+       var json = @"{""invalid"":""structure""}";
+       var response = JsonSerializer.Deserialize<GeocodingResponse>(json, WeatherJsonContext.Default.GeocodingResponse);
+       // Should handle gracefully
+   }
+   ```
+
+### Integration Tests
+1. **End-to-End Default Location Load**
+   - Start with fresh settings (default "98101")
+   - Verify geocoding returns Seattle
+   - Verify weather data loads
+   - Verify DockBand displays temperature
+
+2. **Postal Code vs City Name**
+   - Test "98101" (postal code)
+   - Test "Seattle" (city name)
+   - Test "Seattle, WA" (city, state)
+   - All should return weather data
+
+3. **Error Scenarios**
+   - Invalid location "XXXXXX"
+   - Malformed postal code
+   - Network timeout simulation
+
+## Risk Assessment
+
+### What Could Break?
+
+#### Low Risk ✅
+- **Fix 1 (JsonPropertyName):** Very low risk. This is a pure fix, adds explicit mapping.
+- **Fix 2 (Error Logging):** Zero functional risk. Only adds logging.
+- **Fix 4 (Null Guard):** Low risk. Adds defensive check.
+
+#### Medium Risk ⚠️
+- **Fix 3 (UI Messages):** Medium risk if not tested thoroughly. Could show wrong message for wrong error.
+
+### Blast Radius
+
+- **Affected Components:**
+  - GeocodingService (critical path)
+  - OpenMeteoService (critical path)
+  - CurrentWeatherBand (user-facing)
+  - WeatherListPage (user-facing)
+  
+- **User Impact:**
+  - All users showing "Weather unavailable" will be fixed
+  - No breaking changes to existing working installations
+  - No settings migration needed
+  - No API changes
+
+### Rollback Plan
+If Fix 1 causes issues:
+- Revert to lowercase property name: `public List<GeocodingResult>? results { get; set; }`
+- Or add both properties with serialization attributes for backward compatibility
+
+## Estimated Effort
+
+- Fix 1: 5 minutes (1 line change + using statement)
+- Fix 2: 15 minutes (3 files, similar changes)
+- Fix 3: 30 minutes (2 resource strings, 2-3 code changes)
+- Fix 4: 10 minutes (1 file, null check)
+- Testing: 45 minutes (3 unit tests, manual testing)
+
+**Total:** ~2 hours for complete fix + testing
+
+## Success Criteria
+
+✅ Default installation shows weather for "98101" (Seattle)  
+✅ DockBand displays current temperature and condition  
+✅ Search for postal codes returns weather  
+✅ Search for city names returns weather  
+✅ Error messages are informative (not generic "unavailable")  
+✅ All existing tests continue to pass  
+✅ New tests confirm deserialization works correctly  
+
+## Conclusion
+
+The root cause is a JSON deserialization failure due to missing `JsonPropertyName` attribute on `GeocodingResponse.Results`. This causes the geocoding service to always return an empty list, which propagates through the system as "Weather unavailable."
+
+The fix is straightforward and low-risk. Additional improvements to error handling will prevent similar issues in the future and make debugging easier.
+
+---
+
+**Decision:** Proceed with Fix 1 (P0) and Fix 2 (P1) immediately. Fix 4 (P1) should also be included. Fix 3 (P2) is optional for v1.0.1.
+
+**Assigned to:** Scarlett (Core Dev) for implementation, Snake Eyes (Tester) for test creation.
+
+
+---
+
+### Issue #14 Fix: JsonPropertyName Required for Source-Generated Serializers
+
+# Issue #14 Fix: JsonPropertyName Required for Source-Generated Serializers
+
+**Date:** 2026-03-02  
+**Decided by:** Scarlett  
+**Context:** Issue #14 — "Weather unavailable" bug
+
+## Decision
+
+When using source-generated JSON serializers (`JsonSerializerContext`), **ALWAYS** add `[JsonPropertyName("property_name")]` attributes when the C# property name differs from the JSON field name in the API response.
+
+## Rationale
+
+1. **Source-generated serializers don't do case-insensitive matching by default** (unlike reflection-based JsonSerializer with default options)
+2. **Deserialization failures are silent** — HTTP 200 + null result = invisible bug
+3. **API contract enforcement** — explicit naming prevents breakage if property is renamed
+
+## Pattern Applied
+
+```csharp
+using System.Text.Json.Serialization;
+
+internal sealed class GeocodingResponse
+{
+    [JsonPropertyName("results")]  // ← API returns lowercase "results"
+    public List<GeocodingResult>? Results { get; set; }
+}
+```
+
+## Related Patterns
+
+- **Add null logging** when deserialization returns null (helps catch future issues)
+- **Include diagnostics** in logs: status code, content length, content preview
+- **Defensive null guards** after deserialization to prevent crashes
+
+## Impact
+
+- Fixes root cause of Issue #14 (geocoding always returned null)
+- Prevents similar bugs in future API integrations
+- Improves debuggability with better logging
+
+## Team Guidance
+
+When adding new API models:
+1. Check JSON field names match `[JsonPropertyName]` attributes
+2. Add null guard logging after deserialization
+3. Test with actual API responses (not just mocked data)
+
+
+---
+
+### Issue #14 Deserialization Test Strategy
+
+# Issue #14 Deserialization Test Strategy
+
+**Date:** 2026-03-02  
+**Agent:** Snake Eyes (Tester)  
+**Context:** Testing fix for "Weather unavailable" issue caused by missing JSON property name attributes
+
+## Decision
+
+Added 8 comprehensive deserialization tests to `WeatherDataModelTests.cs` covering edge cases for GeocodingResponse, WeatherData, and ForecastData.
+
+## Rationale
+
+1. **Source-generated serializers fail silently** — System.Text.Json with source generation returns null instead of throwing exceptions when property names don't match. This makes comprehensive testing critical.
+
+2. **PropertyNameCaseInsensitive isn't enough** — While `WeatherJsonContext` has `PropertyNameCaseInsensitive = true`, explicit `[JsonPropertyName]` attributes are still required for reliability with source generators.
+
+3. **Real-world failure scenarios** — Tests cover:
+   - Empty results arrays (common valid response)
+   - Missing property keys (API changes)
+   - Completely invalid JSON (network issues)
+   - Wrong structure (API version mismatches)
+
+4. **Production parity** — All tests use `WeatherJsonContext.Default.*` exactly as production code does, ensuring accurate validation of serializer behavior.
+
+## Tests Added
+
+- `GeocodingResponse_DeserializeWithEmptyResults_ReturnsEmptyList`
+- `GeocodingResponse_DeserializeWithWrongPropertyName_HandledGracefully`
+- `GeocodingResponse_DeserializeInvalidJson_ReturnsNull`
+- `GeocodingResponse_DeserializeLowercaseResults_Success` (verifies the fix)
+- `WeatherData_DeserializeInvalidJson_ReturnsNull`
+- `WeatherData_DeserializeEmptyString_ReturnsNull`
+- `WeatherData_DeserializeCompletelyWrongStructure_HandledGracefully`
+- `ForecastData_DeserializeInvalidJson_ReturnsNull`
+
+## Impact
+
+- Prevents regression of Issue #14
+- Catches similar JSON deserialization issues early
+- Validates error handling for malformed API responses
+- Ensures graceful degradation when APIs return unexpected data

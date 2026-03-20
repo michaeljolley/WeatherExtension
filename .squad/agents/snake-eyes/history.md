@@ -100,4 +100,32 @@
 - Tests will compile and pass once Scarlett completes WeatherBandCard integration
 - Follows 3-line copyright header, no `#nullable enable`, PascalCase method names, Microsoft.CmdPal.Ext.Weather.UnitTests namespace
 
+### Issue #14 Deserialization Tests (2026-03-02)
+
+**Context:**
+- Root cause: Missing `[JsonPropertyName("results")]` on GeocodingResponse.Results
+- Source-generated JSON serializers silently return null when property names don't match case
+- Scarlett fixed by adding proper JsonPropertyName attributes and error logging
+
+**Tests Added to WeatherDataModelTests.cs:**
+1. `GeocodingResponse_DeserializeWithEmptyResults_ReturnsEmptyList` — Verifies empty results array returns empty list, not null
+2. `GeocodingResponse_DeserializeWithWrongPropertyName_HandledGracefully` — Verifies missing "results" key returns null Results
+3. `GeocodingResponse_DeserializeInvalidJson_ReturnsNull` — Verifies malformed JSON returns null
+4. `GeocodingResponse_DeserializeLowercaseResults_Success` — Verifies lowercase "results" deserializes correctly (the fix!)
+5. `WeatherData_DeserializeInvalidJson_ReturnsNull` — Verifies invalid JSON for WeatherData returns null
+6. `WeatherData_DeserializeEmptyString_ReturnsNull` — Verifies empty string returns null
+7. `WeatherData_DeserializeCompletelyWrongStructure_HandledGracefully` — Verifies unexpected structure doesn't crash
+8. `ForecastData_DeserializeInvalidJson_ReturnsNull` — Verifies invalid JSON for ForecastData returns null
+
+**Test Coverage:**
+- All tests use `WeatherJsonContext.Default.*` for source-generated serializer (matching production code)
+- Tests verify the EXPECTED behavior after Scarlett's fix (JsonPropertyName attributes)
+- Edge cases: empty results, missing keys, malformed JSON, wrong structure
+- All tests follow existing MSTest patterns with raw string literals (""")
+
+**Key Learning:**
+- Source-generated serializers (System.Text.Json) don't throw exceptions on property name mismatches
+- They silently return null, making these tests critical for catching similar issues
+- Case-insensitive mode (`PropertyNameCaseInsensitive = true`) in WeatherJsonContext helps but still requires explicit JsonPropertyName attributes for reliability
+
 
