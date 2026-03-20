@@ -52,11 +52,13 @@ public sealed class WeatherSettingsManager : JsonSettingsManager
         Resources.update_interval_title,
         Resources.update_interval_description,
         [
-            new ChoiceSetSetting.Choice(Resources.ten_minutes, "10"),
-            new ChoiceSetSetting.Choice(Resources.fifteen_minutes, "15"),
-            new ChoiceSetSetting.Choice(Resources.thirty_minutes, "30"),
-            new ChoiceSetSetting.Choice(Resources.sixty_minutes, "60"),
+            new ChoiceSetSetting.Choice(Resources.one_hour, "60"),
+            new ChoiceSetSetting.Choice(Resources.three_hours, "180"),
+            new ChoiceSetSetting.Choice(Resources.six_hours, "360"),
+            new ChoiceSetSetting.Choice(Resources.twelve_hours, "720"),
         ]);
+
+    private static readonly HashSet<string> _validIntervals = ["60", "180", "360", "720"];
 
     public string DefaultLocation => _defaultLocation.Value ?? "98101";
 
@@ -66,7 +68,7 @@ public sealed class WeatherSettingsManager : JsonSettingsManager
 
     public bool ShowForecast => _showForecast.Value;
 
-    public int UpdateIntervalMinutes => int.TryParse(_updateInterval.Value, out var value) && value > 0 ? value : 15;
+    public int UpdateIntervalMinutes => _updateInterval.Value is string v && _validIntervals.Contains(v) ? int.Parse(v, System.Globalization.CultureInfo.InvariantCulture) : 60;
 
     public WeatherSettingsManager()
     {
@@ -79,6 +81,7 @@ public sealed class WeatherSettingsManager : JsonSettingsManager
         Settings.Add(_updateInterval);
 
         LoadSettings();
+        MigrateUpdateInterval();
 
         Settings.SettingsChanged += (_, _) => SaveSettings();
     }
@@ -94,8 +97,19 @@ public sealed class WeatherSettingsManager : JsonSettingsManager
         Settings.Add(_updateInterval);
 
         LoadSettings();
+        MigrateUpdateInterval();
 
         Settings.SettingsChanged += (_, _) => SaveSettings();
+    }
+
+    private void MigrateUpdateInterval()
+    {
+        var current = _updateInterval.Value;
+        if (current != null && !_validIntervals.Contains(current))
+        {
+            _updateInterval.Value = "60";
+            SaveSettings();
+        }
     }
 
     private static string SettingsJsonPath()

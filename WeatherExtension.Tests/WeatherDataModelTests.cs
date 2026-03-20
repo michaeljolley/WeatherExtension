@@ -191,6 +191,77 @@ public class WeatherDataModelTests
     }
 
     [TestMethod]
+    public void GeocodingResponse_DeserializeWithEmptyResults_ReturnsEmptyList()
+    {
+        var json = """
+        {
+            "results": []
+        }
+        """;
+
+        var response = JsonSerializer.Deserialize<GeocodingResponse>(json, WeatherJsonContext.Default.GeocodingResponse);
+
+        Assert.IsNotNull(response);
+        Assert.IsNotNull(response.Results);
+        Assert.AreEqual(0, response.Results.Count);
+    }
+
+    [TestMethod]
+    public void GeocodingResponse_DeserializeWithWrongPropertyName_HandledGracefully()
+    {
+        var json = """
+        {
+            "something_else": [
+                {
+                    "id": 5809844,
+                    "name": "Seattle"
+                }
+            ]
+        }
+        """;
+
+        var response = JsonSerializer.Deserialize<GeocodingResponse>(json, WeatherJsonContext.Default.GeocodingResponse);
+
+        Assert.IsNotNull(response);
+        Assert.IsNull(response.Results);
+    }
+
+    [TestMethod]
+    public void GeocodingResponse_DeserializeInvalidJson_ThrowsJsonException()
+    {
+        var json = "not valid json at all {]";
+
+        Assert.ThrowsException<JsonException>(() =>
+            JsonSerializer.Deserialize<GeocodingResponse>(json, WeatherJsonContext.Default.GeocodingResponse));
+    }
+
+    [TestMethod]
+    public void GeocodingResponse_DeserializeLowercaseResults_Success()
+    {
+        var json = """
+        {
+            "results": [
+                {
+                    "id": 5809844,
+                    "name": "Seattle",
+                    "latitude": 47.6062,
+                    "longitude": -122.3321,
+                    "country": "United States",
+                    "admin1": "Washington"
+                }
+            ]
+        }
+        """;
+
+        var response = JsonSerializer.Deserialize<GeocodingResponse>(json, WeatherJsonContext.Default.GeocodingResponse);
+
+        Assert.IsNotNull(response);
+        Assert.IsNotNull(response.Results);
+        Assert.AreEqual(1, response.Results.Count);
+        Assert.AreEqual("Seattle", response.Results[0].Name);
+    }
+
+    [TestMethod]
     public void WeatherData_DeserializeWithMissingFields_HandledGracefully()
     {
         var json = """
@@ -234,5 +305,52 @@ public class WeatherDataModelTests
         Assert.AreEqual(0, weatherData.Current.WeatherCode);
         Assert.AreEqual(0, weatherData.Current.WindSpeed);
         Assert.AreEqual(0, weatherData.Current.WindDirection);
+    }
+
+    [TestMethod]
+    public void WeatherData_DeserializeInvalidJson_ThrowsJsonException()
+    {
+        var json = "this is not valid json {{{";
+
+        Assert.ThrowsException<JsonException>(() =>
+            JsonSerializer.Deserialize<WeatherData>(json, WeatherJsonContext.Default.WeatherData));
+    }
+
+    [TestMethod]
+    public void WeatherData_DeserializeEmptyString_ThrowsJsonException()
+    {
+        var json = string.Empty;
+
+        Assert.ThrowsException<JsonException>(() =>
+            JsonSerializer.Deserialize<WeatherData>(json, WeatherJsonContext.Default.WeatherData));
+    }
+
+    [TestMethod]
+    public void WeatherData_DeserializeCompletelyWrongStructure_HandledGracefully()
+    {
+        var json = """
+        {
+            "totally_wrong": "data",
+            "not_weather": 123,
+            "random_array": [1, 2, 3]
+        }
+        """;
+
+        var weatherData = JsonSerializer.Deserialize<WeatherData>(json, WeatherJsonContext.Default.WeatherData);
+
+        Assert.IsNotNull(weatherData);
+        Assert.AreEqual(0, weatherData.Latitude);
+        Assert.AreEqual(0, weatherData.Longitude);
+        Assert.IsNull(weatherData.Timezone);
+        Assert.IsNull(weatherData.Current);
+    }
+
+    [TestMethod]
+    public void ForecastData_DeserializeInvalidJson_ThrowsJsonException()
+    {
+        var json = "invalid json structure ]]]";
+
+        Assert.ThrowsException<JsonException>(() =>
+            JsonSerializer.Deserialize<ForecastData>(json, WeatherJsonContext.Default.ForecastData));
     }
 }

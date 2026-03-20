@@ -2,8 +2,10 @@
 // Bald Bearded Builder LLC licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Net.Http;
 using Microsoft.CmdPal.Ext.Weather.Pages;
 using Microsoft.CmdPal.Ext.Weather.Services;
+using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using Timer = System.Timers.Timer;
 
@@ -18,6 +20,8 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 	private readonly Timer _updateTimer;
 	private bool _isDisposed;
 	private int _isUpdating;
+
+	internal ICommandItem? DockItem { get; set; }
 
 	public CurrentWeatherBand(
 		OpenMeteoService weatherService,
@@ -80,6 +84,11 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 					Title = $"{weather.Current.Temperature:F0}{unit} {condition}";
 					Icon = Icons.GetIconForWeatherCode(weather.Current.WeatherCode);
 
+					if (DockItem is CommandItem dockCommandItem)
+					{
+						dockCommandItem.Icon = Icon;
+					}
+
 					// Fetch today's forecast for high/low
 					var forecast = await _weatherService.GetForecastAsync(
 						location.Latitude,
@@ -101,12 +110,29 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 				else
 				{
 					Title = "--";
-					Subtitle = Resources.unavailable;
+					Subtitle = Resources.weather_service_error;
 				}
 			}
 
 			// Refresh the expanded content page to stay in sync with the band
 			await _contentPage.LoadWeatherDataAsync();
+		}
+		catch (OperationCanceledException)
+		{
+			// Timer or settings change cancelled — don't show error
+		}
+		catch (HttpRequestException ex)
+		{
+			ExtensionHost.LogMessage(new LogMessage
+			{
+				Message = $"Band weather network error: {ex.Message}",
+			});
+
+			if (Title == Resources.loading)
+			{
+				Title = "--";
+				Subtitle = Resources.network_error;
+			}
 		}
 		catch (Exception ex)
 		{
@@ -115,7 +141,6 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 				Message = $"Band weather update error: {ex.Message}",
 			});
 
-			// Keep last known values on error, or show unavailable if this is first load
 			if (Title == Resources.loading)
 			{
 				Title = "--";

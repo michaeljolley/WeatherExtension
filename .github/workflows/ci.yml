@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.x
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.x
+
+      - name: Restore dependencies
+        run: |
+          dotnet restore WeatherExtension/WeatherExtension.csproj -r win-x64
+          dotnet restore WeatherExtension.Tests/WeatherExtension.Tests.csproj -r win-x64
+
+      - name: Build
+        run: |
+          dotnet build WeatherExtension/WeatherExtension.csproj -r win-x64 --no-restore
+          dotnet build WeatherExtension.Tests/WeatherExtension.Tests.csproj -r win-x64 --no-restore
+
+      - name: Test
+        run: dotnet test WeatherExtension.Tests/WeatherExtension.Tests.csproj -r win-x64 --no-build

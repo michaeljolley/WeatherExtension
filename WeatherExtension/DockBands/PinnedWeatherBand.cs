@@ -2,9 +2,11 @@
 // Bald Bearded Builder LLC licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Net.Http;
 using Microsoft.CmdPal.Ext.Weather.Models;
 using Microsoft.CmdPal.Ext.Weather.Pages;
 using Microsoft.CmdPal.Ext.Weather.Services;
+using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using Timer = System.Timers.Timer;
 
@@ -19,6 +21,8 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 	private readonly Timer _updateTimer;
 	private bool _isDisposed;
 	private int _isUpdating;
+
+	internal ICommandItem? DockItem { get; set; }
 
 	public PinnedWeatherBand(
 		GeocodingResult location,
@@ -68,6 +72,11 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 				Title = $"{weather.Current.Temperature:F0}{unit} {condition}";
 				Icon = Icons.GetIconForWeatherCode(weather.Current.WeatherCode);
 
+				if (DockItem is CommandItem dockCommandItem)
+				{
+					dockCommandItem.Icon = Icon;
+				}
+
 				var forecast = await _weatherService.GetForecastAsync(
 					_location.Latitude,
 					_location.Longitude,
@@ -88,11 +97,28 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 			else
 			{
 				Title = "--";
-				Subtitle = $"{_location.DisplayName} — {Resources.unavailable}";
+				Subtitle = $"{_location.DisplayName} — {Resources.weather_service_error}";
 			}
 
 			// Refresh the expanded content page to stay in sync with the band
 			await _contentPage.LoadWeatherDataAsync();
+		}
+		catch (OperationCanceledException)
+		{
+			// Timer or settings change cancelled — don't show error
+		}
+		catch (HttpRequestException ex)
+		{
+			ExtensionHost.LogMessage(new LogMessage
+			{
+				Message = $"Pinned band weather network error: {ex.Message}",
+			});
+
+			if (Title == Resources.loading)
+			{
+				Title = "--";
+				Subtitle = $"{_location.DisplayName} — {Resources.network_error}";
+			}
 		}
 		catch (Exception ex)
 		{

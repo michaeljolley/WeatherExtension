@@ -190,6 +190,12 @@
   <data name="unavailable" xml:space="preserve">
     <value>Weather unavailable</value>
   </data>
+  <data name="weather_service_error" xml:space="preserve">
+    <value>Weather service unavailable</value>
+  </data>
+  <data name="network_error" xml:space="preserve">
+    <value>Connection error</value>
+  </data>
   <data name="location_not_found" xml:space="preserve">
     <value>Location not found</value>
   </data>
@@ -238,16 +244,16 @@
   <data name="update_interval_description" xml:space="preserve">
     <value>How often to refresh weather data</value>
   </data>
-  <data name="ten_minutes" xml:space="preserve">
-    <value>10 minutes</value>
+  <data name="one_hour" xml:space="preserve">
+    <value>1 hour</value>
   </data>
-  <data name="fifteen_minutes" xml:space="preserve">
-    <value>15 minutes</value>
+  <data name="three_hours" xml:space="preserve">
+    <value>3 hours</value>
   </data>
-  <data name="thirty_minutes" xml:space="preserve">
-    <value>30 minutes</value>
+  <data name="six_hours" xml:space="preserve">
+    <value>6 hours</value>
   </data>
-  <data name="sixty_minutes" xml:space="preserve">
-    <value>60 minutes</value>
+  <data name="twelve_hours" xml:space="preserve">
+    <value>12 hours</value>
   </data>
 </root>
