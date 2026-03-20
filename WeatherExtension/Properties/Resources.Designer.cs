@@ -232,6 +232,15 @@ namespace Microsoft.CmdPal.Ext.Weather {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connection error.
+        /// </summary>
+        public static string network_error {
+            get {
+                return ResourceManager.GetString("network_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No weather data available.
         /// </summary>
         public static string no_data_available {
@@ -417,6 +426,15 @@ namespace Microsoft.CmdPal.Ext.Weather {
         public static string update_interval_title {
             get {
                 return ResourceManager.GetString("update_interval_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weather service unavailable.
+        /// </summary>
+        public static string weather_service_error {
+            get {
+                return ResourceManager.GetString("weather_service_error", resourceCulture);
             }
         }
         

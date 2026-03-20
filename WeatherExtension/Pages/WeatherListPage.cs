@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using Microsoft.CmdPal.Ext.Weather.Commands;
@@ -363,6 +364,25 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
             {
                 _isLoading = false;
             }
+
+            RaiseItemsChanged();
+        }
+        catch (HttpRequestException ex)
+        {
+            lock (_sync)
+            {
+                _isLoading = false;
+                _items = [new ListItem(new NoOpCommand())
+                {
+                    Title = Resources.network_error,
+                    Icon = Icons.WeatherIcon,
+                }];
+            }
+
+            ExtensionHost.LogMessage(new LogMessage
+            {
+                Message = $"Search network error: {ex.Message}",
+            });
 
             RaiseItemsChanged();
         }
