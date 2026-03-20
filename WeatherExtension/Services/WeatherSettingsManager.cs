@@ -68,7 +68,7 @@ public sealed class WeatherSettingsManager : JsonSettingsManager
 
     public bool ShowForecast => _showForecast.Value;
 
-    public int UpdateIntervalMinutes => int.TryParse(_updateInterval.Value, out var value) && value > 0 ? value : 60;
+    public int UpdateIntervalMinutes => _updateInterval.Value is string v && _validIntervals.Contains(v) ? int.Parse(v, System.Globalization.CultureInfo.InvariantCulture) : 60;
 
     public WeatherSettingsManager()
     {
