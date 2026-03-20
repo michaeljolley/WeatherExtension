@@ -20,6 +20,7 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 	private readonly WeatherBandCard _contentPage;
 	private readonly Timer _updateTimer;
 	private bool _isDisposed;
+	private int _isUpdating;
 
 	internal ICommandItem? DockItem { get; set; }
 
@@ -51,7 +52,7 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 
 	private async Task UpdateWeatherAsync()
 	{
-		if (_isDisposed)
+		if (_isDisposed || Interlocked.CompareExchange(ref _isUpdating, 1, 0) != 0)
 		{
 			return;
 		}
@@ -98,6 +99,9 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 				Title = "--";
 				Subtitle = $"{_location.DisplayName} — {Resources.weather_service_error}";
 			}
+
+			// Refresh the expanded content page to stay in sync with the band
+			await _contentPage.LoadWeatherDataAsync();
 		}
 		catch (OperationCanceledException)
 		{
@@ -128,6 +132,10 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 				Title = "--";
 				Subtitle = $"{_location.DisplayName} — {Resources.unavailable}";
 			}
+		}
+		finally
+		{
+			Interlocked.Exchange(ref _isUpdating, 0);
 		}
 	}
 
