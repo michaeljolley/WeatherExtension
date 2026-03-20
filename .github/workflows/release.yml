@@ -117,7 +117,19 @@ jobs:
       - name: Find and upload MSIX packages
         shell: pwsh
         run: |
-          $msixFiles = Get-ChildItem -Path "WeatherExtension/AppPackages" -Filter "*.msix" -Recurse
+          Write-Host "Searching for MSIX packages..."
+          
+          # Show what was produced
+          if (Test-Path "WeatherExtension/AppPackages") {
+            Write-Host "AppPackages directory contents:"
+            Get-ChildItem -Path "WeatherExtension/AppPackages" -Recurse | ForEach-Object { Write-Host "  $($_.FullName)" }
+          } else {
+            Write-Host "WeatherExtension/AppPackages directory does not exist"
+            Write-Host "Searching entire WeatherExtension directory for .msix files..."
+            Get-ChildItem -Path "WeatherExtension" -Filter "*.msix" -Recurse | ForEach-Object { Write-Host "  $($_.FullName)" }
+          }
+          
+          $msixFiles = Get-ChildItem -Path "WeatherExtension" -Filter "*.msix" -Recurse
           
           foreach ($file in $msixFiles) {
             Write-Host "Found MSIX: $($file.FullName)"
@@ -132,7 +144,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: msix-packages
-          path: WeatherExtension/AppPackages/**/*.msix
+          path: WeatherExtension/**/*.msix
           retention-days: 7
 
   store-submit:
