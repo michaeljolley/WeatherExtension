@@ -2,6 +2,7 @@
 // Bald Bearded Builder LLC licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Generic;
 using Microsoft.CmdPal.Ext.Weather.Models;
 using Microsoft.CmdPal.Ext.Weather.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

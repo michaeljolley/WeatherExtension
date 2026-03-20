@@ -115,7 +115,16 @@ public sealed partial class GeocodingService : IDisposable
 			var content = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
 			var nominatimResults = JsonSerializer.Deserialize<List<NominatimResult>>(content, WeatherJsonContext.Default.ListNominatimResult);
 
-			if (nominatimResults == null || nominatimResults.Count == 0)
+			if (nominatimResults == null)
+			{
+				ExtensionHost.LogMessage(new LogMessage
+				{
+					Message = $"Nominatim deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}",
+				});
+				return [];
+			}
+
+			if (nominatimResults.Count == 0)
 			{
 				return [];
 			}
@@ -209,7 +218,17 @@ public sealed partial class GeocodingService : IDisposable
 		var content = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
 		var wrapper = JsonSerializer.Deserialize<GeocodingResponse>(content, WeatherJsonContext.Default.GeocodingResponse);
 
-		return wrapper?.Results ?? [];
+		if (wrapper == null)
+		{
+			var contentPreview = content.Length > 200 ? content.Substring(0, 200) : content;
+			ExtensionHost.LogMessage(new LogMessage
+			{
+				Message = $"Geocoding deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}, Content preview: {contentPreview}",
+			});
+			return [];
+		}
+
+		return wrapper.Results ?? [];
 	}
 
 	public void Dispose()
