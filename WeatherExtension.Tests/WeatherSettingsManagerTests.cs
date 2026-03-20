@@ -54,11 +54,11 @@ public class WeatherSettingsManagerTests
     }
 
     [TestMethod]
-    public void UpdateIntervalMinutes_WithNoSettings_ReturnsDefault10()
+    public void UpdateIntervalMinutes_WithNoSettings_ReturnsDefault60()
     {
         var manager = new WeatherSettingsManager(_tempFilePath);
 
-        Assert.AreEqual(10, manager.UpdateIntervalMinutes);
+        Assert.AreEqual(60, manager.UpdateIntervalMinutes);
     }
 
     [TestMethod]
@@ -77,8 +77,32 @@ public class WeatherSettingsManagerTests
         // This tests the fallback behavior when int.TryParse fails or value <= 0
         var manager = new WeatherSettingsManager(_tempFilePath);
 
-        // With no settings, default is "10" (first choice in ChoiceSetSetting)
-        Assert.AreEqual(10, manager.UpdateIntervalMinutes);
+        // With no settings, default is "60" (first choice in ChoiceSetSetting)
+        Assert.AreEqual(60, manager.UpdateIntervalMinutes);
+    }
+
+    [TestMethod]
+    public void UpdateIntervalMinutes_MigratesOldValue()
+    {
+        // Simulate a settings file with an old interval value (e.g., "10")
+        File.WriteAllText(_tempFilePath, """{"weather.UpdateIntervalMinutes":"10"}""");
+
+        var manager = new WeatherSettingsManager(_tempFilePath);
+
+        // Old value "10" should be migrated to the default "60"
+        Assert.AreEqual(60, manager.UpdateIntervalMinutes);
+    }
+
+    [TestMethod]
+    public void UpdateIntervalMinutes_PreservesValidValue()
+    {
+        // Simulate a settings file with a valid new interval value
+        File.WriteAllText(_tempFilePath, """{"weather.UpdateIntervalMinutes":"180"}""");
+
+        var manager = new WeatherSettingsManager(_tempFilePath);
+
+        // Valid value "180" (3 hours) should be preserved
+        Assert.AreEqual(180, manager.UpdateIntervalMinutes);
     }
 
     [TestMethod]

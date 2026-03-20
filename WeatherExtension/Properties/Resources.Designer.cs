@@ -151,11 +151,11 @@ namespace Microsoft.CmdPal.Ext.Weather {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 15 minutes.
+        ///   Looks up a localized string similar to 1 hour.
         /// </summary>
-        public static string fifteen_minutes {
+        public static string one_hour {
             get {
-                return ResourceManager.GetString("fifteen_minutes", resourceCulture);
+                return ResourceManager.GetString("one_hour", resourceCulture);
             }
         }
         
@@ -331,11 +331,11 @@ namespace Microsoft.CmdPal.Ext.Weather {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 60 minutes.
+        ///   Looks up a localized string similar to 6 hours.
         /// </summary>
-        public static string sixty_minutes {
+        public static string six_hours {
             get {
-                return ResourceManager.GetString("sixty_minutes", resourceCulture);
+                return ResourceManager.GetString("six_hours", resourceCulture);
             }
         }
         
@@ -367,20 +367,20 @@ namespace Microsoft.CmdPal.Ext.Weather {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 10 minutes.
+        ///   Looks up a localized string similar to 3 hours.
         /// </summary>
-        public static string ten_minutes {
+        public static string three_hours {
             get {
-                return ResourceManager.GetString("ten_minutes", resourceCulture);
+                return ResourceManager.GetString("three_hours", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 30 minutes.
+        ///   Looks up a localized string similar to 12 hours.
         /// </summary>
-        public static string thirty_minutes {
+        public static string twelve_hours {
             get {
-                return ResourceManager.GetString("thirty_minutes", resourceCulture);
+                return ResourceManager.GetString("twelve_hours", resourceCulture);
             }
         }
         
