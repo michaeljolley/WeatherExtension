@@ -29,7 +29,7 @@ This project uses an automated release pipeline via GitHub Actions. Creating a G
 4. Select the `public_repo` scope
 5. Generate and note the token value
 
-> **Note:** The WinGet package identifier is `MichaelJolley.WeatherForCmdPal`. Before the first automated release, you must manually submit the initial package manifest to [microsoft/winget-pkgs](https://github.com/microsoft/winget-pkgs) using [`wingetcreate new`](https://github.com/microsoft/winget-create). Subsequent releases will be handled automatically.
+> **Note:** The WinGet package identifier is `BaldBeardedBuilder.WeatherForCmdPal`. Before the first automated release, you must manually submit the initial package manifest to [microsoft/winget-pkgs](https://github.com/microsoft/winget-pkgs) using [`wingetcreate new`](https://github.com/microsoft/winget-create). Subsequent releases will be handled automatically.
 
 ### 4. GitHub Repository Secrets
 

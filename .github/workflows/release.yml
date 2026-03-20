@@ -198,6 +198,6 @@ jobs:
       - name: Submit to WinGet
         uses: vedantmgoyal9/winget-releaser@v2
         with:
-          identifier: MichaelJolley.WeatherForCmdPal
+          identifier: BaldBeardedBuilder.WeatherForCmdPal
           installers-regex: '\.msix$'
           token: ${{ secrets.WINGET_TOKEN }}
