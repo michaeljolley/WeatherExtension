@@ -70,6 +70,14 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 			var content = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
 			var weatherData = JsonSerializer.Deserialize(content, WeatherJsonContext.Default.WeatherData);
 
+			if (weatherData == null)
+			{
+				ExtensionHost.LogMessage(new LogMessage
+				{
+					Message = $"Weather deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}",
+				});
+			}
+
 			if (weatherData != null)
 			{
 				_cachedWeather = weatherData;
@@ -122,6 +130,14 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 
 			var content = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
 			var forecastData = JsonSerializer.Deserialize(content, WeatherJsonContext.Default.ForecastData);
+
+			if (forecastData == null)
+			{
+				ExtensionHost.LogMessage(new LogMessage
+				{
+					Message = $"Forecast deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}",
+				});
+			}
 
 			if (forecastData != null)
 			{
@@ -176,6 +192,14 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 
 			var content = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
 			var hourlyData = JsonSerializer.Deserialize(content, WeatherJsonContext.Default.HourlyForecastData);
+
+			if (hourlyData == null)
+			{
+				ExtensionHost.LogMessage(new LogMessage
+				{
+					Message = $"Hourly forecast deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}",
+				});
+			}
 
 			if (hourlyData != null)
 			{
