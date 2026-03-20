@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project uses an automated release pipeline via GitHub Actions. Creating a GitHub Release triggers a workflow that builds the extension, runs tests, creates MSIX packages, and submits to the Microsoft Store.
+This project uses an automated release pipeline via GitHub Actions. Creating a GitHub Release triggers a workflow that builds the extension, runs tests, creates MSIX packages, submits to the Microsoft Store, and publishes to WinGet.
 
 ## Prerequisites (One-Time Setup)
 
@@ -21,7 +21,28 @@ This project uses an automated release pipeline via GitHub Actions. Creating a G
 1. **Seller ID:** Partner Center → **Account Settings** → **Organization profile** → **Identifiers**
 2. **Product ID:** Partner Center → **Apps and Games** → select "Weather for Command Palette" → note the App ID from the URL
 
-### 3. GitHub Repository Secrets
+### 3. Code Signing Certificate
+
+The MSIX packages must be signed for WinGet distribution. You need a code signing certificate (PFX) whose subject matches the `Publisher` in `Package.appxmanifest` (`CN=A8D6094E-1226-4E9C-B256-B81D585303AC`).
+
+1. Base64-encode the PFX file:
+   ```powershell
+   [Convert]::ToBase64String([IO.File]::ReadAllBytes("path\to\cert.pfx")) | Set-Clipboard
+   ```
+2. Store as a GitHub secret named `SIGNING_CERTIFICATE`
+3. Store the PFX password as a GitHub secret named `SIGNING_CERTIFICATE_PASSWORD`
+
+### 4. WinGet Token
+
+1. Go to [GitHub → Settings → Developer Settings → Personal access tokens → Tokens (classic)](https://github.com/settings/tokens)
+2. Click **Generate new token (classic)**
+3. Give it a descriptive name (e.g., "WinGet Releaser")
+4. Select the `public_repo` scope
+5. Generate and note the token value
+
+> **Note:** The WinGet package identifier is `BaldBeardedBuilder.WeatherForCmdPal`. Before the first automated release, you must manually submit the initial package manifest to [microsoft/winget-pkgs](https://github.com/microsoft/winget-pkgs) using [`wingetcreate new`](https://github.com/microsoft/winget-create). Subsequent releases will be handled automatically.
+
+### 5. GitHub Repository Secrets
 
 Go to the repo **Settings** → **Secrets and variables** → **Actions** → **New repository secret**. Add:
 
@@ -32,6 +53,9 @@ Go to the repo **Settings** → **Secrets and variables** → **Actions** → **
 | `PARTNER_CENTER_CLIENT_SECRET` | Entra ID → Client secret value |
 | `PARTNER_CENTER_SELLER_ID` | Partner Center → Seller ID |
 | `STORE_PRODUCT_ID` | Partner Center → Product/App ID |
+| `SIGNING_CERTIFICATE` | Base64-encoded PFX certificate |
+| `SIGNING_CERTIFICATE_PASSWORD` | PFX certificate password |
+| `WINGET_TOKEN` | GitHub PAT with `public_repo` scope |
 
 ## How to Release
 
@@ -45,8 +69,9 @@ The workflow automatically:
 - Builds x64 and ARM64 architectures
 - Runs all tests
 - Creates MSIX packages
-- Submits to the Microsoft Store
 - Uploads MSIX packages to the release as downloadable artifacts
+- Submits to the Microsoft Store
+- Submits to WinGet (via PR to [microsoft/winget-pkgs](https://github.com/microsoft/winget-pkgs))
 
 ## Tag Naming Convention
 
@@ -63,6 +88,7 @@ The workflow automatically:
 
 | Issue | Solution |
 |---|---|
-| Workflow fails at "Configure Store credentials" | Verify all 5 GitHub secrets are set correctly |
+| Workflow fails at "Configure Store credentials" | Verify all 5 Partner Center GitHub secrets are set correctly |
 | Store submission rejected | Check Partner Center dashboard for validation errors |
+| WinGet submission fails | Verify `WINGET_TOKEN` secret is set and not expired. For the first release, manually submit using `wingetcreate new` |
 | Build fails | The release workflow uses the same build process as CI — check for build errors in the Actions log |
