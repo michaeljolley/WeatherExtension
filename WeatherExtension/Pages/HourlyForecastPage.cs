@@ -113,6 +113,11 @@ internal sealed partial class HourlyForecastPage : ListPage, IDisposable
 				continue;
 			}
 
+			if (time > now.AddHours(24))
+			{
+				break;
+			}
+
 			var weatherCode = hourly.WeatherCode[i];
 			var temperature = hourly.Temperature[i];
 			var feelsLike = hourly.ApparentTemperature[i];

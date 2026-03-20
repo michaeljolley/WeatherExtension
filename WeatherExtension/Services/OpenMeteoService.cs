@@ -177,7 +177,7 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 
 			var url = $"{BaseUrl}?latitude={latitude}&longitude={longitude}" +
 					 $"&hourly=temperature_2m,apparent_temperature,weather_code,precipitation_probability,wind_speed_10m,relative_humidity_2m" +
-					 $"&temperature_unit={temperatureUnit}&wind_speed_unit={windSpeedUnit}&forecast_days=1&timezone=auto";
+					 $"&temperature_unit={temperatureUnit}&wind_speed_unit={windSpeedUnit}&forecast_days=2&timezone=auto";
 
 			var response = await _httpClient.GetAsync(url, ct).ConfigureAwait(false);
 
