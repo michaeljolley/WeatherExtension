@@ -173,7 +173,7 @@ jobs:
       - name: Submit to Microsoft Store
         shell: pwsh
         run: |
-          msstore publish msix-packages --id "${{ secrets.STORE_PRODUCT_ID }}"
+          msstore publish -i msix-packages -id "${{ secrets.STORE_PRODUCT_ID }}"
       
       - name: Upload MSIX packages to GitHub Release
         shell: pwsh
