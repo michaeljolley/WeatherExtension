@@ -152,6 +152,9 @@ jobs:
     runs-on: windows-latest
     
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Download MSIX artifacts
         uses: actions/download-artifact@v4
         with:
