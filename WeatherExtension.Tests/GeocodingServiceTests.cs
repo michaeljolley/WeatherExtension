@@ -17,6 +17,16 @@ namespace Microsoft.CmdPal.Ext.Weather.UnitTests;
 [TestClass]
 public class GeocodingServiceTests
 {
+	[DataTestMethod]
+	[DataRow("SW1A 1AA")]
+	[DataRow("SW1A1AA")]
+	[DataRow("sw1a 1aa")]
+	[DataRow("M1 1AJ")]
+	public void IsPostalCode_WithVariousUkPostcodeInputs_ReturnsTrue(string input)
+	{
+		Assert.IsTrue(GeocodingService.IsPostalCode(input));
+	}
+
 	[TestMethod]
 	public void RankResults_WithEmptyQuery_ReturnsOriginalOrder()
 	{
