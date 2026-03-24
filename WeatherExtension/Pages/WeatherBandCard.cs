@@ -431,7 +431,7 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                                     "type": "TextBlock",
                                     "text": "Current",
                                     "weight": "bolder",
-                                    "size": "large"
+                                    "size": "medium"
                                 }
                             ]
                         },
@@ -444,7 +444,7 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                                     "type": "TextBlock",
                                     "text": "Next Three Hours",
                                     "weight": "bolder",
-                                    "size": "large"
+                                    "size": "medium"
                                 }
                             ]
                         }
@@ -486,7 +486,8 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                                                     "text": "${currentCondition}",
                                                     "horizontalAlignment": "center",
                                                     "wrap": true,
-                                                    "spacing": "none"
+                                                    "spacing": "none",
+                                                    "isSubtle": true
                                                 }
                                             ]
                                         },
@@ -520,7 +521,7 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                             "items": [
                                 { "type": "TextBlock", "text": "${hour1Time}", "weight": "bolder", "horizontalAlignment": "center" },
                                 { "type": "TextBlock", "text": "${hour1Icon}", "horizontalAlignment": "center", "size": "large", "spacing": "small" },
-                                { "type": "TextBlock", "text": "${hour1Temp} / ${hour1Precip}", "horizontalAlignment": "center", "weight": "bolder", "spacing": "small" }
+                                { "type": "TextBlock", "text": "${hour1Temp} / ${hour1Precip}", "horizontalAlignment": "center", "spacing": "small" }
                             ]
                         },
                         {
@@ -532,7 +533,7 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                             "items": [
                                 { "type": "TextBlock", "text": "${hour2Time}", "weight": "bolder", "horizontalAlignment": "center" },
                                 { "type": "TextBlock", "text": "${hour2Icon}", "horizontalAlignment": "center", "size": "large", "spacing": "small" },
-                                { "type": "TextBlock", "text": "${hour2Temp} / ${hour2Precip}", "horizontalAlignment": "center", "weight": "bolder", "spacing": "small" }
+                                { "type": "TextBlock", "text": "${hour2Temp} / ${hour2Precip}", "horizontalAlignment": "center", "spacing": "small" }
                             ]
                         },
                         {
@@ -544,7 +545,7 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                             "items": [
                                 { "type": "TextBlock", "text": "${hour3Time}", "weight": "bolder", "horizontalAlignment": "center" },
                                 { "type": "TextBlock", "text": "${hour3Icon}", "horizontalAlignment": "center", "size": "large", "spacing": "small" },
-                                { "type": "TextBlock", "text": "${hour3Temp} / ${hour3Precip}", "horizontalAlignment": "center", "weight": "bolder", "spacing": "small" }
+                                { "type": "TextBlock", "text": "${hour3Temp} / ${hour3Precip}", "horizontalAlignment": "center", "spacing": "small" }
                             ]
                         }
                     ]
@@ -552,7 +553,7 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                 {
                     "type": "TextBlock",
                     "text": "3-Day Forecast",
-                    "size": "large",
+                    "size": "medium",
                     "weight": "bolder",
                     "separator": true,
                     "spacing": "large"
@@ -568,8 +569,8 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                             "items": [
                                 { "type": "TextBlock", "text": "${day1Name}", "weight": "bolder", "horizontalAlignment": "center" },
                                 { "type": "TextBlock", "text": "${day1Icon}", "horizontalAlignment": "center", "size": "large", "spacing": "small" },
-                                { "type": "TextBlock", "text": "${day1Condition}", "horizontalAlignment": "center", "wrap": true, "size": "small", "spacing": "small" },
-                                { "type": "TextBlock", "text": "${day1HighLow}", "horizontalAlignment": "center", "size": "small", "spacing": "small" }
+                                { "type": "TextBlock", "text": "${day1Condition}", "horizontalAlignment": "center", "isSubtle": true, "wrap": true, "size": "small", "spacing": "small" },
+                                { "type": "TextBlock", "text": "${day1HighLow}", "horizontalAlignment": "center", "spacing": "small" }
                             ]
                         },
                         {
@@ -581,8 +582,8 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                             "items": [
                                 { "type": "TextBlock", "text": "${day2Name}", "weight": "bolder", "horizontalAlignment": "center" },
                                 { "type": "TextBlock", "text": "${day2Icon}", "horizontalAlignment": "center", "size": "large", "spacing": "small" },
-                                { "type": "TextBlock", "text": "${day2Condition}", "horizontalAlignment": "center", "wrap": true, "size": "small", "spacing": "small" },
-                                { "type": "TextBlock", "text": "${day2HighLow}", "horizontalAlignment": "center", "size": "small", "spacing": "small" }
+                                { "type": "TextBlock", "text": "${day2Condition}", "horizontalAlignment": "center", "isSubtle": true, "wrap": true, "size": "small", "spacing": "small" },
+                                { "type": "TextBlock", "text": "${day2HighLow}", "horizontalAlignment": "center", "spacing": "small" }
                             ]
                         },
                         {
@@ -594,8 +595,8 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                             "items": [
                                 { "type": "TextBlock", "text": "${day3Name}", "weight": "bolder", "horizontalAlignment": "center" },
                                 { "type": "TextBlock", "text": "${day3Icon}", "horizontalAlignment": "center", "size": "large", "spacing": "small" },
-                                { "type": "TextBlock", "text": "${day3Condition}", "horizontalAlignment": "center", "wrap": true, "size": "small", "spacing": "small" },
-                                { "type": "TextBlock", "text": "${day3HighLow}", "horizontalAlignment": "center", "size": "small", "spacing": "small" }
+                                { "type": "TextBlock", "text": "${day3Condition}", "horizontalAlignment": "center", "isSubtle": true, "wrap": true, "size": "small", "spacing": "small" },
+                                { "type": "TextBlock", "text": "${day3HighLow}", "horizontalAlignment": "center", "spacing": "small" }
                             ]
                         }
                     ]
