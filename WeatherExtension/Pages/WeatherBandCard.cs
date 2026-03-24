@@ -556,7 +556,7 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                     "size": "medium",
                     "weight": "bolder",
                     "separator": true,
-                    "spacing": "Large"
+                    "spacing": "large"
                 },
                 {
                     "type": "ColumnSet",
