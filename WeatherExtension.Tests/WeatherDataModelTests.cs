@@ -2,6 +2,7 @@
 // Bald Bearded Builder LLC licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Generic;
 using System.Text.Json;
 using Microsoft.CmdPal.Ext.Weather.Models;
 using Microsoft.CmdPal.Ext.Weather.Services;
@@ -143,122 +144,114 @@ public class WeatherDataModelTests
     }
 
     [TestMethod]
-    public void GeocodingResponse_DeserializeRealResponse_Success()
+    public void ConvertNominatimResults_WithStructuredAddress_MapsCorrectly()
     {
-        var json = """
+        var nominatimResults = new List<NominatimResult>
         {
-            "results": [
+            new()
+            {
+                Lat = 47.6062,
+                Lon = -122.3321,
+                Name = "Seattle",
+                DisplayName = "Seattle, King County, Washington, United States",
+                Address = new NominatimAddress
                 {
-                    "id": 5809844,
-                    "name": "Seattle",
-                    "latitude": 47.6062,
-                    "longitude": -122.3321,
-                    "country": "United States",
-                    "country_code": "US",
-                    "admin1": "Washington",
-                    "timezone": "America/Los_Angeles"
-                }
-            ]
-        }
-        """;
+                    City = "Seattle",
+                    State = "Washington",
+                    Country = "United States",
+                    CountryCode = "us",
+                },
+            },
+        };
 
-        var response = JsonSerializer.Deserialize<GeocodingResponse>(json, WeatherJsonContext.Default.GeocodingResponse);
+        var results = GeocodingService.ConvertNominatimResults(nominatimResults);
 
-        Assert.IsNotNull(response);
-        Assert.IsNotNull(response.Results);
-        Assert.AreEqual(1, response.Results.Count);
-
-        var result = response.Results[0];
-        Assert.AreEqual(5809844, result.Id);
-        Assert.AreEqual("Seattle", result.Name);
+        Assert.AreEqual(1, results.Count);
+        var result = results[0];
         Assert.AreEqual(47.6062, result.Latitude);
         Assert.AreEqual(-122.3321, result.Longitude);
+        Assert.AreEqual("Seattle", result.Name);
+        Assert.AreEqual("Washington", result.Admin1);
         Assert.AreEqual("United States", result.Country);
         Assert.AreEqual("US", result.CountryCode);
-        Assert.AreEqual("Washington", result.Admin1);
-        Assert.AreEqual("America/Los_Angeles", result.Timezone);
     }
 
     [TestMethod]
-    public void GeocodingResponse_DeserializeWithNullResults_HandledGracefully()
+    public void ConvertNominatimResults_WithTownFallback_UsesTownForName()
     {
-        var json = "{}";
-
-        var response = JsonSerializer.Deserialize<GeocodingResponse>(json, WeatherJsonContext.Default.GeocodingResponse);
-
-        Assert.IsNotNull(response);
-        Assert.IsNull(response.Results);
-    }
-
-    [TestMethod]
-    public void GeocodingResponse_DeserializeWithEmptyResults_ReturnsEmptyList()
-    {
-        var json = """
+        var nominatimResults = new List<NominatimResult>
         {
-            "results": []
-        }
-        """;
-
-        var response = JsonSerializer.Deserialize<GeocodingResponse>(json, WeatherJsonContext.Default.GeocodingResponse);
-
-        Assert.IsNotNull(response);
-        Assert.IsNotNull(response.Results);
-        Assert.AreEqual(0, response.Results.Count);
-    }
-
-    [TestMethod]
-    public void GeocodingResponse_DeserializeWithWrongPropertyName_HandledGracefully()
-    {
-        var json = """
-        {
-            "something_else": [
+            new()
+            {
+                Lat = 51.75,
+                Lon = -1.25,
+                DisplayName = "Kidlington, Cherwell, Oxfordshire, England, United Kingdom",
+                Address = new NominatimAddress
                 {
-                    "id": 5809844,
-                    "name": "Seattle"
-                }
-            ]
-        }
-        """;
+                    Town = "Kidlington",
+                    State = "England",
+                    Country = "United Kingdom",
+                    CountryCode = "gb",
+                },
+            },
+        };
 
-        var response = JsonSerializer.Deserialize<GeocodingResponse>(json, WeatherJsonContext.Default.GeocodingResponse);
+        var results = GeocodingService.ConvertNominatimResults(nominatimResults);
 
-        Assert.IsNotNull(response);
-        Assert.IsNull(response.Results);
+        Assert.AreEqual(1, results.Count);
+        Assert.AreEqual("Kidlington", results[0].Name);
     }
 
     [TestMethod]
-    public void GeocodingResponse_DeserializeInvalidJson_ThrowsJsonException()
+    public void ConvertNominatimResults_WithNoAddress_FallsBackToDisplayName()
     {
-        var json = "not valid json at all {]";
-
-        Assert.ThrowsException<JsonException>(() =>
-            JsonSerializer.Deserialize<GeocodingResponse>(json, WeatherJsonContext.Default.GeocodingResponse));
-    }
-
-    [TestMethod]
-    public void GeocodingResponse_DeserializeLowercaseResults_Success()
-    {
-        var json = """
+        var nominatimResults = new List<NominatimResult>
         {
-            "results": [
+            new()
+            {
+                Lat = 33.5207,
+                Lon = -86.8025,
+                DisplayName = "Birmingham, Jefferson County, Alabama, United States",
+            },
+        };
+
+        var results = GeocodingService.ConvertNominatimResults(nominatimResults);
+
+        Assert.AreEqual(1, results.Count);
+        Assert.AreEqual("Birmingham", results[0].Name);
+        Assert.AreEqual("United States", results[0].Country);
+    }
+
+    [TestMethod]
+    public void ConvertNominatimResults_WithEmptyList_ReturnsEmptyList()
+    {
+        var results = GeocodingService.ConvertNominatimResults([]);
+
+        Assert.AreEqual(0, results.Count);
+    }
+
+    [TestMethod]
+    public void ConvertNominatimResults_CountryCodeUppercased()
+    {
+        var nominatimResults = new List<NominatimResult>
+        {
+            new()
+            {
+                Lat = 48.8566,
+                Lon = 2.3522,
+                Name = "Paris",
+                Address = new NominatimAddress
                 {
-                    "id": 5809844,
-                    "name": "Seattle",
-                    "latitude": 47.6062,
-                    "longitude": -122.3321,
-                    "country": "United States",
-                    "admin1": "Washington"
-                }
-            ]
-        }
-        """;
+                    City = "Paris",
+                    Country = "France",
+                    CountryCode = "fr",
+                },
+            },
+        };
 
-        var response = JsonSerializer.Deserialize<GeocodingResponse>(json, WeatherJsonContext.Default.GeocodingResponse);
+        var results = GeocodingService.ConvertNominatimResults(nominatimResults);
 
-        Assert.IsNotNull(response);
-        Assert.IsNotNull(response.Results);
-        Assert.AreEqual(1, response.Results.Count);
-        Assert.AreEqual("Seattle", response.Results[0].Name);
+        Assert.AreEqual("FR", results[0].CountryCode);
     }
 
     [TestMethod]

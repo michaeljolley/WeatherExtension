@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.CmdPal.Ext.Weather.Models;
 
+[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
 public sealed class NominatimResult
 {
 	[JsonPropertyName("lat")]
@@ -14,6 +15,33 @@ public sealed class NominatimResult
 	[JsonPropertyName("lon")]
 	public double Lon { get; set; }
 
+	[JsonPropertyName("name")]
+	public string? Name { get; set; }
+
 	[JsonPropertyName("display_name")]
 	public string? DisplayName { get; set; }
+
+	[JsonPropertyName("address")]
+	public NominatimAddress? Address { get; set; }
+}
+
+public sealed class NominatimAddress
+{
+	[JsonPropertyName("city")]
+	public string? City { get; set; }
+
+	[JsonPropertyName("town")]
+	public string? Town { get; set; }
+
+	[JsonPropertyName("village")]
+	public string? Village { get; set; }
+
+	[JsonPropertyName("state")]
+	public string? State { get; set; }
+
+	[JsonPropertyName("country")]
+	public string? Country { get; set; }
+
+	[JsonPropertyName("country_code")]
+	public string? CountryCode { get; set; }
 }
