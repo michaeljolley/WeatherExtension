@@ -12,9 +12,9 @@ namespace Microsoft.CmdPal.Ext.Weather.Services;
 public sealed partial class GeocodingService : IDisposable
 {
 	private readonly HttpClient _httpClient;
-	private const string BaseUrl = "https://geocoding-api.open-meteo.com/v1/search";
 	private const string NominatimUrl = "https://nominatim.openstreetmap.org/search";
 	private const int MinSearchLength = 3;
+	internal const int MaxFallbackAttempts = 3;
 
 	[GeneratedRegex(@"^\d{5}(-\d{4})?$")]
 	private static partial Regex UsZipCodeRegex();
@@ -26,8 +26,13 @@ public sealed partial class GeocodingService : IDisposable
 	private static partial Regex InternationalPostalCodeRegex();
 
 	public GeocodingService()
+		: this(new HttpClientHandler())
 	{
-		_httpClient = new HttpClient
+	}
+
+	internal GeocodingService(HttpMessageHandler handler)
+	{
+		_httpClient = new HttpClient(handler)
 		{
 			Timeout = TimeSpan.FromSeconds(10),
 		};
@@ -53,35 +58,23 @@ public sealed partial class GeocodingService : IDisposable
 			// Check if input looks like a postal code
 			if (IsPostalCode(trimmedQuery))
 			{
-				// Try Open-Meteo first (it can sometimes resolve postal codes)
-				var results = await SearchLocationCoreAsync(trimmedQuery, ct).ConfigureAwait(false);
-				if (results.Count > 0)
-				{
-					return results;
-				}
-
-				// Fall back to Nominatim for postal code lookup
-				results = await SearchPostalCodeAsync(trimmedQuery, ct).ConfigureAwait(false);
+				var results = await SearchPostalCodeAsync(trimmedQuery, ct).ConfigureAwait(false);
 				if (results.Count > 0)
 				{
 					return results;
 				}
 			}
 
-			// Open-Meteo geocoding works best with just the city name.
-			// Try the full query first; if no results, retry with just
-			// the first comma-separated token (e.g. "Seattle, WA" → "Seattle").
-			var cityResults = await SearchLocationCoreAsync(trimmedQuery, ct).ConfigureAwait(false);
-			if (cityResults.Count == 0 && trimmedQuery.Contains(','))
-			{
-				var cityOnly = trimmedQuery.Split(',')[0].Trim();
-				if (!string.IsNullOrWhiteSpace(cityOnly))
-				{
-					cityResults = await SearchLocationCoreAsync(cityOnly, ct).ConfigureAwait(false);
-				}
-			}
+			// Progressive fallback: try the full query first, then strip
+			// trailing comma-separated segments until results are found.
+			// E.g. "Birmingham, Alabama, US" → "Birmingham, Alabama" → "Birmingham"
+			var searchResults = await SearchWithProgressiveFallbackAsync(trimmedQuery, ct).ConfigureAwait(false);
 
-			return RankResults(trimmedQuery, cityResults);
+			return RankResults(trimmedQuery, searchResults);
+		}
+		catch (OperationCanceledException)
+		{
+			return [];
 		}
 		catch (Exception ex)
 		{
@@ -91,6 +84,36 @@ public sealed partial class GeocodingService : IDisposable
 			});
 			return [];
 		}
+	}
+
+	private async Task<List<GeocodingResult>> SearchWithProgressiveFallbackAsync(string query, CancellationToken ct)
+	{
+		var currentQuery = query;
+		var attempts = 0;
+
+		while (!string.IsNullOrWhiteSpace(currentQuery) && attempts < MaxFallbackAttempts)
+		{
+			ct.ThrowIfCancellationRequested();
+
+			var results = await SearchNominatimAsync(currentQuery, ct).ConfigureAwait(false);
+			attempts++;
+
+			if (results.Count > 0)
+			{
+				return results;
+			}
+
+			// Strip the last comma-separated segment and retry
+			var lastComma = currentQuery.LastIndexOf(',');
+			if (lastComma <= 0)
+			{
+				break;
+			}
+
+			currentQuery = currentQuery[..lastComma].Trim();
+		}
+
+		return [];
 	}
 
 	private static bool IsPostalCode(string input)
@@ -104,7 +127,7 @@ public sealed partial class GeocodingService : IDisposable
 	{
 		try
 		{
-			var url = $"{NominatimUrl}?postalcode={Uri.EscapeDataString(postalCode)}&format=json&limit=1";
+			var url = $"{NominatimUrl}?postalcode={Uri.EscapeDataString(postalCode)}&format=json&addressdetails=1&limit=10";
 			var response = await _httpClient.GetAsync(url, ct).ConfigureAwait(false);
 
 			if (!response.IsSuccessStatusCode)
@@ -129,21 +152,7 @@ public sealed partial class GeocodingService : IDisposable
 				return [];
 			}
 
-			// Convert Nominatim results to GeocodingResult
-			var results = new List<GeocodingResult>();
-			foreach (var nr in nominatimResults)
-			{
-				results.Add(new GeocodingResult
-				{
-					Latitude = nr.Lat,
-					Longitude = nr.Lon,
-					Name = nr.DisplayName?.Split(',')[0].Trim() ?? postalCode,
-					Country = ExtractCountryFromDisplayName(nr.DisplayName),
-					CountryCode = nr.DisplayName?.Split(',').LastOrDefault()?.Trim(),
-				});
-			}
-
-			return results;
+			return ConvertNominatimResults(nominatimResults);
 		}
 		catch (Exception ex)
 		{
@@ -153,6 +162,69 @@ public sealed partial class GeocodingService : IDisposable
 			});
 			return [];
 		}
+	}
+
+	private async Task<List<GeocodingResult>> SearchNominatimAsync(string query, CancellationToken ct)
+	{
+		var url = $"{NominatimUrl}?q={Uri.EscapeDataString(query)}&format=json&addressdetails=1&limit=10";
+		var response = await _httpClient.GetAsync(url, ct).ConfigureAwait(false);
+
+		if (!response.IsSuccessStatusCode)
+		{
+			ExtensionHost.LogMessage(new LogMessage
+			{
+				Message = $"Nominatim API returned status {response.StatusCode}",
+			});
+			return [];
+		}
+
+		var content = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+		var nominatimResults = JsonSerializer.Deserialize<List<NominatimResult>>(content, WeatherJsonContext.Default.ListNominatimResult);
+
+		if (nominatimResults == null)
+		{
+			ExtensionHost.LogMessage(new LogMessage
+			{
+				Message = $"Nominatim deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}",
+			});
+			return [];
+		}
+
+		return ConvertNominatimResults(nominatimResults);
+	}
+
+	internal static List<GeocodingResult> ConvertNominatimResults(List<NominatimResult> nominatimResults)
+	{
+		var results = new List<GeocodingResult>();
+
+		foreach (var nr in nominatimResults)
+		{
+			var rawPlaceName = nr.Name
+				?? nr.Address?.City
+				?? nr.Address?.Town
+				?? nr.Address?.Village
+				?? nr.DisplayName?.Split(',')[0].Trim();
+
+			if (string.IsNullOrWhiteSpace(rawPlaceName))
+			{
+				// Skip entries that don't have a usable place name to avoid blank items and unstable ranking.
+				continue;
+			}
+
+			var placeName = rawPlaceName;
+			results.Add(new GeocodingResult
+			{
+				Id = nr.PlaceId,
+				Latitude = nr.Lat,
+				Longitude = nr.Lon,
+				Name = placeName,
+				Admin1 = nr.Address?.State,
+				Country = nr.Address?.Country ?? ExtractCountryFromDisplayName(nr.DisplayName),
+				CountryCode = nr.Address?.CountryCode?.ToUpperInvariant(),
+			});
+		}
+
+		return results;
 	}
 
 	internal static List<GeocodingResult> RankResults(string query, List<GeocodingResult> results)
@@ -199,36 +271,6 @@ public sealed partial class GeocodingService : IDisposable
 
 		var parts = displayName.Split(',');
 		return parts.Length > 0 ? parts[^1].Trim() : string.Empty;
-	}
-
-	private async Task<List<GeocodingResult>> SearchLocationCoreAsync(string query, CancellationToken ct)
-	{
-		var url = $"{BaseUrl}?name={Uri.EscapeDataString(query)}&count=10&language=en&format=json";
-		var response = await _httpClient.GetAsync(url, ct).ConfigureAwait(false);
-
-		if (!response.IsSuccessStatusCode)
-		{
-			ExtensionHost.LogMessage(new LogMessage
-			{
-				Message = $"Geocoding API returned status {response.StatusCode}",
-			});
-			return [];
-		}
-
-		var content = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
-		var wrapper = JsonSerializer.Deserialize<GeocodingResponse>(content, WeatherJsonContext.Default.GeocodingResponse);
-
-		if (wrapper == null)
-		{
-			var contentPreview = content.Length > 200 ? content.Substring(0, 200) : content;
-			ExtensionHost.LogMessage(new LogMessage
-			{
-				Message = $"Geocoding deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}, Content preview: {contentPreview}",
-			});
-			return [];
-		}
-
-		return wrapper.Results ?? [];
 	}
 
 	public void Dispose()
