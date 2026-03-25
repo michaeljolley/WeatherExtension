@@ -9,6 +9,9 @@ namespace Microsoft.CmdPal.Ext.Weather.Models;
 [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
 public sealed class NominatimResult
 {
+	[JsonPropertyName("place_id")]
+	public long PlaceId { get; set; }
+
 	[JsonPropertyName("lat")]
 	public double Lat { get; set; }
 

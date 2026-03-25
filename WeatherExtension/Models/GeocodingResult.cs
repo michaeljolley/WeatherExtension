@@ -9,7 +9,7 @@ namespace Microsoft.CmdPal.Ext.Weather.Models;
 public sealed class GeocodingResult
 {
     [JsonPropertyName("id")]
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     [JsonPropertyName("name")]
     public string? Name { get; set; }
