@@ -108,35 +108,58 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore WeatherExtension.slnx
       
-      - name: Decode signing certificate
-        shell: pwsh
-        run: |
-          $certBytes = [Convert]::FromBase64String("${{ secrets.SIGNING_CERTIFICATE }}")
-          $certPath = Join-Path $env:RUNNER_TEMP "SigningCertificate.pfx"
-          [IO.File]::WriteAllBytes($certPath, $certBytes)
-          echo "CERT_PATH=$certPath" >> $env:GITHUB_ENV
-
       - name: Publish x64 MSIX
         run: >
           dotnet publish WeatherExtension/WeatherExtension.csproj -c Release -r win-x64
           /p:PublishProfile=win-x64
-          /p:AppxPackageSigningEnabled=true
-          /p:PackageCertificateKeyFile=${{ env.CERT_PATH }}
-          /p:PackageCertificatePassword=${{ secrets.SIGNING_CERTIFICATE_PASSWORD }}
-      
+          /p:AppxPackageSigningEnabled=false
+
       - name: Publish ARM64 MSIX
         run: >
           dotnet publish WeatherExtension/WeatherExtension.csproj -c Release -r win-arm64
           /p:PublishProfile=win-arm64
-          /p:AppxPackageSigningEnabled=true
-          /p:PackageCertificateKeyFile=${{ env.CERT_PATH }}
-          /p:PackageCertificatePassword=${{ secrets.SIGNING_CERTIFICATE_PASSWORD }}
-      
-      - name: Remove signing certificate
-        if: always()
+          /p:AppxPackageSigningEnabled=false
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDS }}
+
+      - name: Sign MSIX packages
+        uses: azure/artifact-signing-action@v1
+        with:
+          endpoint: https://eus.codesigning.azure.net/
+          signing-account-name: bbb-signing
+          certificate-profile-name: BaldBeardedBuilder
+          files-folder: ${{ github.workspace }}\WeatherExtension
+          files-folder-filter: msix
+          files-folder-recurse: true
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+
+      - name: Verify MSIX signatures
         shell: pwsh
         run: |
-          if (Test-Path $env:CERT_PATH) { Remove-Item $env:CERT_PATH -Force }
+          $msixFiles = Get-ChildItem -Path "WeatherExtension" -Filter "*.msix" -Recurse
+
+          if ($msixFiles.Count -eq 0) {
+            Write-Error "No MSIX packages found!"
+            exit 1
+          }
+
+          foreach ($file in $msixFiles) {
+            Write-Host "Verifying signature on $($file.Name)..."
+            $sig = Get-AuthenticodeSignature $file.FullName
+            Write-Host "  Status: $($sig.Status)"
+            Write-Host "  Signer: $($sig.SignerCertificate.Subject)"
+            if ($sig.Status -ne 'Valid') {
+              Write-Error "Signature on $($file.Name) is not valid: $($sig.Status)"
+              exit 1
+            }
+          }
+
+          Write-Host "All MSIX packages are signed and verified."
       
       - name: Find and upload MSIX packages
         shell: pwsh
