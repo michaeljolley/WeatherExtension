@@ -184,13 +184,19 @@ public sealed partial class GeocodingService : IDisposable
 
 		foreach (var nr in nominatimResults)
 		{
-			var placeName = nr.Name
+			var rawPlaceName = nr.Name
 				?? nr.Address?.City
 				?? nr.Address?.Town
 				?? nr.Address?.Village
-				?? nr.DisplayName?.Split(',')[0].Trim()
-				?? string.Empty;
+				?? nr.DisplayName?.Split(',')[0].Trim();
 
+			if (string.IsNullOrWhiteSpace(rawPlaceName))
+			{
+				// Skip entries that don't have a usable place name to avoid blank items and unstable ranking.
+				continue;
+			}
+
+			var placeName = rawPlaceName;
 			results.Add(new GeocodingResult
 			{
 				Latitude = nr.Lat,
