@@ -72,10 +72,6 @@ public sealed partial class GeocodingService : IDisposable
 
 			return RankResults(trimmedQuery, searchResults);
 		}
-		catch (OperationCanceledException)
-		{
-			return [];
-		}
 		catch (Exception ex)
 		{
 			ExtensionHost.LogMessage(new LogMessage
