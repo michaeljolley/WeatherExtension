@@ -21,16 +21,21 @@ This project uses an automated release pipeline via GitHub Actions. Creating a G
 1. **Seller ID:** Partner Center → **Account Settings** → **Organization profile** → **Identifiers**
 2. **Product ID:** Partner Center → **Apps and Games** → select "Weather for Command Palette" → note the App ID from the URL
 
-### 3. Code Signing Certificate
+### 3. Azure Trusted Signing
 
-The MSIX packages must be signed for WinGet distribution. You need a code signing certificate (PFX) whose subject matches the `Publisher` in `Package.appxmanifest` (`CN=A8D6094E-1226-4E9C-B256-B81D585303AC`).
+The MSIX packages are signed using [Azure Trusted Signing](https://learn.microsoft.com/azure/trusted-signing/) after building. This requires an Azure service principal with access to the signing account.
 
-1. Base64-encode the PFX file:
-   ```powershell
-   [Convert]::ToBase64String([IO.File]::ReadAllBytes("path\to\cert.pfx")) | Set-Clipboard
+1. Ensure the Azure Trusted Signing account `bbb-signing` and certificate profile `BaldBeardedBuilder` are configured (shared with WalkThisWay)
+2. Create an Azure service principal with access to the signing account
+3. Store the service principal credentials as a GitHub secret named `AZURE_CREDS` in JSON format:
+   ```json
+   {
+     "clientId": "<Application (client) ID>",
+     "clientSecret": "<Client secret value>",
+     "subscriptionId": "<Subscription ID>",
+     "tenantId": "<Directory (tenant) ID>"
+   }
    ```
-2. Store as a GitHub secret named `SIGNING_CERTIFICATE`
-3. Store the PFX password as a GitHub secret named `SIGNING_CERTIFICATE_PASSWORD`
 
 ### 4. WinGet Token
 
@@ -53,8 +58,7 @@ Go to the repo **Settings** → **Secrets and variables** → **Actions** → **
 | `PARTNER_CENTER_CLIENT_SECRET` | Entra ID → Client secret value |
 | `PARTNER_CENTER_SELLER_ID` | Partner Center → Seller ID |
 | `STORE_PRODUCT_ID` | Partner Center → Product/App ID |
-| `SIGNING_CERTIFICATE` | Base64-encoded PFX certificate |
-| `SIGNING_CERTIFICATE_PASSWORD` | PFX certificate password |
+| `AZURE_CREDS` | Azure service principal JSON for Trusted Signing |
 | `WINGET_TOKEN` | GitHub PAT with `public_repo` scope |
 
 ## How to Release
