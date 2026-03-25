@@ -14,6 +14,7 @@ public sealed partial class GeocodingService : IDisposable
 	private readonly HttpClient _httpClient;
 	private const string NominatimUrl = "https://nominatim.openstreetmap.org/search";
 	private const int MinSearchLength = 3;
+	internal const int MaxFallbackAttempts = 3;
 
 	[GeneratedRegex(@"^\d{5}(-\d{4})?$")]
 	private static partial Regex UsZipCodeRegex();
@@ -25,8 +26,13 @@ public sealed partial class GeocodingService : IDisposable
 	private static partial Regex InternationalPostalCodeRegex();
 
 	public GeocodingService()
+		: this(new HttpClientHandler())
 	{
-		_httpClient = new HttpClient
+	}
+
+	internal GeocodingService(HttpMessageHandler handler)
+	{
+		_httpClient = new HttpClient(handler)
 		{
 			Timeout = TimeSpan.FromSeconds(10),
 		};
@@ -66,6 +72,10 @@ public sealed partial class GeocodingService : IDisposable
 
 			return RankResults(trimmedQuery, searchResults);
 		}
+		catch (OperationCanceledException)
+		{
+			return [];
+		}
 		catch (Exception ex)
 		{
 			ExtensionHost.LogMessage(new LogMessage
@@ -79,10 +89,15 @@ public sealed partial class GeocodingService : IDisposable
 	private async Task<List<GeocodingResult>> SearchWithProgressiveFallbackAsync(string query, CancellationToken ct)
 	{
 		var currentQuery = query;
+		var attempts = 0;
 
-		while (!string.IsNullOrWhiteSpace(currentQuery))
+		while (!string.IsNullOrWhiteSpace(currentQuery) && attempts < MaxFallbackAttempts)
 		{
+			ct.ThrowIfCancellationRequested();
+
 			var results = await SearchNominatimAsync(currentQuery, ct).ConfigureAwait(false);
+			attempts++;
+
 			if (results.Count > 0)
 			{
 				return results;
