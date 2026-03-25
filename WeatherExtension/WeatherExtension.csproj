@@ -27,14 +27,11 @@
 		<AssemblyTitle>Weather Command Palette</AssemblyTitle>
 	</PropertyGroup>
 	<ItemGroup>
-	  <None Remove="Assets\LargeTile.png" />
-	  <None Remove="Assets\SmallTile.png" />
-	  <None Remove="Assets\StoreLogo.png" />
-	  <None Remove="Assets\Weather.png" />
+		<None Remove="Assets\**\*" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="Assets\Weather.png" />
+		<Content Include="Assets\**\*" />
 	</ItemGroup>
 
 	<ItemGroup>
