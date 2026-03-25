@@ -168,10 +168,9 @@ public sealed partial class GeocodingService : IDisposable
 
 		if (nominatimResults == null)
 		{
-			var contentPreview = content.Length > 200 ? content[..200] : content;
 			ExtensionHost.LogMessage(new LogMessage
 			{
-				Message = $"Nominatim deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}, Content preview: {contentPreview}",
+				Message = $"Nominatim deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}",
 			});
 			return [];
 		}
