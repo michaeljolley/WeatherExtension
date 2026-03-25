@@ -214,6 +214,7 @@ public sealed partial class GeocodingService : IDisposable
 			var placeName = rawPlaceName;
 			results.Add(new GeocodingResult
 			{
+				Id = nr.PlaceId,
 				Latitude = nr.Lat,
 				Longitude = nr.Lon,
 				Name = placeName,
