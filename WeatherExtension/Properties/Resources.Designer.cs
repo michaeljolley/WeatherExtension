@@ -79,7 +79,7 @@ namespace Microsoft.CmdPal.Ext.Weather {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Postal or zip code for the default weather location.
+        ///   Looks up a localized string similar to Postal code or city, state, country for the default weather location.
         /// </summary>
         public static string default_location_description {
             get {
@@ -88,7 +88,7 @@ namespace Microsoft.CmdPal.Ext.Weather {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter a postal or zip code (e.g. 98101).
+        ///   Looks up a localized string similar to city, state, country (e.g. Nashville, TN, US).
         /// </summary>
         public static string default_location_placeholder {
             get {

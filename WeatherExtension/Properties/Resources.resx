@@ -203,10 +203,10 @@
     <value>Default Location</value>
   </data>
   <data name="default_location_description" xml:space="preserve">
-    <value>Postal or zip code for the default weather location</value>
+    <value>Postal code or city, state, country for the default weather location</value>
   </data>
   <data name="default_location_placeholder" xml:space="preserve">
-    <value>Enter a postal or zip code (e.g. 98101)</value>
+    <value>city, state, country (e.g. Nashville, TN, US)</value>
   </data>
   <data name="temperature_unit_title" xml:space="preserve">
     <value>Temperature Unit</value>
