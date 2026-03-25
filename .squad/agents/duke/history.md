@@ -43,3 +43,54 @@
 **Testing Requirements:** Unit tests for JSON deserialization of all API response types, integration tests for end-to-end flow from geocoding to weather display.
 
 **Blast Radius:** Low risk — single line fix to root cause, defensive improvements to error handling. No breaking changes.
+
+## Issue #15 Root Cause Analysis (2026-03-20)
+
+**Problem:** Weather band title/subtitle shows current weather, but clicking to expand shows stale/outdated data in the content page (WeatherBandCard).
+
+**Root Cause:** Architecture timing mismatch between band and content page updates:
+- `CurrentWeatherBand` and `PinnedWeatherBand` fetch weather on a timer (default 30min) and update their own Title/Subtitle properties
+- `WeatherBandCard` (the expanded view) fetches data ONCE in its constructor and only refreshes on settings changes
+- **No synchronization between band timer updates and card data**—band refreshes but never tells card to refresh
+- Command Palette SDK has NO lifecycle methods (OnNavigatedTo, OnActivated) to trigger card refresh on expansion
+
+**Key Findings:**
+- Single shared `WeatherBandCard` instance created in `WeatherCommandsProvider` constructor (line 32)
+- Band's `Command` property points to this card—expansion shows the same instance every time
+- Band's `UpdateWeatherAsync()` updates band display but doesn't call `_contentPage.LoadWeatherDataAsync()`
+- Card has proper async refresh logic (`LoadWeatherDataAsync`) but it's only invoked at startup + settings changes
+- For pinned bands, each has its own dedicated `WeatherBandCard` instance with same timing issue
+
+**Architecture Decision:** Band timer should refresh its associated content page to ensure data consistency. Accept slight performance overhead (duplicate API calls) for UX correctness. Future optimization: pass data from band to card to eliminate duplicate fetches.
+
+**Fix Plan:**
+1. In `CurrentWeatherBand.UpdateWeatherAsync()` after line 98: add `await _contentPage.LoadWeatherDataAsync();`
+2. In `PinnedWeatherBand.UpdateWeatherAsync()` after line 86: add `await _contentPage.LoadWeatherDataAsync();`
+
+**Files Affected:** 
+- `WeatherExtension/DockBands/CurrentWeatherBand.cs`
+- `WeatherExtension/DockBands/PinnedWeatherBand.cs`
+
+**Testing Requirements:** Manual verification that expanded card shows same data as band title/subtitle after timer updates. Verify pinned bands work correctly. Regression test settings changes still trigger refresh.
+
+**Blast Radius:** Low risk — two small focused changes, no API changes, existing error handling covers failure cases. Performance impact minimal (timer already fires every 30min).
+
+## Issue #25 Root Cause Analysis (2026-03-20)
+
+**Problem:** Hourly forecasts stop at midnight — command palette shows remaining hours today only; dock band shows "--" for hour slots when <3 hours remain in the day.
+
+**Root Cause:** `OpenMeteoService.GetHourlyForecastAsync()` uses `forecast_days=1` in the API URL (line 180), so Open-Meteo only returns hours for the current calendar day (00:00–23:00). All downstream consumers (HourlyForecastPage, WeatherBandCard) correctly filter to future hours, but run out of data near end of day.
+
+**Key Findings:**
+- API layer is the single bottleneck — `forecast_days=1` caps data at today's hours
+- Data models (`HourlyForecast` with `List<>` properties) can hold multi-day data without changes
+- `HourlyForecastPage.CreateHourlyItems()` filters `time < now` (correct) but needs a 24-hour cap when API returns 2 days
+- `WeatherBandCard.BuildWeatherData()` picks next 3 future hours (correct logic, just starved of data)
+- Timezone note: `DateTime.Now` vs `timezone=auto` is a separate P2 concern for cross-timezone searches
+
+**Fix Plan:**
+1. Change `forecast_days=1` → `forecast_days=2` in `OpenMeteoService.cs` line 180 (P0)
+2. Add 24-hour cap in `HourlyForecastPage.cs` after the past-hour filter (P0)
+3. No changes needed in `WeatherBandCard.cs` or data models
+
+**Blast Radius:** Very low — one API parameter, one guard clause. No model or breaking changes.
