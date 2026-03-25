@@ -14,6 +14,7 @@ public sealed partial class GeocodingService : IDisposable
 	private readonly HttpClient _httpClient;
 	private const string NominatimUrl = "https://nominatim.openstreetmap.org/search";
 	private const int MinSearchLength = 3;
+	internal const int MaxFallbackAttempts = 3;
 
 	[GeneratedRegex(@"^\d{5}(-\d{4})?$")]
 	private static partial Regex UsZipCodeRegex();
@@ -25,8 +26,13 @@ public sealed partial class GeocodingService : IDisposable
 	private static partial Regex InternationalPostalCodeRegex();
 
 	public GeocodingService()
+		: this(new HttpClientHandler())
 	{
-		_httpClient = new HttpClient
+	}
+
+	internal GeocodingService(HttpMessageHandler handler)
+	{
+		_httpClient = new HttpClient(handler)
 		{
 			Timeout = TimeSpan.FromSeconds(10),
 		};
@@ -79,10 +85,15 @@ public sealed partial class GeocodingService : IDisposable
 	private async Task<List<GeocodingResult>> SearchWithProgressiveFallbackAsync(string query, CancellationToken ct)
 	{
 		var currentQuery = query;
+		var attempts = 0;
 
-		while (!string.IsNullOrWhiteSpace(currentQuery))
+		while (!string.IsNullOrWhiteSpace(currentQuery) && attempts < MaxFallbackAttempts)
 		{
+			ct.ThrowIfCancellationRequested();
+
 			var results = await SearchNominatimAsync(currentQuery, ct).ConfigureAwait(false);
+			attempts++;
+
 			if (results.Count > 0)
 			{
 				return results;
@@ -168,10 +179,9 @@ public sealed partial class GeocodingService : IDisposable
 
 		if (nominatimResults == null)
 		{
-			var contentPreview = content.Length > 200 ? content[..200] : content;
 			ExtensionHost.LogMessage(new LogMessage
 			{
-				Message = $"Nominatim deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}, Content preview: {contentPreview}",
+				Message = $"Nominatim deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}",
 			});
 			return [];
 		}
@@ -185,15 +195,22 @@ public sealed partial class GeocodingService : IDisposable
 
 		foreach (var nr in nominatimResults)
 		{
-			var placeName = nr.Name
+			var rawPlaceName = nr.Name
 				?? nr.Address?.City
 				?? nr.Address?.Town
 				?? nr.Address?.Village
-				?? nr.DisplayName?.Split(',')[0].Trim()
-				?? string.Empty;
+				?? nr.DisplayName?.Split(',')[0].Trim();
 
+			if (string.IsNullOrWhiteSpace(rawPlaceName))
+			{
+				// Skip entries that don't have a usable place name to avoid blank items and unstable ranking.
+				continue;
+			}
+
+			var placeName = rawPlaceName;
 			results.Add(new GeocodingResult
 			{
+				Id = nr.PlaceId,
 				Latitude = nr.Lat,
 				Longitude = nr.Lon,
 				Name = placeName,

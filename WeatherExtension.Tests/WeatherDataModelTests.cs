@@ -255,6 +255,143 @@ public class WeatherDataModelTests
     }
 
     [TestMethod]
+    public void ConvertNominatimResults_MapsPlaceIdToGeocodingResultId()
+    {
+        var nominatimResults = new List<NominatimResult>
+        {
+            new()
+            {
+                PlaceId = 123456789L,
+                Lat = 47.6062,
+                Lon = -122.3321,
+                Name = "Seattle",
+                Address = new NominatimAddress
+                {
+                    City = "Seattle",
+                    State = "Washington",
+                    Country = "United States",
+                    CountryCode = "us",
+                },
+            },
+        };
+
+        var results = GeocodingService.ConvertNominatimResults(nominatimResults);
+
+        Assert.AreEqual(1, results.Count);
+        Assert.AreEqual(123456789L, results[0].Id);
+    }
+
+    [TestMethod]
+    public void ConvertNominatimResults_MultipleResults_HaveDistinctIds()
+    {
+        var nominatimResults = new List<NominatimResult>
+        {
+            new()
+            {
+                PlaceId = 111L,
+                Lat = 47.6062,
+                Lon = -122.3321,
+                Name = "Seattle",
+                Address = new NominatimAddress { City = "Seattle", Country = "United States" },
+            },
+            new()
+            {
+                PlaceId = 222L,
+                Lat = 51.5074,
+                Lon = -0.1278,
+                Name = "London",
+                Address = new NominatimAddress { City = "London", Country = "United Kingdom" },
+            },
+        };
+
+        var results = GeocodingService.ConvertNominatimResults(nominatimResults);
+
+        Assert.AreEqual(2, results.Count);
+        Assert.AreNotEqual(results[0].Id, results[1].Id);
+    }
+
+    [TestMethod]
+    public void ConvertNominatimResults_AcceptsLargePlaceId_BeyondIntRange()
+    {
+        var largePlaceId = (long)int.MaxValue + 1L;
+        var nominatimResults = new List<NominatimResult>
+        {
+            new()
+            {
+                PlaceId = largePlaceId,
+                Lat = 48.8566,
+                Lon = 2.3522,
+                Name = "Paris",
+                Address = new NominatimAddress { City = "Paris", Country = "France" },
+            },
+        };
+
+        var results = GeocodingService.ConvertNominatimResults(nominatimResults);
+
+        Assert.AreEqual(1, results.Count);
+        Assert.AreEqual(largePlaceId, results[0].Id);
+    }
+
+    [TestMethod]
+    public void PinnedLocation_ToGeocodingResult_DerivedIdIsNonZero()
+    {
+        var pinned = new PinnedLocation
+        {
+            Latitude = 47.6062,
+            Longitude = -122.3321,
+            Name = "Seattle",
+        };
+
+        var result = pinned.ToGeocodingResult();
+
+        Assert.AreNotEqual(0L, result.Id);
+    }
+
+    [TestMethod]
+    public void PinnedLocation_ToGeocodingResult_DerivedIdIsDeterministic()
+    {
+        var pinned = new PinnedLocation
+        {
+            Latitude = 47.6062,
+            Longitude = -122.3321,
+            Name = "Seattle",
+        };
+
+        var result1 = pinned.ToGeocodingResult();
+        var result2 = pinned.ToGeocodingResult();
+
+        Assert.AreEqual(result1.Id, result2.Id);
+    }
+
+    [TestMethod]
+    public void PinnedLocation_ToGeocodingResult_DerivedIdIsNonNegative()
+    {
+        // Verify IDs are positive even when lat/lon are negative
+        var pinned = new PinnedLocation
+        {
+            Latitude = -33.8688,
+            Longitude = -70.6693,
+            Name = "Santiago",
+        };
+
+        var result = pinned.ToGeocodingResult();
+
+        Assert.IsTrue(result.Id >= 0, $"Expected non-negative ID but got {result.Id}");
+    }
+
+    [TestMethod]
+    public void PinnedLocation_ToGeocodingResult_DifferentLocationsHaveDistinctIds()
+    {
+        var seattle = new PinnedLocation { Latitude = 47.6062, Longitude = -122.3321, Name = "Seattle" };
+        var london = new PinnedLocation { Latitude = 51.5074, Longitude = -0.1278, Name = "London" };
+
+        var seattleResult = seattle.ToGeocodingResult();
+        var londonResult = london.ToGeocodingResult();
+
+        Assert.AreNotEqual(seattleResult.Id, londonResult.Id);
+    }
+
+    [TestMethod]
     public void WeatherData_DeserializeWithMissingFields_HandledGracefully()
     {
         var json = """

@@ -1,5 +1,9 @@
 # Weather Extension for Microsoft Command Palette
 
+<a href="https://get.microsoft.com/installer/download/9N01D6BS9V98?referrer=appbadge" target="_self" >
+	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
+</a>
+
 A weather extension for [Microsoft Command Palette](https://github.com/microsoft/PowerToys)
 (PowerToys) that provides current conditions, hourly forecasts, and multi-day
 forecasts right from your desktop.
