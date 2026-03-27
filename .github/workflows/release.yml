@@ -256,26 +256,58 @@ jobs:
           /p:AppxPackageSigningEnabled=false
           /p:Version=${{ needs.build-and-test.outputs.version }}
 
+      - name: Collect Store MSIX packages
+        shell: pwsh
+        run: |
+          New-Item -Path "store-packages" -ItemType Directory -Force
+          $msixFiles = Get-ChildItem -Path "WeatherExtension" -Filter "*.msix" -Recurse
+          foreach ($file in $msixFiles) {
+            Write-Host "Copying $($file.Name) to store-packages/"
+            Copy-Item $file.FullName -Destination "store-packages/$($file.Name)"
+          }
+
       - name: Upload Store MSIX artifacts
         uses: actions/upload-artifact@v7
         with:
           name: msix-store-packages
-          path: WeatherExtension/**/*.msix
+          path: store-packages/*.msix
           retention-days: 7
 
   store-submit:
-    needs: package
+    needs: [package, build-and-test]
     runs-on: windows-latest
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Update Package.appxmanifest for Store
+        shell: pwsh
+        run: |
+          $manifestPath = "WeatherExtension/Package.appxmanifest"
+          $version = "${{ needs.build-and-test.outputs.version }}"
+          $storePublisher = "${{ secrets.STORE_PUBLISHER_NAME }}"
+
+          [xml]$manifest = Get-Content $manifestPath
+          $manifest.Package.Identity.Version = $version
+          $manifest.Package.Identity.Publisher = $storePublisher
+          $manifest.Save($manifestPath)
+
+          Write-Host "Updated manifest: Version=$version, Publisher=$storePublisher"
+
       - name: Download MSIX artifacts
         uses: actions/download-artifact@v8
         with:
           name: msix-store-packages
           path: msix-packages
+
+      - name: List Store MSIX packages
+        shell: pwsh
+        run: |
+          Write-Host "Store MSIX packages to submit:"
+          Get-ChildItem -Path "msix-packages" -Filter "*.msix" -Recurse | ForEach-Object {
+            Write-Host "  $($_.FullName) ($([math]::Round($_.Length / 1MB, 2)) MB)"
+          }
       
       - name: Setup Microsoft Store CLI
         uses: microsoft/microsoft-store-apppublisher@v1.3
