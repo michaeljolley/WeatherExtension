@@ -1,8 +1,7 @@
 # Weather Extension for Microsoft Command Palette
 
-<a href="https://get.microsoft.com/installer/download/9N01D6BS9V98?referrer=appbadge" target="_self" >
-	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
-</a>
+[<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>](https://get.microsoft.com/installer/download/9N01D6BS9V98?referrer=appbadge) ![WinGet Package Version](https://img.shields.io/winget/v/BaldBeardedBuilder.WeatherforCommandPalette)
+
 
 A weather extension for [Microsoft Command Palette](https://github.com/microsoft/PowerToys)
 (PowerToys) that provides current conditions, hourly forecasts, and multi-day
@@ -41,6 +40,16 @@ forecasts right from your desktop.
 ### Settings
 
 <img width="1027" height="673" alt="image" src="https://github.com/user-attachments/assets/01962a91-ccdf-42e3-aa28-19e3bcf493a3" />
+
+## Installation
+
+You can install Weather for Command Palette via:
+
+- [Microsoft Store](https://apps.microsoft.com/detail/9N01D6BS9V98)
+- Winget via `winget install BaldBeardedBuilder.WeatherforCommandPalette`
+- [GitHub Releases](https://github.com/michaeljolley/WeatherExtension/releases)
+
+---
 
 ## Getting Started
 
