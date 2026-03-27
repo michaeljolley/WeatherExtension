@@ -220,6 +220,49 @@ jobs:
             gh release upload "${{ github.event.release.tag_name }}" "$($file.FullName)" --clobber
           }
 
+      # --- Build Store-specific packages with the MS Store publisher identity ---
+      - name: Clean sideload MSIX packages
+        shell: pwsh
+        run: |
+          Write-Host "Removing sideload MSIX packages before Store build..."
+          Get-ChildItem -Path "WeatherExtension" -Filter "*.msix" -Recurse | Remove-Item -Force
+          if (Test-Path "WeatherExtension/AppPackages") {
+            Remove-Item -Path "WeatherExtension/AppPackages" -Recurse -Force
+          }
+
+      - name: Patch manifest with Store publisher identity
+        shell: pwsh
+        run: |
+          $manifestPath = "WeatherExtension/Package.appxmanifest"
+          $storePublisher = "${{ secrets.STORE_PUBLISHER_NAME }}"
+
+          [xml]$manifest = Get-Content $manifestPath
+          $manifest.Package.Identity.Publisher = $storePublisher
+          $manifest.Save($manifestPath)
+
+          Write-Host "Updated publisher to: $storePublisher"
+
+      - name: Publish x64 Store MSIX
+        run: >
+          dotnet publish WeatherExtension/WeatherExtension.csproj -c Release -r win-x64
+          /p:PublishProfile=win-x64
+          /p:AppxPackageSigningEnabled=false
+          /p:Version=${{ needs.build-and-test.outputs.version }}
+
+      - name: Publish ARM64 Store MSIX
+        run: >
+          dotnet publish WeatherExtension/WeatherExtension.csproj -c Release -r win-arm64
+          /p:PublishProfile=win-arm64
+          /p:AppxPackageSigningEnabled=false
+          /p:Version=${{ needs.build-and-test.outputs.version }}
+
+      - name: Upload Store MSIX artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: msix-store-packages
+          path: WeatherExtension/**/*.msix
+          retention-days: 7
+
   store-submit:
     needs: package
     runs-on: windows-latest
@@ -231,7 +274,7 @@ jobs:
       - name: Download MSIX artifacts
         uses: actions/download-artifact@v8
         with:
-          name: msix-packages
+          name: msix-store-packages
           path: msix-packages
       
       - name: Setup Microsoft Store CLI
