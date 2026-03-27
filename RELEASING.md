@@ -47,6 +47,19 @@ The MSIX packages are signed using [Azure Trusted Signing](https://learn.microso
 
 > **Note:** The WinGet package identifier is `BaldBeardedBuilder.WeatherForCmdPal`. Before the first automated release, you must manually submit the initial package manifest to [microsoft/winget-pkgs](https://github.com/microsoft/winget-pkgs) using [`wingetcreate new`](https://github.com/microsoft/winget-create). Subsequent releases will be handled automatically.
 
+### 5. Store Publisher Identity
+
+The Microsoft Store requires a specific publisher identity in the MSIX manifest that differs from the Trusted Signing certificate subject. The release workflow builds **two sets** of packages:
+
+- **Sideload/WinGet** — Uses the Trusted Signing publisher, signed with Azure Trusted Signing
+- **Microsoft Store** — Uses the Store publisher identity (`STORE_PUBLISHER_NAME` secret), unsigned (Microsoft re-signs during Store publication)
+
+To find your Store publisher identity:
+
+1. Go to [Partner Center](https://partner.microsoft.com/dashboard) → **Apps and Games** → select your app
+2. **Product management** → **Product Identity**
+3. Copy the **Package/Identity/Publisher** value (e.g., `CN=A8D6094E-...`)
+
 ### 5. GitHub Repository Secrets
 
 Go to the repo **Settings** → **Secrets and variables** → **Actions** → **New repository secret**. Add:
@@ -59,6 +72,7 @@ Go to the repo **Settings** → **Secrets and variables** → **Actions** → **
 | `PARTNER_CENTER_SELLER_ID` | Partner Center → Seller ID |
 | `STORE_PRODUCT_ID` | Partner Center → Product/App ID |
 | `AZURE_CREDS` | Azure service principal JSON for Trusted Signing |
+| `STORE_PUBLISHER_NAME` | Partner Center → App Identity → Package/Identity/Publisher (e.g., `CN=...`) |
 | `WINGET_TOKEN` | GitHub PAT with `public_repo` scope |
 
 ## How to Release
