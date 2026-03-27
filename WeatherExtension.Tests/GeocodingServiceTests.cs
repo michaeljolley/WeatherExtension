@@ -25,7 +25,7 @@ public class GeocodingServiceTests
 	[DataRow("SW1A1AA")] // Valid UK postal codes without space
 	[DataRow("sw1a 1aa")] // Valid UK postal codes in lowercase
 	[DataRow("M1 1AJ")] // Valid UK postal codes
-	public async Task SearchLocationAsync_WithUkPostcode_UsesPostalCodeQueryParameter(string input)
+	public async Task SearchLocationAsync_WithPostalCodeFormats_UsesPostalCodeQueryParameter(string input)
 	{
 		var seenUris = new List<Uri>();
 		var handler = new CountingHttpHandler(_ =>
