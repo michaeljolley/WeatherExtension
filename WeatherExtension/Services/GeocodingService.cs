@@ -115,7 +115,7 @@ public sealed partial class GeocodingService : IDisposable
 		return [];
 	}
 
-	internal static bool IsPostalCode(string input)
+	private static bool IsPostalCode(string input)
 	{
 		return UsZipCodeRegex().IsMatch(input) ||
 			   CanadaPostalCodeRegex().IsMatch(input) ||

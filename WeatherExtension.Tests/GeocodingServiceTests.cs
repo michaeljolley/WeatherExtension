@@ -18,13 +18,25 @@ namespace Microsoft.CmdPal.Ext.Weather.UnitTests;
 public class GeocodingServiceTests
 {
 	[DataTestMethod]
-	[DataRow("SW1A 1AA")]
-	[DataRow("SW1A1AA")]
-	[DataRow("sw1a 1aa")]
-	[DataRow("M1 1AJ")]
-	public void IsPostalCode_WithVariousUkPostcodeInputs_ReturnsTrue(string input)
+	[DataRow("90210")] // Valid US ZIP code
+	[DataRow("K1A 0B1")] // Valid Canadian postal code
+	[DataRow("k1a 0b1")] // Valid Canadian postal code in lowercase
+	[DataRow("SW1A 1AA")] // Valid UK postal codes
+	[DataRow("SW1A1AA")] // Valid UK postal codes without space
+	[DataRow("sw1a 1aa")] // Valid UK postal codes in lowercase
+	[DataRow("M1 1AJ")] // Valid UK postal codes
+	public async Task SearchLocationAsync_WithUkPostcode_UsesPostalCodeQueryParameter(string input)
 	{
-		Assert.IsTrue(GeocodingService.IsPostalCode(input));
+		var seenUris = new List<Uri>();
+		var handler = new CountingHttpHandler(_ =>
+		new HttpResponseMessage(HttpStatusCode.OK),
+		request => seenUris.Add(request.RequestUri!));
+
+		using var service = new GeocodingService(handler);
+		var results = await service.SearchLocationAsync(input, CancellationToken.None);
+
+		var decodedQuery = Uri.UnescapeDataString(seenUris[0].Query);
+		Assert.IsTrue(decodedQuery.Contains($"postalcode={input}", StringComparison.Ordinal), "Expected postcode input to be sent via postalcode parameter.");
 	}
 
 	[TestMethod]
@@ -163,7 +175,7 @@ public class GeocodingServiceTests
 	public async Task SearchLocationAsync_WhenAlreadyCanceled_ReturnsEmptyWithoutCallingApi()
 	{
 		var callCount = 0;
-		var handler = new CountingHttpHandler(() =>
+		var handler = new CountingHttpHandler(_ =>
 		{
 			callCount++;
 			return new HttpResponseMessage(HttpStatusCode.OK)
@@ -186,7 +198,7 @@ public class GeocodingServiceTests
 	public async Task SearchLocationAsync_LongCommaInput_CapsAttemptsAtMaxFallbackAttempts()
 	{
 		var callCount = 0;
-		var handler = new CountingHttpHandler(() =>
+		var handler = new CountingHttpHandler(_ =>
 		{
 			callCount++;
 			return new HttpResponseMessage(HttpStatusCode.OK)
@@ -203,17 +215,21 @@ public class GeocodingServiceTests
 		Assert.IsTrue(callCount <= GeocodingService.MaxFallbackAttempts,
 			$"Expected at most {GeocodingService.MaxFallbackAttempts} API calls, but got {callCount}.");
 	}
+
 }
 
 /// <summary>
 /// An <see cref="HttpMessageHandler"/> that delegates each request to a factory function,
 /// allowing tests to control and count outgoing HTTP calls.
 /// </summary>
-internal sealed class CountingHttpHandler(Func<HttpResponseMessage> responseFactory) : HttpMessageHandler
+internal sealed class CountingHttpHandler(
+	Func<HttpRequestMessage, HttpResponseMessage> responseFactory,
+	Action<HttpRequestMessage>? onRequest = null) : HttpMessageHandler
 {
 	protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		return Task.FromResult(responseFactory());
+		onRequest?.Invoke(request);
+		return Task.FromResult(responseFactory(request));
 	}
 }
