@@ -22,6 +22,9 @@ public sealed partial class GeocodingService : IDisposable
 	[GeneratedRegex(@"^[A-Z]\d[A-Z]\s?\d[A-Z]\d$", RegexOptions.IgnoreCase)]
 	private static partial Regex CanadaPostalCodeRegex();
 
+	[GeneratedRegex(@"^(([Gg][Ii][Rr]\s?0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2}))$", RegexOptions.IgnoreCase)]
+	private static partial Regex UkPostalCodeRegex();
+
 	[GeneratedRegex(@"^\d{4,6}$")]
 	private static partial Regex InternationalPostalCodeRegex();
 
@@ -116,6 +119,7 @@ public sealed partial class GeocodingService : IDisposable
 	{
 		return UsZipCodeRegex().IsMatch(input) ||
 			   CanadaPostalCodeRegex().IsMatch(input) ||
+			   UkPostalCodeRegex().IsMatch(input) ||
 			   InternationalPostalCodeRegex().IsMatch(input);
 	}
 
