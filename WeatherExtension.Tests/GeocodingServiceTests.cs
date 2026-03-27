@@ -29,7 +29,10 @@ public class GeocodingServiceTests
 	{
 		var seenUris = new List<Uri>();
 		var handler = new CountingHttpHandler(_ =>
-		new HttpResponseMessage(HttpStatusCode.OK),
+		new HttpResponseMessage(HttpStatusCode.OK)
+		{
+			Content = new StringContent("[]"),
+		},
 		request => seenUris.Add(request.RequestUri!));
 
 		using var service = new GeocodingService(handler);
