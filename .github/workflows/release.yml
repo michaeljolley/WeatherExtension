@@ -245,6 +245,6 @@ jobs:
       - name: Submit to WinGet
         uses: vedantmgoyal9/winget-releaser@v2
         with:
-          identifier: BaldBeardedBuilder.WeatherForCmdPal
+          identifier: BaldBeardedBuilder.WeatherforCommandPalette
           installers-regex: '\.msix$'
           token: ${{ secrets.WINGET_TOKEN }}
