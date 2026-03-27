@@ -13,15 +13,15 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Setup .NET 9 SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '9.0.x'
 
       - name: Setup .NET 10 SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.0.x'
       
@@ -77,8 +77,6 @@ jobs:
           path: |
             WeatherExtension/bin/
             WeatherExtension/obj/
-            WeatherExtension.Tests/bin/
-            WeatherExtension.Tests/obj/
             WeatherExtension/Package.appxmanifest
           retention-days: 1
 
@@ -88,20 +86,20 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Setup .NET 9 SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '9.0.x'
 
       - name: Setup .NET 10 SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.0.x'
       
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: build-output
       
@@ -121,7 +119,7 @@ jobs:
           /p:AppxPackageSigningEnabled=false
 
       - name: Azure login
-        uses: azure/login@v2
+        uses: azure/login@v3
         with:
           creds: ${{ secrets.AZURE_CREDS }}
 
@@ -188,7 +186,7 @@ jobs:
           }
       
       - name: Upload MSIX artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: msix-packages
           path: WeatherExtension/**/*.msix
@@ -212,16 +210,16 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download MSIX artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: msix-packages
           path: msix-packages
       
       - name: Setup Microsoft Store CLI
-        uses: microsoft/microsoft-store-apppublisher@v1.2
+        uses: microsoft/microsoft-store-apppublisher@v1.3
       
       - name: Configure Store credentials
         shell: pwsh
@@ -235,7 +233,7 @@ jobs:
       - name: Submit to Microsoft Store
         shell: pwsh
         run: |
-          msstore publish WeatherExtension -i msix-packages -id "${{ secrets.STORE_PRODUCT_ID }}"
+          msstore publish WeatherExtension -i msix-packages -nc -id "${{ secrets.STORE_PRODUCT_ID }}"
 
   winget-publish:
     needs: package
@@ -248,3 +246,4 @@ jobs:
           identifier: BaldBeardedBuilder.WeatherforCommandPalette
           installers-regex: '\.msix$'
           token: ${{ secrets.WINGET_TOKEN }}
+          max-versions-to-keep: 3

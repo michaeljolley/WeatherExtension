@@ -10,7 +10,7 @@
   IgnorableNamespaces="uap uap3 rescap">
 
 <Identity
-	Name="BaldBeardedBuilder.WalkThisWayforCommandPalette"
+  Name="BaldBeardedBuilder.WeatherforCommandPalette"
 	Publisher="CN=Bald Bearded Builder LLC, O=Bald Bearded Builder LLC, L=Odenville, S=Alabama, C=US"
 	Version="1.0.0.0" />
 
