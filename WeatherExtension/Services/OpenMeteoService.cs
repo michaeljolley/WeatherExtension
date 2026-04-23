@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using BaldBeardedBuilder.WeatherExtension;
+using Microsoft.CommandPalette.Extensions;
 using Microsoft.CmdPal.Ext.Weather.Models;
 using Microsoft.CommandPalette.Extensions;
 using System.Text.Json;
