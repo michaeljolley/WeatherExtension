@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using BaldBeardedBuilder.WeatherExtension;
+using Microsoft.CommandPalette.Extensions;
 using Microsoft.CmdPal.Ext.Weather.Models;
 using System.Text.Json;
 
@@ -61,7 +62,7 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 			if (!response.IsSuccessStatusCode)
 			{
 				WeatherLogger.LogToHost(
-					CommandPalette.Extensions.MessageState.Error,
+					MessageState.Error,
 					$"Weather API returned status {response.StatusCode}");
 				return null;
 			}
@@ -72,7 +73,7 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 			if (weatherData == null)
 			{
 				WeatherLogger.LogToHost(
-					CommandPalette.Extensions.MessageState.Info,
+					MessageState.Info,
 					$"Weather deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}");
 			}
 
@@ -88,7 +89,7 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 		catch (Exception ex)
 		{
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Weather fetch error: {ex.Message}");
 			return null;
 		}
@@ -119,7 +120,7 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 			if (!response.IsSuccessStatusCode)
 			{
 				WeatherLogger.LogToHost(
-					CommandPalette.Extensions.MessageState.Error,
+					MessageState.Error,
 					$"Forecast API returned status {response.StatusCode}");
 				return null;
 			}
@@ -130,7 +131,7 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 			if (forecastData == null)
 			{
 				WeatherLogger.LogToHost(
-					CommandPalette.Extensions.MessageState.Info,
+					MessageState.Info,
 					$"Forecast deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}");
 			}
 
@@ -146,7 +147,7 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 		catch (Exception ex)
 		{
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Forecast fetch error: {ex.Message}");
 			return null;
 		}
@@ -178,7 +179,7 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 			if (!response.IsSuccessStatusCode)
 			{
 				WeatherLogger.LogToHost(
-					CommandPalette.Extensions.MessageState.Error,
+					MessageState.Error,
 					$"Hourly forecast API returned status {response.StatusCode}");
 				return null;
 			}
@@ -189,7 +190,7 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 			if (hourlyData == null)
 			{
 				WeatherLogger.LogToHost(
-					CommandPalette.Extensions.MessageState.Info,
+					MessageState.Info,
 					$"Hourly forecast deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}");
 			}
 
@@ -205,7 +206,7 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 		catch (Exception ex)
 		{
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Hourly forecast fetch error: {ex.Message}");
 			return null;
 		}

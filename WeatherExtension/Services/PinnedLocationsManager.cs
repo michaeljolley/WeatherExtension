@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using BaldBeardedBuilder.WeatherExtension;
+using Microsoft.CommandPalette.Extensions;
 using Microsoft.CmdPal.Ext.Weather.Models;
 using System.Text.Json;
 
@@ -115,7 +116,7 @@ public sealed class PinnedLocationsManager
 		catch (Exception ex)
 		{
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Failed to load pinned locations: {ex.Message}");
 		}
 	}
@@ -130,7 +131,7 @@ public sealed class PinnedLocationsManager
 		catch (Exception ex)
 		{
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Failed to save pinned locations: {ex.Message}");
 		}
 	}
