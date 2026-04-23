@@ -87,7 +87,7 @@ internal sealed partial class WeatherDetailPage : ListPage, IDisposable
 		catch (Exception ex)
 		{
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Failed to load weather detail: {ex.Message}");
 
 			lock (_sync)

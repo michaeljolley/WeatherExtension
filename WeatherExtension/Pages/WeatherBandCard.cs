@@ -97,7 +97,7 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
 		catch (Exception ex)
 		{
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Content page weather load error: {ex.Message}");
 
 			_weatherForm.DataJson = GetErrorData(
