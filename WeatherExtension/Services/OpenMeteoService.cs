@@ -2,8 +2,8 @@
 // Bald Bearded Builder LLC licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using BaldBeardedBuilder.WeatherExtension;
 using Microsoft.CmdPal.Ext.Weather.Models;
-using Microsoft.CommandPalette.Extensions.Toolkit;
 using System.Text.Json;
 
 namespace Microsoft.CmdPal.Ext.Weather.Services;
@@ -60,10 +60,9 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 
 			if (!response.IsSuccessStatusCode)
 			{
-				ExtensionHost.LogMessage(new LogMessage
-				{
-					Message = $"Weather API returned status {response.StatusCode}",
-				});
+				WeatherLogger.LogToHost(
+					CommandPalette.Extensions.MessageState.Error,
+					$"Weather API returned status {response.StatusCode}");
 				return null;
 			}
 
@@ -72,10 +71,9 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 
 			if (weatherData == null)
 			{
-				ExtensionHost.LogMessage(new LogMessage
-				{
-					Message = $"Weather deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}",
-				});
+				WeatherLogger.LogToHost(
+					CommandPalette.Extensions.MessageState.Info,
+					$"Weather deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}");
 			}
 
 			if (weatherData != null)
@@ -89,10 +87,9 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 		}
 		catch (Exception ex)
 		{
-			ExtensionHost.LogMessage(new LogMessage
-			{
-				Message = $"Weather fetch error: {ex.Message}",
-			});
+			WeatherLogger.LogToHost(
+				CommandPalette.Extensions.MessageState.Error,
+				$"Weather fetch error: {ex.Message}");
 			return null;
 		}
 	}
@@ -121,10 +118,9 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 
 			if (!response.IsSuccessStatusCode)
 			{
-				ExtensionHost.LogMessage(new LogMessage
-				{
-					Message = $"Forecast API returned status {response.StatusCode}",
-				});
+				WeatherLogger.LogToHost(
+					CommandPalette.Extensions.MessageState.Error,
+					$"Forecast API returned status {response.StatusCode}");
 				return null;
 			}
 
@@ -133,10 +129,9 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 
 			if (forecastData == null)
 			{
-				ExtensionHost.LogMessage(new LogMessage
-				{
-					Message = $"Forecast deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}",
-				});
+				WeatherLogger.LogToHost(
+					CommandPalette.Extensions.MessageState.Info,
+					$"Forecast deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}");
 			}
 
 			if (forecastData != null)
@@ -150,10 +145,9 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 		}
 		catch (Exception ex)
 		{
-			ExtensionHost.LogMessage(new LogMessage
-			{
-				Message = $"Forecast fetch error: {ex.Message}",
-			});
+			WeatherLogger.LogToHost(
+				CommandPalette.Extensions.MessageState.Error,
+				$"Forecast fetch error: {ex.Message}");
 			return null;
 		}
 	}
@@ -183,10 +177,9 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 
 			if (!response.IsSuccessStatusCode)
 			{
-				ExtensionHost.LogMessage(new LogMessage
-				{
-					Message = $"Hourly forecast API returned status {response.StatusCode}",
-				});
+				WeatherLogger.LogToHost(
+					CommandPalette.Extensions.MessageState.Error,
+					$"Hourly forecast API returned status {response.StatusCode}");
 				return null;
 			}
 
@@ -195,10 +188,9 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 
 			if (hourlyData == null)
 			{
-				ExtensionHost.LogMessage(new LogMessage
-				{
-					Message = $"Hourly forecast deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}",
-				});
+				WeatherLogger.LogToHost(
+					CommandPalette.Extensions.MessageState.Info,
+					$"Hourly forecast deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}");
 			}
 
 			if (hourlyData != null)
@@ -212,10 +204,9 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 		}
 		catch (Exception ex)
 		{
-			ExtensionHost.LogMessage(new LogMessage
-			{
-				Message = $"Hourly forecast fetch error: {ex.Message}",
-			});
+			WeatherLogger.LogToHost(
+				CommandPalette.Extensions.MessageState.Error,
+				$"Hourly forecast fetch error: {ex.Message}");
 			return null;
 		}
 	}

@@ -2,7 +2,7 @@
 // Bald Bearded Builder LLC licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Net.Http;
+using BaldBeardedBuilder.WeatherExtension;
 using Microsoft.CmdPal.Ext.Weather.Pages;
 using Microsoft.CmdPal.Ext.Weather.Services;
 using Microsoft.CommandPalette.Extensions;
@@ -123,10 +123,9 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 		}
 		catch (HttpRequestException ex)
 		{
-			ExtensionHost.LogMessage(new LogMessage
-			{
-				Message = $"Band weather network error: {ex.Message}",
-			});
+			WeatherLogger.LogToHost(
+				CommandPalette.Extensions.MessageState.Error,
+				$"Band weather network error: {ex.Message}");
 
 			if (Title == Resources.loading)
 			{
@@ -136,10 +135,9 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 		}
 		catch (Exception ex)
 		{
-			ExtensionHost.LogMessage(new LogMessage
-			{
-				Message = $"Band weather update error: {ex.Message}",
-			});
+			WeatherLogger.LogToHost(
+				CommandPalette.Extensions.MessageState.Error,
+				$"Band weather update error: {ex.Message}");
 
 			if (Title == Resources.loading)
 			{

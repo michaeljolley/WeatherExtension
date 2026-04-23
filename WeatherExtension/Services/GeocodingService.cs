@@ -2,8 +2,8 @@
 // Bald Bearded Builder LLC licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using BaldBeardedBuilder.WeatherExtension;
 using Microsoft.CmdPal.Ext.Weather.Models;
-using Microsoft.CommandPalette.Extensions.Toolkit;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -77,10 +77,9 @@ public sealed partial class GeocodingService : IDisposable
 		}
 		catch (Exception ex)
 		{
-			ExtensionHost.LogMessage(new LogMessage
-			{
-				Message = $"Geocoding error: {ex.Message}",
-			});
+			WeatherLogger.LogToHost(
+				CommandPalette.Extensions.MessageState.Error,
+				$"Geocoding error: {ex.Message}");
 			return [];
 		}
 	}
@@ -140,10 +139,9 @@ public sealed partial class GeocodingService : IDisposable
 
 			if (nominatimResults == null)
 			{
-				ExtensionHost.LogMessage(new LogMessage
-				{
-					Message = $"Nominatim deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}",
-				});
+				WeatherLogger.LogToHost(
+					CommandPalette.Extensions.MessageState.Info,
+					$"Nominatim deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}");
 				return [];
 			}
 
@@ -156,10 +154,9 @@ public sealed partial class GeocodingService : IDisposable
 		}
 		catch (Exception ex)
 		{
-			ExtensionHost.LogMessage(new LogMessage
-			{
-				Message = $"Nominatim postal code lookup error: {ex.Message}",
-			});
+			WeatherLogger.LogToHost(
+				CommandPalette.Extensions.MessageState.Error,
+				$"Nominatim postal code lookup error: {ex.Message}");
 			return [];
 		}
 	}
@@ -171,10 +168,9 @@ public sealed partial class GeocodingService : IDisposable
 
 		if (!response.IsSuccessStatusCode)
 		{
-			ExtensionHost.LogMessage(new LogMessage
-			{
-				Message = $"Nominatim API returned status {response.StatusCode}",
-			});
+			WeatherLogger.LogToHost(
+				CommandPalette.Extensions.MessageState.Info,
+				$"Nominatim API returned status {response.StatusCode}: {response.RequestMessage}, query: {query}");
 			return [];
 		}
 
@@ -183,10 +179,9 @@ public sealed partial class GeocodingService : IDisposable
 
 		if (nominatimResults == null)
 		{
-			ExtensionHost.LogMessage(new LogMessage
-			{
-				Message = $"Nominatim deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}",
-			});
+			WeatherLogger.LogToHost(
+				CommandPalette.Extensions.MessageState.Info,
+				$"Nominatim deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}, Query: {query}");
 			return [];
 		}
 
