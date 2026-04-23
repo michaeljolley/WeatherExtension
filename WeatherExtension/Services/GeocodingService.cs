@@ -171,7 +171,7 @@ public sealed partial class GeocodingService : IDisposable
 		{
 			WeatherLogger.LogToHost(
 				MessageState.Info,
-				$"Nominatim API returned status {response.StatusCode}: {response.RequestMessage}, query: {query}");
+				$"Nominatim API returned status {response.StatusCode}");
 			return [];
 		}
 
@@ -182,7 +182,7 @@ public sealed partial class GeocodingService : IDisposable
 		{
 			WeatherLogger.LogToHost(
 				MessageState.Info,
-				$"Nominatim deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}, Query: {query}");
+				$"Nominatim deserialization returned null. Status: {response.StatusCode}, Content length: {content.Length}");
 			return [];
 		}
 
