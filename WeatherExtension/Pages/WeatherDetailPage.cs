@@ -2,6 +2,7 @@
 // Bald Bearded Builder LLC licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using BaldBeardedBuilder.WeatherExtension;
 using Microsoft.CmdPal.Ext.Weather.Models;
 using Microsoft.CmdPal.Ext.Weather.Services;
 using Microsoft.CommandPalette.Extensions;
@@ -85,10 +86,9 @@ internal sealed partial class WeatherDetailPage : ListPage, IDisposable
 		}
 		catch (Exception ex)
 		{
-			ExtensionHost.LogMessage(new LogMessage
-			{
-				Message = $"Failed to load weather detail: {ex.Message}",
-			});
+			WeatherLogger.LogToHost(
+				MessageState.Error,
+				$"Failed to load weather detail: {ex.Message}");
 
 			lock (_sync)
 			{

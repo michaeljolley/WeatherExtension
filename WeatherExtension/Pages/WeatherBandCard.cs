@@ -2,12 +2,12 @@
 // Bald Bearded Builder LLC licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using BaldBeardedBuilder.WeatherExtension;
 using Microsoft.CmdPal.Ext.Weather.Models;
 using Microsoft.CmdPal.Ext.Weather.Services;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using System.Globalization;
-using System.Threading;
 
 namespace Microsoft.CmdPal.Ext.Weather.Pages;
 
@@ -96,10 +96,9 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
 		}
 		catch (Exception ex)
 		{
-			ExtensionHost.LogMessage(new LogMessage
-			{
-				Message = $"Content page weather load error: {ex.Message}",
-			});
+			WeatherLogger.LogToHost(
+				MessageState.Error,
+				$"Content page weather load error: {ex.Message}");
 
 			_weatherForm.DataJson = GetErrorData(
 				Resources.unavailable);
