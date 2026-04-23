@@ -73,7 +73,7 @@ internal sealed partial class HourlyForecastPage : ListPage, IDisposable
 		catch (Exception ex)
 		{
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Failed to load hourly forecast: {ex.Message}");
 
 			lock (_sync)
