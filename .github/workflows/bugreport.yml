@@ -1,0 +1,51 @@
+name: Bug Report Request
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+
+jobs:
+  request-bug-report:
+    if: >-
+      !github.event.issue.pull_request
+      && github.event.comment.user.type != 'Bot'
+      && contains(github.event.comment.body, '/bugreport')
+      && (
+        github.event.comment.author_association == 'OWNER'
+        || github.event.comment.author_association == 'MEMBER'
+        || github.event.comment.author_association == 'COLLABORATOR'
+      )
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post bug report instructions
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = [
+              'I need a bit more information to really debug this issue. Can you add a "Report Bug" zip file here?',
+              '',
+              'Before you generate the bug report, please make sure to reproduce the issue you are having with the extension. This will ensure that the logs contain the relevant information to help me debug the issue.',
+              '',
+              'Then, just right-click on the PowerToys system tray icon and go to Report Bug. Then drag the zip file from your desktop onto the GitHub comment box in this issue.',
+              '',
+              '![Report Bug](https://user-images.githubusercontent.com/11349917/133042052-4975be21-4699-4363-83c9-a8e1869d079d.png)',
+              '',
+              'This will let me review the logs of the extension to see what error is occurring so we can get it working for you. 👍🏼',
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['needs-info'],
+            });
