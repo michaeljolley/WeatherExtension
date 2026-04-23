@@ -82,7 +82,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 		catch (Exception ex)
 		{
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Failed to load default location weather: {ex.Message}");
 		}
 	}
@@ -130,7 +130,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 			}
 
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Failed to load weather for location: {ex.Message}");
 
 			RaiseItemsChanged();
@@ -376,7 +376,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 			}
 
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Search network error: {ex.Message}");
 
 			RaiseItemsChanged();
@@ -389,7 +389,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 			}
 
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Search error: {ex.Message}");
 
 			RaiseItemsChanged();

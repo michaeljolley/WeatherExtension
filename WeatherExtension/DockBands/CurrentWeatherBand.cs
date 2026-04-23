@@ -124,7 +124,7 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 		catch (HttpRequestException ex)
 		{
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Band weather network error: {ex.Message}");
 
 			if (Title == Resources.loading)
@@ -136,7 +136,7 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 		catch (Exception ex)
 		{
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Band weather update error: {ex.Message}");
 
 			if (Title == Resources.loading)

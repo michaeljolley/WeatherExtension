@@ -110,7 +110,7 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 		catch (HttpRequestException ex)
 		{
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Pinned band weather network error: {ex.Message}");
 
 			if (Title == Resources.loading)
@@ -122,7 +122,7 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 		catch (Exception ex)
 		{
 			WeatherLogger.LogToHost(
-				CommandPalette.Extensions.MessageState.Error,
+				MessageState.Error,
 				$"Pinned band weather update error: {ex.Message}");
 
 			if (Title == Resources.loading)
