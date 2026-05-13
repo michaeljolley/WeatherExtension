@@ -142,6 +142,9 @@
     <value>No results for '{0}'</value>
     <comment>Placeholder {0} will be replaced with the search query</comment>
   </data>
+  <data name="search_format_hint" xml:space="preserve">
+    <value>Try: City, State · City, Country · Postal code</value>
+  </data>
   <data name="no_data_available" xml:space="preserve">
     <value>No weather data available</value>
   </data>

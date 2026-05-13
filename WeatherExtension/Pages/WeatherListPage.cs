@@ -8,14 +8,11 @@ using Microsoft.CmdPal.Ext.Weather.Models;
 using Microsoft.CmdPal.Ext.Weather.Services;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
-using System.Globalization;
-using System.Text;
 
 namespace Microsoft.CmdPal.Ext.Weather.Pages;
 
 internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 {
-	private static readonly CompositeFormat NoResultsFormat = CompositeFormat.Parse(Resources.no_results_for);
 	private const int MinSearchLength = 3;
 
 	private readonly IWeatherService _weatherService;
@@ -109,6 +106,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 				return;
 			}
 
+			EmptyContent = null;
 			var items = new List<IListItem>
 			{
 				CreateWeatherItem(location, weatherData),
@@ -216,14 +214,13 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 		{
 			ResetSearchToken();
 			_lastSearchQuery = newSearch;
-			var minCharsItem = new ListItem(new NoOpCommand())
+			EmptyContent = new Details
 			{
 				Title = Resources.search_min_chars,
-				Icon = Icons.WeatherIcon,
 			};
 			lock (_sync)
 			{
-				_items = [minCharsItem];
+				_items = [];
 				_isLoading = false;
 			}
 
@@ -294,16 +291,15 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 
 			if (locations.Count == 0)
 			{
-				var noResultsItem = new ListItem(new NoOpCommand())
+				EmptyContent = new Details
 				{
 					Title = Resources.no_locations_found,
-					Subtitle = string.Format(CultureInfo.CurrentCulture, NoResultsFormat, query),
-					Icon = Icons.WeatherIcon,
+					Body = Resources.search_format_hint,
 				};
 
 				lock (_sync)
 				{
-					_items = [noResultsItem];
+					_items = [];
 					_isLoading = false;
 				}
 
@@ -345,6 +341,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 				return;
 			}
 
+			EmptyContent = null;
 			lock (_sync)
 			{
 				_items = items.ToArray();
