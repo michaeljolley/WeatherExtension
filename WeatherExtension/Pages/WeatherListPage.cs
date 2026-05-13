@@ -214,9 +214,10 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 		{
 			ResetSearchToken();
 			_lastSearchQuery = newSearch;
-			EmptyContent = new Details
+			EmptyContent = new ListItem(new NoOpCommand())
 			{
 				Title = Resources.search_min_chars,
+				Icon = Icons.WeatherIcon,
 			};
 			lock (_sync)
 			{
@@ -291,10 +292,11 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 
 			if (locations.Count == 0)
 			{
-				EmptyContent = new Details
+				EmptyContent = new ListItem(new NoOpCommand())
 				{
 					Title = Resources.no_locations_found,
-					Body = Resources.search_format_hint,
+					Subtitle = Resources.search_format_hint,
+					Icon = Icons.WeatherIcon,
 				};
 
 				lock (_sync)
