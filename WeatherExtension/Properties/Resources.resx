@@ -256,4 +256,19 @@
   <data name="twelve_hours" xml:space="preserve">
     <value>12 hours</value>
   </data>
+  <data name="connectivity_no_internet" xml:space="preserve">
+    <value>No internet connection</value>
+  </data>
+  <data name="connectivity_api_blocked" xml:space="preserve">
+    <value>Weather API unreachable — may be blocked in your region</value>
+  </data>
+  <data name="connectivity_endpoint_current_weather" xml:space="preserve">
+    <value>current weather</value>
+  </data>
+  <data name="connectivity_endpoint_forecast" xml:space="preserve">
+    <value>forecast</value>
+  </data>
+  <data name="connectivity_endpoint_hourly_forecast" xml:space="preserve">
+    <value>hourly forecast</value>
+  </data>
 </root>
