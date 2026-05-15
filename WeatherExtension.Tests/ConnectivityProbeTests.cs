@@ -119,6 +119,6 @@ public class ConnectivityProbeTests
 			() => service.GetCurrentWeatherAsync(52.52, 13.41, ct: cts.Token));
 
 		// Cancelled — probe should not fire
-		Assert.AreEqual(1, callCount, "Cancelled request should not trigger probe");
+		Assert.AreEqual(0, callCount, "Cancelled request should not trigger probe");
 	}
 }
