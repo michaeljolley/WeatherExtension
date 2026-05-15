@@ -89,15 +89,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 			EmptyContent = null;
 
 			using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(searchCt, _cts.Token);
-			var items = new List<IListItem>
-			{
-				new ListItem(new NoOpCommand())
-				{
-					Title = Resources.favorites_section_title,
-					Icon = new IconInfo("\u2B50"),
-					Section = new ListSection(Resources.favorites_section_title),
-				},
-			};
+			var items = new List<IListItem>();
 
 			foreach (var pinned in favorites)
 			{
