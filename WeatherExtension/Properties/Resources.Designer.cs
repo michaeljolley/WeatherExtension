@@ -61,7 +61,6 @@ namespace Microsoft.CmdPal.Ext.Weather {
         }
         
         /// <summary>
-        /// <summary>
         ///   Looks up a localized string similar to Weather API unreachable — may be blocked in your region.
         /// </summary>
         public static string connectivity_api_blocked {
@@ -106,6 +105,7 @@ namespace Microsoft.CmdPal.Ext.Weather {
             }
         }
         
+        /// <summary>
         ///   Looks up a localized string similar to Celsius.
         /// </summary>
         public static string celsius {

@@ -252,14 +252,29 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 
 			var probeResponse = await _httpClient.SendAsync(probeRequest, probeCts.Token).ConfigureAwait(false);
 
-			// Probe succeeded — we have internet, so the weather API is specifically unreachable
-			WeatherLogger.LogToHost(
-				MessageState.Error,
-				$"{Resources.connectivity_api_blocked} ({failedEndpoint})");
+			if (probeResponse.StatusCode == System.Net.HttpStatusCode.NoContent)
+			{
+				// Got expected 204 — we have internet, weather API is specifically unreachable
+				WeatherLogger.LogToHost(
+					MessageState.Error,
+					$"{Resources.connectivity_api_blocked} ({failedEndpoint})");
+			}
+			else
+			{
+				// Non-204 response (e.g., captive portal redirect) — treat as no internet
+				WeatherLogger.LogToHost(
+					MessageState.Warning,
+					Resources.connectivity_no_internet);
+			}
+		}
+		catch (OperationCanceledException) when (ct.IsCancellationRequested)
+		{
+			// Caller cancelled — don't log, just return
+			return;
 		}
 		catch
 		{
-			// Probe failed — no internet connection
+			// Probe failed (timeout or network error) — no internet connection
 			WeatherLogger.LogToHost(
 				MessageState.Warning,
 				Resources.connectivity_no_internet);
