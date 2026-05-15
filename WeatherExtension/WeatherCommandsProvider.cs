@@ -131,7 +131,7 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 			{
 				WeatherLogger.LogToHost(
 					Microsoft.CommandPalette.Extensions.MessageState.Warning,
-					$"DefaultLocation migration: geocoding returned no results for "{oldLocation}"");
+					$"DefaultLocation migration: geocoding returned no results for \"{oldLocation}\"");
 				return;
 			}
 
@@ -139,7 +139,7 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 
 			WeatherLogger.LogToHost(
 				Microsoft.CommandPalette.Extensions.MessageState.Info,
-				$"DefaultLocation migration complete: "{oldLocation}" added to favorites as "{results[0].DisplayName}"");
+				$"DefaultLocation migration complete: \"{oldLocation}\" added to favorites as \"{results[0].DisplayName}\"");
 		}
 		catch (Exception ex)
 		{
