@@ -119,9 +119,21 @@ public class ConnectivityProbeTests
 		});
 
 		using var service = new OpenMeteoService(handler);
-		await Assert.ThrowsExceptionAsync<OperationCanceledException>(
-			() => service.GetCurrentWeatherAsync(52.52, 13.41, ct: cts.Token));
 
+		// HttpClient wraps OperationCanceledException as TaskCanceledException (a subtype).
+		// Use try/catch to accept any OperationCanceledException subtype.
+		Exception? thrown = null;
+		try
+		{
+			await service.GetCurrentWeatherAsync(52.52, 13.41, ct: cts.Token);
+			Assert.Fail("Expected OperationCanceledException to be thrown");
+		}
+		catch (OperationCanceledException ex)
+		{
+			thrown = ex;
+		}
+
+		Assert.IsNotNull(thrown, "Expected OperationCanceledException (or subtype)");
 		// Cancelled — probe should not fire
 		Assert.AreEqual(0, callCount, "Cancelled request should not trigger probe");
 	}
