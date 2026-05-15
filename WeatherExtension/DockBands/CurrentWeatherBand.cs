@@ -50,6 +50,7 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 		_updateTimer.Start();
 
 		_settings.Settings.SettingsChanged += OnSettingsChanged;
+		_favoritesManager.FavoritesChanged += OnFavoritesChanged;
 
 		// Fetch weather immediately on startup
 		_ = UpdateWeatherAsync();
@@ -154,6 +155,11 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 		}
 	}
 
+	private async void OnFavoritesChanged(object? sender, EventArgs e)
+	{
+		await UpdateWeatherAsync();
+	}
+
 	private async void OnSettingsChanged(object sender, Settings args)
 	{
 		await UpdateWeatherAsync();
@@ -165,6 +171,7 @@ internal sealed partial class CurrentWeatherBand : ListItem, IDisposable
 		{
 			_isDisposed = true;
 			_settings.Settings.SettingsChanged -= OnSettingsChanged;
+			_favoritesManager.FavoritesChanged -= OnFavoritesChanged;
 			_updateTimer?.Stop();
 			_updateTimer?.Dispose();
 		}

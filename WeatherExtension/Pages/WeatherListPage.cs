@@ -312,6 +312,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 		var oldCts = _searchCts;
 		_searchCts = new CancellationTokenSource();
 		oldCts.Cancel();
+		oldCts.Dispose();
 		return _searchCts.Token;
 	}
 
@@ -506,6 +507,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 		_settingsManager.Settings.SettingsChanged -= OnSettingsChanged;
 		_favoritesManager.FavoritesChanged -= OnFavoritesChanged;
 		_searchCts?.Cancel();
+		_searchCts?.Dispose();
 		_cts?.Cancel();
 		_cts?.Dispose();
 	}
