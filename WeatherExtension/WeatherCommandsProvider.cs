@@ -16,6 +16,7 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 	private readonly OpenMeteoService _weatherService = new();
 	private readonly GeocodingService _geocodingService = new();
 	private readonly PinnedLocationsManager _pinnedLocationsManager = new();
+	private readonly FavoritesManager _favoritesManager = new();
 	private readonly WeatherBandCard _weatherContentPage;
 	private readonly CurrentWeatherBand _currentWeatherBand;
 	private readonly WeatherListPage _weatherPage;
@@ -29,11 +30,11 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 		Icon = Icons.WeatherIcon;
 		Settings = _settingsManager.Settings;
 
-		_weatherContentPage = new WeatherBandCard(_weatherService, _geocodingService, _settingsManager);
-		_currentWeatherBand = new CurrentWeatherBand(_weatherService, _geocodingService, _settingsManager, _weatherContentPage);
+		_weatherContentPage = new WeatherBandCard(_weatherService, _geocodingService, _settingsManager, _favoritesManager);
+		_currentWeatherBand = new CurrentWeatherBand(_weatherService, _geocodingService, _settingsManager, _weatherContentPage, _favoritesManager);
 
 		// Create main weather page
-		_weatherPage = new WeatherListPage(_weatherService, _geocodingService, _settingsManager, _pinnedLocationsManager);
+		_weatherPage = new WeatherListPage(_weatherService, _geocodingService, _settingsManager, _pinnedLocationsManager, _favoritesManager);
 
 		_topLevelItems =
 		[
@@ -46,6 +47,7 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 		];
 
 		_pinnedLocationsManager.PinnedLocationsChanged += OnPinnedLocationsChanged;
+		_favoritesManager.FavoritesChanged += OnFavoritesChanged;
 	}
 
 	public override ICommandItem[] TopLevelCommands() => _topLevelItems;
@@ -68,7 +70,7 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 		foreach (var pinnedLocation in pinnedLocations)
 		{
 			var location = pinnedLocation.ToGeocodingResult();
-			var bandCard = new WeatherBandCard(_weatherService, _geocodingService, _settingsManager, location);
+			var bandCard = new WeatherBandCard(_weatherService, _geocodingService, _settingsManager, _favoritesManager, location);
 			var pinnedBand = new PinnedWeatherBand(location, _weatherService, _settingsManager, bandCard);
 			_pinnedBands.Add(pinnedBand);
 
@@ -86,6 +88,11 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 		return dockItems.ToArray();
 	}
 
+	private void OnFavoritesChanged(object? sender, EventArgs e)
+	{
+		// Favorites change is handled by WeatherListPage directly
+	}
+
 	private void OnPinnedLocationsChanged(object? sender, EventArgs e)
 	{
 		foreach (var band in _pinnedBands)
@@ -99,6 +106,7 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 	public override void Dispose()
 	{
 		_pinnedLocationsManager.PinnedLocationsChanged -= OnPinnedLocationsChanged;
+		_favoritesManager.FavoritesChanged -= OnFavoritesChanged;
 		foreach (var band in _pinnedBands)
 		{
 			band.Dispose();
