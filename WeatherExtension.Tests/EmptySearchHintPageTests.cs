@@ -98,7 +98,7 @@ public class EmptySearchHintPageTests
         var markdown = (MarkdownContent)page.GetContent()[0];
 
         StringAssert.Contains(markdown.Body, Resources.search_format_hint,
-            "Markdown body must include the search format hint (City, State · City, Country · Postal code)");
+            "Markdown body must include the search format hint");
     }
 
     [TestMethod]

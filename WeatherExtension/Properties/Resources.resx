@@ -143,7 +143,9 @@
     <comment>Placeholder {0} will be replaced with the search query</comment>
   </data>
   <data name="search_format_hint" xml:space="preserve">
-    <value>Try: City, State · City, Country · Postal code</value>
+    <value>Try: City, State/Province, Country, Postal Code, or any combination of them.
+
+If you continue to have issues, please [file a bug](https://github.com/michaeljolley/weatherextension/issues/new).</value>
   </data>
   <data name="no_data_available" xml:space="preserve">
     <value>No weather data available</value>
