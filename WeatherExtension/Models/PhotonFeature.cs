@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.CmdPal.Ext.Weather.Models;
 
-public sealed class PhotonFeature
+internal sealed class PhotonFeature
 {
 	[JsonPropertyName("geometry")]
 	public PhotonGeometry? Geometry { get; set; }
@@ -15,14 +15,14 @@ public sealed class PhotonFeature
 	public PhotonProperties? Properties { get; set; }
 }
 
-public sealed class PhotonGeometry
+internal sealed class PhotonGeometry
 {
 	// GeoJSON coordinates are [longitude, latitude] — note the reversed order vs. convention.
 	[JsonPropertyName("coordinates")]
 	public double[]? Coordinates { get; set; }
 }
 
-public sealed class PhotonProperties
+internal sealed class PhotonProperties
 {
 	[JsonPropertyName("osm_id")]
 	public long? OsmId { get; set; }

@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.CmdPal.Ext.Weather.Models;
 
-public sealed class PhotonResult
+internal sealed class PhotonResult
 {
 	[JsonPropertyName("features")]
 	public List<PhotonFeature>? Features { get; set; }
