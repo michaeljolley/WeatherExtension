@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using BaldBeardedBuilder.WeatherExtension;
 
 namespace Microsoft.CmdPal.Ext.Weather.Services;
 

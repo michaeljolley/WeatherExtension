@@ -9,6 +9,7 @@ using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using System.Threading;
 using System.Threading.Tasks;
+using BaldBeardedBuilder.WeatherExtension;
 
 namespace Microsoft.CmdPal.Ext.Weather;
 
