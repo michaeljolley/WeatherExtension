@@ -9,7 +9,7 @@ using System.Text.Json.Serialization.Metadata;
 
 namespace Microsoft.CmdPal.Ext.Weather.Services;
 
-internal class JsonFileStore<T>
+internal class JsonFileStore<T> where T : class
 {
 	private readonly string _filePath;
 	private readonly JsonTypeInfo<List<T>> _jsonTypeInfo;
