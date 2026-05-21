@@ -95,7 +95,7 @@ Wenn du weiterhin Probleme hast, melde gern einen [Fehlerbericht](https://github
   <data name="card_section_next_hours" xml:space="preserve"><value>Nächste {0} Stunden</value></data>
   <data name="card_section_day_forecast" xml:space="preserve"><value>{0}-Tage-Vorhersage</value></data>
   
-  <data name="default_location_dropdown_empty" xml:space="preserve"><value>Hefte einen Ort an oder füge ihn zu Favoriten hinzu, dann erscheint er hier.</value></data>
+  
   <data name="settings_page_title" xml:space="preserve"><value>Einstellungen</value></data>
   <data name="hour_format_title" xml:space="preserve"><value>Zeitformat</value></data>
   <data name="hour_format_description" xml:space="preserve"><value>12-Stunden- oder 24-Stunden-Anzeige wählen.</value></data>

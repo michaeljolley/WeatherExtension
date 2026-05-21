@@ -95,7 +95,7 @@ Lukt het nog steeds niet, [meld dan een bug](https://github.com/michaeljolley/we
   <data name="card_section_next_hours" xml:space="preserve"><value>Komende {0} uur</value></data>
   <data name="card_section_day_forecast" xml:space="preserve"><value>Verwachting voor {0} dagen</value></data>
   
-  <data name="default_location_dropdown_empty" xml:space="preserve"><value>Maak een plaats vast of voeg toe aan favorieten om deze hier te kunnen kiezen.</value></data>
+  
   <data name="settings_page_title" xml:space="preserve"><value>Instellingen</value></data>
   <data name="hour_format_title" xml:space="preserve"><value>Tijdnotatie</value></data>
   <data name="hour_format_description" xml:space="preserve"><value>Kies tussen 12-uurs en 24-uurs weergave.</value></data>

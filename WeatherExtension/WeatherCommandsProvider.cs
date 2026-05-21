@@ -20,7 +20,19 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 	private readonly WeatherSettingsPage _settingsPage;
 	private readonly ICommandItem[] _topLevelItems;
 	private readonly Lock _bandsSync = new();
-	private List<PinnedWeatherBand> _pinnedBands = [];
+
+	// Cache band instances by their lat/lon key. The host calls
+	// GetDockBands() not just on FavoritesChanged but also when the user
+	// hovers a band, opens dock customization, etc. Re-creating bands on
+	// every call meant each hover bounced the band's Title back to
+	// "Loading weather…" while UpdateWeatherAsync re-ran from scratch and
+	// re-issued network calls. By keeping a stable band per location and
+	// only adding/disposing entries on actual favorite changes, the
+	// resolved title persists across re-queries and the user only sees
+	// the loading state on the very first appearance.
+	private readonly Dictionary<string, BandEntry> _bandsByKey = new(StringComparer.Ordinal);
+
+	private readonly record struct BandEntry(PinnedWeatherBand Band, WrappedDockItem DockItem);
 
 	public WeatherCommandsProvider()
 	{
@@ -59,29 +71,58 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 
 	public override ICommandItem[] GetDockBands()
 	{
-		var dockItems = new List<ICommandItem>();
-		var newBands = new List<PinnedWeatherBand>();
+		var favorites = _favoritesManager.GetFavorites();
+		var dockItems = new List<ICommandItem>(favorites.Count);
 
-		// One band per favorite. Toggling a favorite is the only knob the
-		// user has to control what shows up here, which keeps the mental
-		// model simple: "the places I starred are the places I see in the
-		// dock."
-		foreach (var favorite in _favoritesManager.GetFavorites())
-		{
-			AddBandFor(favorite.ToGeocodingResult(), dockItems, newBands);
-		}
+		List<PinnedWeatherBand> bandsToDispose = [];
 
-		// Replace the tracked bands and dispose any prior generation. Done
-		// inside the lock so a concurrent OnFavoritesChanged can't
-		// double-dispose or leak the previous list.
-		List<PinnedWeatherBand> previous;
 		lock (_bandsSync)
 		{
-			previous = _pinnedBands;
-			_pinnedBands = newBands;
+			// Reconcile against the cache so a hover or any other
+			// non-favorite-changing GetDockBands() call returns the same
+			// band instances with their already-resolved weather data
+			// instead of fresh "Loading weather…" placeholders.
+			var fresh = new Dictionary<string, BandEntry>(StringComparer.Ordinal);
+			foreach (var favorite in favorites)
+			{
+				var key = BandKey(favorite.Latitude, favorite.Longitude);
+				if (fresh.ContainsKey(key))
+				{
+					// User favorited two locations that round-trip to the
+					// same lat/lon at our F4 precision — keep the first.
+					continue;
+				}
+
+				if (_bandsByKey.TryGetValue(key, out var existing))
+				{
+					fresh[key] = existing;
+					dockItems.Add(existing.DockItem);
+				}
+				else
+				{
+					var entry = CreateBand(favorite.ToGeocodingResult());
+					fresh[key] = entry;
+					dockItems.Add(entry.DockItem);
+				}
+			}
+
+			// Dispose bands whose location is no longer favorited.
+			foreach (var (key, entry) in _bandsByKey)
+			{
+				if (!fresh.ContainsKey(key))
+				{
+					bandsToDispose.Add(entry.Band);
+				}
+			}
+
+			_bandsByKey.Clear();
+			foreach (var (key, entry) in fresh)
+			{
+				_bandsByKey[key] = entry;
+			}
 		}
 
-		foreach (var band in previous)
+		foreach (var band in bandsToDispose)
 		{
 			band.Dispose();
 		}
@@ -89,25 +130,24 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 		return dockItems.ToArray();
 	}
 
-	private void AddBandFor(
-		Microsoft.CmdPal.Ext.Weather.Models.GeocodingResult location,
-		List<ICommandItem> dockItems,
-		List<PinnedWeatherBand> bandTracker)
+	private static string BandKey(double latitude, double longitude)
+		=> FormattableString.Invariant($"{latitude:F4}_{longitude:F4}");
+
+	private BandEntry CreateBand(Microsoft.CmdPal.Ext.Weather.Models.GeocodingResult location)
 	{
 		var bandCard = new WeatherBandCard(_weatherService, _geocodingService, _settingsManager, _favoritesManager, location);
 		var pinnedBand = new PinnedWeatherBand(location, _weatherService, _settingsManager, bandCard);
-		bandTracker.Add(pinnedBand);
 
-		var pinnedWrappedBand = new WrappedDockItem(
+		var dockItem = new WrappedDockItem(
 			[pinnedBand],
 			FormattableString.Invariant(
 				$"com.baldbeardedbuilder.cmdpal.weather.pinnedBand.{location.Latitude}_{location.Longitude}"),
 			$"Weather - {location.DisplayName}");
 
-		pinnedWrappedBand.Icon = Icons.WeatherIcon;
-		pinnedBand.DockItem = pinnedWrappedBand;
+		dockItem.Icon = Icons.WeatherIcon;
+		pinnedBand.DockItem = dockItem;
 
-		dockItems.Add(pinnedWrappedBand);
+		return new BandEntry(pinnedBand, dockItem);
 	}
 
 	private void OnFavoritesChanged(object? sender, EventArgs e)
@@ -124,8 +164,8 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 		List<PinnedWeatherBand> bandsToDispose;
 		lock (_bandsSync)
 		{
-			bandsToDispose = _pinnedBands;
-			_pinnedBands = [];
+			bandsToDispose = _bandsByKey.Values.Select(e => e.Band).ToList();
+			_bandsByKey.Clear();
 		}
 
 		foreach (var band in bandsToDispose)

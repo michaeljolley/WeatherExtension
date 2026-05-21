@@ -95,7 +95,7 @@
   <data name="card_section_next_hours" xml:space="preserve"><value>接下来 {0} 小时</value></data>
   <data name="card_section_day_forecast" xml:space="preserve"><value>{0} 天预报</value></data>
   
-  <data name="default_location_dropdown_empty" xml:space="preserve"><value>先固定一个位置或加入收藏夹，就能在这里选择。</value></data>
+  
   <data name="settings_page_title" xml:space="preserve"><value>设置</value></data>
   <data name="hour_format_title" xml:space="preserve"><value>时间格式</value></data>
   <data name="hour_format_description" xml:space="preserve"><value>选择 12 小时制或 24 小时制。</value></data>

@@ -95,7 +95,7 @@ Jeśli problem się powtarza, [zgłoś błąd](https://github.com/michaeljolley/
   <data name="card_section_next_hours" xml:space="preserve"><value>Najbliższe {0} godz.</value></data>
   <data name="card_section_day_forecast" xml:space="preserve"><value>Prognoza na {0} dni</value></data>
   
-  <data name="default_location_dropdown_empty" xml:space="preserve"><value>Przypnij lokalizację lub dodaj ją do ulubionych, aby pojawiła się na liście.</value></data>
+  
   <data name="settings_page_title" xml:space="preserve"><value>Ustawienia</value></data>
   <data name="hour_format_title" xml:space="preserve"><value>Format godziny</value></data>
   <data name="hour_format_description" xml:space="preserve"><value>Wybierz format 12- lub 24-godzinny.</value></data>

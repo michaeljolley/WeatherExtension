@@ -20,6 +20,7 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 	private readonly WeatherSettingsManager _settings;
 	private readonly WeatherBandCard _contentPage;
 	private readonly Timer _updateTimer;
+	private readonly CancellationTokenSource _cts = new();
 	private bool _isDisposed;
 	private int _isUpdating;
 
@@ -43,12 +44,30 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 
 		var intervalMs = _settings.UpdateIntervalMinutes * 60 * 1000;
 		_updateTimer = new Timer(intervalMs);
-		_updateTimer.Elapsed += async (s, e) => await UpdateWeatherAsync();
+		_updateTimer.Elapsed += OnTimerElapsed;
 		_updateTimer.Start();
 
 		_settings.Settings.SettingsChanged += OnSettingsChanged;
 
 		_ = UpdateWeatherAsync();
+	}
+
+	private async void OnTimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
+	{
+		// async void on a Timer.Elapsed handler is unavoidable, but we must
+		// not let exceptions bubble — the timer thread would crash the
+		// extension host. Funnel everything into UpdateWeatherAsync's own
+		// try/catch and log anything that still escapes.
+		try
+		{
+			await UpdateWeatherAsync().ConfigureAwait(false);
+		}
+		catch (Exception ex)
+		{
+			WeatherLogger.LogToHost(
+				MessageState.Error,
+				$"Pinned band timer tick failed: {ex.Message}");
+		}
 	}
 
 	private async Task UpdateWeatherAsync()
@@ -64,7 +83,17 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 				_location.Latitude,
 				_location.Longitude,
 				_settings.TemperatureUnit,
-				_settings.WindSpeedUnit);
+				_settings.WindSpeedUnit,
+				_cts.Token).ConfigureAwait(false);
+
+			// After every await we may have been disposed. Bail early so we
+			// don't write back to ListItem properties on a stale band — the
+			// host has already replaced this instance with the next dock
+			// generation.
+			if (_isDisposed)
+			{
+				return;
+			}
 
 			if (weather?.Current != null)
 			{
@@ -88,7 +117,13 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 					var forecast = await _weatherService.GetForecastAsync(
 						_location.Latitude,
 						_location.Longitude,
-						tempUnit);
+						tempUnit,
+						_cts.Token).ConfigureAwait(false);
+
+					if (_isDisposed)
+					{
+						return;
+					}
 
 					if (forecast?.Daily?.TemperatureMax?.Count > 0 &&
 						forecast.Daily.TemperatureMin?.Count > 0)
@@ -120,7 +155,10 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 			}
 
 			// Refresh the expanded content page to stay in sync with the band
-			await _contentPage.LoadWeatherDataAsync();
+			if (!_isDisposed)
+			{
+				await _contentPage.LoadWeatherDataAsync().ConfigureAwait(false);
+			}
 		}
 		catch (OperationCanceledException)
 		{
@@ -158,17 +196,49 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 
 	private async void OnSettingsChanged(object sender, Settings args)
 	{
-		await UpdateWeatherAsync();
+		if (_isDisposed)
+		{
+			return;
+		}
+
+		try
+		{
+			await UpdateWeatherAsync().ConfigureAwait(false);
+		}
+		catch (Exception ex)
+		{
+			WeatherLogger.LogToHost(
+				MessageState.Error,
+				$"Pinned band settings refresh failed: {ex.Message}");
+		}
 	}
 
 	public void Dispose()
 	{
-		if (!_isDisposed)
+		if (_isDisposed)
 		{
-			_isDisposed = true;
-			_settings.Settings.SettingsChanged -= OnSettingsChanged;
-			_updateTimer?.Stop();
-			_updateTimer?.Dispose();
+			return;
 		}
+
+		// Order matters: stop new triggers (timer + event) before signalling
+		// in-flight work to cancel, then dispose the cancellation source and
+		// the inner content page so its own subscriptions get released too.
+		_isDisposed = true;
+		_settings.Settings.SettingsChanged -= OnSettingsChanged;
+		_updateTimer.Elapsed -= OnTimerElapsed;
+		_updateTimer.Stop();
+		_updateTimer.Dispose();
+
+		try
+		{
+			_cts.Cancel();
+		}
+		catch (ObjectDisposedException)
+		{
+			// Already disposed elsewhere; nothing to do.
+		}
+
+		_cts.Dispose();
+		_contentPage.Dispose();
 	}
 }

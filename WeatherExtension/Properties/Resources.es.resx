@@ -95,7 +95,7 @@ Si el problema persiste, [reporta un error](https://github.com/michaeljolley/wea
   <data name="card_section_next_hours" xml:space="preserve"><value>Próximas {0} horas</value></data>
   <data name="card_section_day_forecast" xml:space="preserve"><value>Previsión a {0} días</value></data>
   
-  <data name="default_location_dropdown_empty" xml:space="preserve"><value>Ancla una ubicación o añádela a favoritos para que aparezca aquí.</value></data>
+  
   <data name="settings_page_title" xml:space="preserve"><value>Configuración</value></data>
   <data name="hour_format_title" xml:space="preserve"><value>Formato de hora</value></data>
   <data name="hour_format_description" xml:space="preserve"><value>Elige entre formato de 12 o 24 horas.</value></data>

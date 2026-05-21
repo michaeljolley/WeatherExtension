@@ -95,7 +95,7 @@
   <data name="card_section_next_hours" xml:space="preserve"><value>الساعات القادمة ({0})</value></data>
   <data name="card_section_day_forecast" xml:space="preserve"><value>توقّعات {0} أيام</value></data>
   
-  <data name="default_location_dropdown_empty" xml:space="preserve"><value>ثبّت موقعًا أو أضِفه إلى المفضلة ليظهر هنا للاختيار.</value></data>
+  
   <data name="settings_page_title" xml:space="preserve"><value>الإعدادات</value></data>
   <data name="hour_format_title" xml:space="preserve"><value>صيغة الوقت</value></data>
   <data name="hour_format_description" xml:space="preserve"><value>اختر بين عرض 12 ساعة و24 ساعة.</value></data>

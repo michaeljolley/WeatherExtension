@@ -95,7 +95,7 @@
   <data name="card_section_next_hours" xml:space="preserve"><value>Следующие {0} ч.</value></data>
   <data name="card_section_day_forecast" xml:space="preserve"><value>Прогноз на {0} дн.</value></data>
   
-  <data name="default_location_dropdown_empty" xml:space="preserve"><value>Закрепите место или добавьте его в избранное, чтобы оно появилось здесь.</value></data>
+  
   <data name="settings_page_title" xml:space="preserve"><value>Параметры</value></data>
   <data name="hour_format_title" xml:space="preserve"><value>Формат времени</value></data>
   <data name="hour_format_description" xml:space="preserve"><value>Выберите 12-часовой или 24-часовой формат.</value></data>

@@ -220,7 +220,7 @@ Sorun yaşamaya devam ederseniz [hata bildirin](https://github.com/michaeljolley
   <data name="card_section_next_hours" xml:space="preserve"><value>Sonraki {0} Saat</value></data>
   <data name="card_section_day_forecast" xml:space="preserve"><value>{0} Günlük Tahmin</value></data>
   
-  <data name="default_location_dropdown_empty" xml:space="preserve"><value>Bir konumu önce sabitleyin veya favorilere ekleyin, burada seçilebilir hâle gelir.</value></data>
+  
   <data name="settings_page_title" xml:space="preserve"><value>Ayarlar</value></data>
   <data name="hour_format_title" xml:space="preserve"><value>Saat Biçimi</value></data>
   <data name="hour_format_description" xml:space="preserve"><value>12 saatlik veya 24 saatlik gösterim arasından seçim yapın.</value></data>

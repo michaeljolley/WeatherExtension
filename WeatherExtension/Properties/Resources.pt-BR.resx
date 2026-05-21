@@ -95,7 +95,7 @@ Se o problema persistir, [reporte um bug](https://github.com/michaeljolley/weath
   <data name="card_section_next_hours" xml:space="preserve"><value>Próximas {0} horas</value></data>
   <data name="card_section_day_forecast" xml:space="preserve"><value>Previsão de {0} dias</value></data>
   
-  <data name="default_location_dropdown_empty" xml:space="preserve"><value>Fixe um local ou adicione aos favoritos para aparecer aqui.</value></data>
+  
   <data name="settings_page_title" xml:space="preserve"><value>Configurações</value></data>
   <data name="hour_format_title" xml:space="preserve"><value>Formato de hora</value></data>
   <data name="hour_format_description" xml:space="preserve"><value>Escolha entre formato de 12 ou 24 horas.</value></data>

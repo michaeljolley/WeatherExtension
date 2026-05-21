@@ -350,9 +350,7 @@ If you continue to have issues, please [file a bug](https://github.com/michaeljo
     <comment>Section header on the dock band card. {0} is the number of days.</comment>
   </data>
   
-  <data name="default_location_dropdown_empty" xml:space="preserve">
-    <value>Pin a location or add it to favorites to make it selectable here.</value>
-  </data>
+  
   <data name="settings_page_title" xml:space="preserve">
     <value>Settings</value>
   </data>
