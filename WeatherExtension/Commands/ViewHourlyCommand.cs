@@ -29,7 +29,7 @@ internal sealed partial class ViewHourlyCommand : InvokableCommand
 		_weatherService = weatherService;
 		_settingsManager = settingsManager;
 
-		Name = "View Hourly";
+		Name = Resources.command_view_hourly;
 	}
 
 	public override string Id => $"com.baldbeardedbuilder.cmdpal.weather.viewhourly.{_location.Id}";

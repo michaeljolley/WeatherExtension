@@ -143,7 +143,7 @@ internal sealed partial class HourlyForecastPage : ListPage, IDisposable
 				Details = new Details
 				{
 					Title = WeatherFormatter.Hour(time, _settingsManager.Use24HourClock),
-					Body = $"{condition} — {temperature:F0}{tempUnit} (feels like {feelsLike:F0}{tempUnit})",
+					Body = WeatherFormatter.FeelsLikeSubtitle(condition, $"{temperature:F0}{tempUnit}", $"{feelsLike:F0}{tempUnit}"),
 					Metadata =
 					[
 						new DetailsElement { Key = Resources.temperature, Data = new DetailsLink($"{temperature:F1}{tempUnit}") },

@@ -371,4 +371,17 @@ If you continue to have issues, please [file a bug](https://github.com/michaeljo
 <data name="search_hint_examples_title" xml:space="preserve"><value>Examples:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>London
 Paris, FR
 90210
-Berlin, Germany</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Press Ctrl+D to add a location to your favorites and the dock.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>With multiple favorites, the expanded card uses your first favorite by default. Add a second (or more) location to the dock anytime from Command Palette dock customization.</value></data></root>
+Berlin, Germany</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Press Ctrl+D to add a location to your favorites and the dock.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>With multiple favorites, the expanded card uses your first favorite by default. Add a second (or more) location to the dock anytime from Command Palette dock customization.</value></data>
+  <data name="command_change_location" xml:space="preserve"><value>Change Location</value></data>
+  <data name="command_refresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="command_view_hourly" xml:space="preserve"><value>View Hourly</value></data>
+  <data name="dock_band_title_template" xml:space="preserve"><value>Weather - {0}</value><comment>{0} is the location display name</comment></data>
+  <data name="compass_n" xml:space="preserve"><value>N</value></data>
+  <data name="compass_ne" xml:space="preserve"><value>NE</value></data>
+  <data name="compass_e" xml:space="preserve"><value>E</value></data>
+  <data name="compass_se" xml:space="preserve"><value>SE</value></data>
+  <data name="compass_s" xml:space="preserve"><value>S</value></data>
+  <data name="compass_sw" xml:space="preserve"><value>SW</value></data>
+  <data name="compass_w" xml:space="preserve"><value>W</value></data>
+  <data name="compass_nw" xml:space="preserve"><value>NW</value></data>
+</root>

@@ -15,7 +15,7 @@ internal sealed partial class ChangeLocationCommand : InvokableCommand
     public ChangeLocationCommand(WeatherListPage page)
     {
         _page = page;
-        Name = "Change Location";
+        Name = Resources.command_change_location;
     }
 
     public override string Id => "com.baldbeardedbuilder.cmdpal.weather.change_location";

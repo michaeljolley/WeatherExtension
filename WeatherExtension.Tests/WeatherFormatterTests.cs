@@ -78,7 +78,16 @@ public class WeatherFormatterTests
 	[DataRow(23, "NE")]
 	public void CompassDirection_MapsDegreesToEightPointRose(double degrees, string expected)
 	{
-		Assert.AreEqual(expected, WeatherFormatter.CompassDirection((int)degrees));
+		var originalUI = CultureInfo.CurrentUICulture;
+		try
+		{
+			CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+			Assert.AreEqual(expected, WeatherFormatter.CompassDirection((int)degrees));
+		}
+		finally
+		{
+			CultureInfo.CurrentUICulture = originalUI;
+		}
 	}
 
 	[TestMethod]
