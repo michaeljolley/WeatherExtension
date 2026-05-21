@@ -25,6 +25,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 
 	private IListItem[] _items = [];
 	private bool _isLoading;
+	private int _favoritesLoadGeneration;
 	private string _lastSearchQuery = string.Empty;
 	private CancellationTokenSource _searchCts = new();
 
@@ -59,6 +60,8 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 
 	private async void LoadFavoriteLocations(CancellationToken searchCt = default)
 	{
+		var generation = Interlocked.Increment(ref _favoritesLoadGeneration);
+
 		try
 		{
 			var favorites = _favoritesManager.GetFavorites();
@@ -66,6 +69,11 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 			{
 				lock (_sync)
 				{
+					if (generation != _favoritesLoadGeneration)
+					{
+						return;
+					}
+
 					_items = [];
 					_isLoading = false;
 				}
@@ -80,13 +88,26 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 
 			lock (_sync)
 			{
+				if (generation != _favoritesLoadGeneration)
+				{
+					return;
+				}
+
 				_items = [];
+				_isLoading = true;
 			}
+
+			RaiseItemsChanged();
 
 			using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(searchCt, _cts.Token);
 
 			foreach (var pinned in favorites)
 			{
+				if (generation != _favoritesLoadGeneration)
+				{
+					return;
+				}
+
 				var location = pinned.ToGeocodingResult();
 				try
 				{
@@ -97,10 +118,20 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 						_settingsManager.WindSpeedUnit,
 						linkedCts.Token).ConfigureAwait(false);
 
+					if (generation != _favoritesLoadGeneration)
+					{
+						return;
+					}
+
 					if (weatherData != null)
 					{
 						lock (_sync)
 						{
+							if (generation != _favoritesLoadGeneration)
+							{
+								return;
+							}
+
 							_items = [.. _items, CreateWeatherItem(location, weatherData)];
 						}
 
@@ -117,20 +148,40 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 
 			lock (_sync)
 			{
-				_isLoading = false;
+				if (generation == _favoritesLoadGeneration)
+				{
+					_isLoading = false;
+				}
 			}
 
-			RaiseItemsChanged();
+			if (generation == _favoritesLoadGeneration)
+			{
+				RaiseItemsChanged();
+			}
 		}
 		catch (OperationCanceledException)
 		{
-			// Expected when cancelled by a newer search or page is disposed
+			// Expected when cancelled by a newer favorites reload or page dispose.
+			// A newer generation owns _items/_isLoading — do not touch them here.
 		}
 		catch (Exception ex)
 		{
 			WeatherLogger.LogToHost(
 				MessageState.Error,
 				$"Failed to load favorite locations: {ex.Message}");
+
+			lock (_sync)
+			{
+				if (generation == _favoritesLoadGeneration)
+				{
+					_isLoading = false;
+				}
+			}
+
+			if (generation == _favoritesLoadGeneration)
+			{
+				RaiseItemsChanged();
+			}
 		}
 	}
 
@@ -265,30 +316,19 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 	// Builds a richer empty-state hint card so first-time users see what they
 	// can type and which keyboard shortcuts apply, instead of a single line
 	// like "No favorites".
-	private static ListItem BuildSearchHintCard(string headline)
+	private static ListItem BuildSearchHintCard(string headline, bool includeSearchFormatHint = false)
 	{
-		// Subtitle stays single-line because the host truncates at the first
-		// newline and clips the rest. The same text is repeated in Details.Body
-		// where wrapping is honored, so users get the full hint regardless.
-		var subtitle = string.Format(
-			System.Globalization.CultureInfo.CurrentCulture,
-			"{0}   {1}",
-			Resources.search_hint_examples,
-			Resources.search_hint_pin);
-
-		return new ListItem(new EmptySearchHintPage())
+		// The empty-state panel renders Title + Subtitle only (not Details.Body),
+		// so stack every hint line in Subtitle. Opening the row shows markdown.
+		return new ListItem(new SearchHintPage(headline, includeSearchFormatHint))
 		{
 			Title = headline,
-			Subtitle = subtitle,
+			Subtitle = SearchHints.BuildListHintEmptySubtitle(),
 			Icon = Icons.WeatherIcon,
 			Details = new Details
 			{
 				Title = headline,
-				Body = string.Format(
-					System.Globalization.CultureInfo.CurrentCulture,
-					"{0}\n\n{1}",
-					Resources.search_hint_examples,
-					Resources.search_hint_pin),
+				Body = SearchHints.BuildListHintBody(),
 			},
 		};
 	}
@@ -376,7 +416,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 
 			if (locations.Count == 0)
 			{
-				EmptyContent = BuildSearchHintCard(Resources.no_locations_found);
+				EmptyContent = BuildSearchHintCard(Resources.no_locations_found, includeSearchFormatHint: true);
 
 				lock (_sync)
 				{

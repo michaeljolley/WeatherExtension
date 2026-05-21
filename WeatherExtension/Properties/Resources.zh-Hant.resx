@@ -88,8 +88,8 @@
   <data name="feels_like_template" xml:space="preserve"><value>{0} — {1}（體感 {2}）</value></data>
   
   
-  <data name="search_hint_examples" xml:space="preserve"><value>範例：台北   高雄, TW   100   香港, 中國</value></data>
-  <data name="search_hint_pin" xml:space="preserve"><value>按 Ctrl+D 將位置加入我的最愛與停駐列。</value></data>
+  
+  
   <data name="page_forecast_title" xml:space="preserve"><value>預報</value></data>
   <data name="page_hourly_title" xml:space="preserve"><value>每小時預報</value></data>
   <data name="card_section_next_hours" xml:space="preserve"><value>接下來 {0} 小時</value></data>
@@ -104,4 +104,7 @@
   <data name="settings_save_button" xml:space="preserve"><value>儲存</value></data>
   
   
-</root>
+<data name="search_hint_examples_title" xml:space="preserve"><value>範例：</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>台北
+高雄, TW
+100
+香港, 中國</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>按 Ctrl+D 將位置加入我的最愛與停駐列。</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>有多個我的最愛時，展開卡片預設使用第一個。可隨時從命令面板的停駐列自訂新增第二個及更多位置。</value></data></root>

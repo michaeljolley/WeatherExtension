@@ -213,8 +213,8 @@ Sorun yaşamaya devam ederseniz [hata bildirin](https://github.com/michaeljolley
   <data name="feels_like_template" xml:space="preserve"><value>{0} — {1} (hissedilen {2})</value></data>
   
   
-  <data name="search_hint_examples" xml:space="preserve"><value>Örnek: İstanbul   Ankara, TR   34122   Berlin, Almanya</value></data>
-  <data name="search_hint_pin" xml:space="preserve"><value>Bir konumu favorilere ve dock'a eklemek için Ctrl+D'ye basın.</value></data>
+  
+  
   <data name="page_forecast_title" xml:space="preserve"><value>Tahmin</value></data>
   <data name="page_hourly_title" xml:space="preserve"><value>Saatlik Tahmin</value></data>
   <data name="card_section_next_hours" xml:space="preserve"><value>Sonraki {0} Saat</value></data>
@@ -229,4 +229,7 @@ Sorun yaşamaya devam ederseniz [hata bildirin](https://github.com/michaeljolley
   <data name="settings_save_button" xml:space="preserve"><value>Kaydet</value></data>
   
   
-</root>
+<data name="search_hint_examples_title" xml:space="preserve"><value>Örnekler:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>İstanbul
+Ankara, TR
+34122
+Berlin, Almanya</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Bir konumu favorilere ve dock'a eklemek için Ctrl+D'ye basın.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Birden fazla favoriniz varsa genişletilmiş kart varsayılan olarak ilk favoriyi kullanır. İkinci ve sonraki konumları dock'a, Komut Paleti dock özelleştirmesinden isteğe bağlı ekleyebilirsiniz.</value></data></root>

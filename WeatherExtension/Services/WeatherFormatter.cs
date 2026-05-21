@@ -5,7 +5,6 @@
 using System.Globalization;
 using BaldBeardedBuilder.WeatherExtension;
 using Microsoft.CmdPal.Ext.Weather.Models;
-using Icons = Microsoft.CmdPal.Ext.Weather.Icons;
 
 namespace Microsoft.CmdPal.Ext.Weather.Services;
 /// <summary>
@@ -95,14 +94,14 @@ internal static class WeatherFormatter
 		=> string.Format(
 			CultureInfo.CurrentCulture,
 			"{0} \u2014 {1}",
-			Icons.GetWeatherDescription(weatherCode),
+			WeatherDescriptions.GetLocalized(weatherCode),
 			Temperature(temperature, temperatureUnit));
 
 	public static string CurrentSubtitle(CurrentWeather current, string temperatureUnit)
 		=> string.Format(
 			CultureInfo.CurrentCulture,
 			GetFeelsLikeFormat(),
-			Icons.GetWeatherDescription(current.WeatherCode),
+			WeatherDescriptions.GetLocalized(current.WeatherCode),
 			Temperature(current.Temperature, temperatureUnit),
 			Temperature(current.ApparentTemperature, temperatureUnit));
 

@@ -88,8 +88,8 @@ Lukt het nog steeds niet, [meld dan een bug](https://github.com/michaeljolley/we
   <data name="feels_like_template" xml:space="preserve"><value>{0} — {1} (voelt als {2})</value></data>
   
   
-  <data name="search_hint_examples" xml:space="preserve"><value>Voorbeelden: Amsterdam   Rotterdam, NL   1011   Brussel, België</value></data>
-  <data name="search_hint_pin" xml:space="preserve"><value>Druk op Ctrl+D om een locatie toe te voegen aan favorieten en de dock.</value></data>
+  
+  
   <data name="page_forecast_title" xml:space="preserve"><value>Verwachting</value></data>
   <data name="page_hourly_title" xml:space="preserve"><value>Uurverwachting</value></data>
   <data name="card_section_next_hours" xml:space="preserve"><value>Komende {0} uur</value></data>
@@ -104,4 +104,7 @@ Lukt het nog steeds niet, [meld dan een bug](https://github.com/michaeljolley/we
   <data name="settings_save_button" xml:space="preserve"><value>Opslaan</value></data>
   
   
-</root>
+<data name="search_hint_examples_title" xml:space="preserve"><value>Voorbeelden:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>Amsterdam
+Rotterdam, NL
+1011 AB
+Brussel, België</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Druk op Ctrl+D om een locatie toe te voegen aan favorieten en de dock.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Met meerdere favorieten gebruikt de uitgevouwen kaart standaard je eerste favoriet. Voeg extra locaties toe aan de dock via dock-aanpassing in de Opdrachtpalet.</value></data></root>

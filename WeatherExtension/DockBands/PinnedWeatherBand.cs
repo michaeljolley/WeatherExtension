@@ -24,6 +24,8 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 	private bool _isDisposed;
 	private int _isUpdating;
 
+	internal bool IsDisposed => _isDisposed;
+
 	internal ICommandItem? DockItem { get; set; }
 
 	public PinnedWeatherBand(

@@ -16,7 +16,11 @@ public sealed partial class GeocodingService : IGeocodingService
 	private const string NominatimUrl = "https://nominatim.openstreetmap.org/search";
 	private const string PhotonUrl = "https://photon.komoot.io/api/";
 	private const int MinSearchLength = 3;
-	internal const int MaxFallbackAttempts = 4;
+	// Worst case per comma-trimmed query segment: Nominatim (1) + Photon places (1)
+	// + Photon broad retry (1) = 3 HTTP calls. A budget of 4 left only one slot for
+	// the next segment (Nominatim-only, no Photon retries). 5 allows one full
+	// three-call pass plus a trimmed-segment retry with Nominatim + Photon places.
+	internal const int MaxFallbackAttempts = 5;
 
 	[GeneratedRegex(@"^\d{5}(-\d{4})?$")]
 	private static partial Regex UsZipCodeRegex();
@@ -99,9 +103,9 @@ public sealed partial class GeocodingService : IGeocodingService
 	private async Task<List<GeocodingResult>> SearchWithProgressiveFallbackAsync(string query, CancellationToken ct)
 	{
 		var currentQuery = query;
-		// MaxFallbackAttempts caps the total number of outbound HTTP calls across
-		// both Nominatim and Photon combined, not per-provider. Each provider call
-		// consumes one slot from this budget.
+		// MaxFallbackAttempts caps outbound HTTP calls across Nominatim and Photon
+		// for this search (not per-provider). Each call consumes one slot. See the
+		// constant comment for per-segment worst-case math (3 calls/segment).
 		var remainingCalls = MaxFallbackAttempts;
 		var nominatimAlive = true;
 

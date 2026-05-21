@@ -88,8 +88,8 @@ Se o problema persistir, [reporte um bug](https://github.com/michaeljolley/weath
   <data name="feels_like_template" xml:space="preserve"><value>{0} — {1} (sensação {2})</value></data>
   
   
-  <data name="search_hint_examples" xml:space="preserve"><value>Exemplos: São Paulo   Rio, BR   01001-000   Lisboa, Portugal</value></data>
-  <data name="search_hint_pin" xml:space="preserve"><value>Pressione Ctrl+D para adicionar um local aos favoritos e ao dock.</value></data>
+  
+  
   <data name="page_forecast_title" xml:space="preserve"><value>Previsão</value></data>
   <data name="page_hourly_title" xml:space="preserve"><value>Previsão por hora</value></data>
   <data name="card_section_next_hours" xml:space="preserve"><value>Próximas {0} horas</value></data>
@@ -104,4 +104,7 @@ Se o problema persistir, [reporte um bug](https://github.com/michaeljolley/weath
   <data name="settings_save_button" xml:space="preserve"><value>Salvar</value></data>
   
   
-</root>
+<data name="search_hint_examples_title" xml:space="preserve"><value>Exemplos:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>São Paulo
+Rio de Janeiro, BR
+01310-100
+Lisboa, Portugal</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Pressione Ctrl+D para adicionar um local aos favoritos e ao dock.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Com vários favoritos, o cartão expandido usa seu primeiro favorito por padrão. Adicione mais locais ao dock a qualquer momento na personalização do dock da Paleta de Comandos.</value></data></root>

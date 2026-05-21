@@ -88,8 +88,8 @@ Se il problema persiste, [segnala un bug](https://github.com/michaeljolley/weath
   <data name="feels_like_template" xml:space="preserve"><value>{0} — {1} (percepita {2})</value></data>
   
   
-  <data name="search_hint_examples" xml:space="preserve"><value>Esempi: Roma   Milano, IT   00100   Lugano, Svizzera</value></data>
-  <data name="search_hint_pin" xml:space="preserve"><value>Premi Ctrl+D per aggiungere un luogo ai preferiti e al dock.</value></data>
+  
+  
   <data name="page_forecast_title" xml:space="preserve"><value>Previsione</value></data>
   <data name="page_hourly_title" xml:space="preserve"><value>Previsione oraria</value></data>
   <data name="card_section_next_hours" xml:space="preserve"><value>Prossime {0} ore</value></data>
@@ -104,4 +104,7 @@ Se il problema persiste, [segnala un bug](https://github.com/michaeljolley/weath
   <data name="settings_save_button" xml:space="preserve"><value>Salva</value></data>
   
   
-</root>
+<data name="search_hint_examples_title" xml:space="preserve"><value>Esempi:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>Roma
+Milano, IT
+00100
+Lugano, Svizzera</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Premi Ctrl+D per aggiungere un luogo ai preferiti e al dock.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Con più preferiti, la scheda espansa usa per impostazione predefinita il primo preferito. Aggiungi altre località al dock in qualsiasi momento dalla personalizzazione dock della Tavolozza comandi.</value></data></root>

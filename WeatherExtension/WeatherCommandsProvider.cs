@@ -93,7 +93,7 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 					continue;
 				}
 
-				if (_bandsByKey.TryGetValue(key, out var existing))
+				if (_bandsByKey.TryGetValue(key, out var existing) && !existing.Band.IsDisposed)
 				{
 					fresh[key] = existing;
 					dockItems.Add(existing.DockItem);
@@ -152,6 +152,11 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 
 	private void OnFavoritesChanged(object? sender, EventArgs e)
 	{
+		// Reconcile immediately — don't wait for the host to call GetDockBands().
+		// If the user re-favorites a location before the host polls, a stale
+		// disposed band would otherwise be reused from the cache.
+		_ = GetDockBands();
+
 		// Tell the host to re-query GetDockBands() so the band list reflects
 		// the user's latest favorite/unfavorite action without forcing a
 		// full extension reload.

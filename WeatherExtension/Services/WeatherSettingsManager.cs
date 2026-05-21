@@ -155,7 +155,17 @@ public sealed class WeatherSettingsManager : JsonSettingsManager
         var method = typeof(Settings).GetMethod(
             "ToFormJson",
             System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-        var raw = method?.Invoke(Settings, null) as string ?? "{}";
+
+        if (method is null)
+        {
+            WeatherLogger.LogToHost(
+                MessageState.Warning,
+                "Toolkit reflection failed: Settings.ToFormJson was not found. "
+                + "The settings form may render blank until the Command Palette SDK is updated.");
+            return "{}";
+        }
+
+        var raw = method.Invoke(Settings, null) as string ?? "{}";
 
         // Toolkit hard-codes the Save button label as "Save" in the form
         // template. Substitute the localized label we ship instead so the
@@ -184,6 +194,16 @@ public sealed class WeatherSettingsManager : JsonSettingsManager
         var method = typeof(Settings).GetMethod(
             "RaiseSettingsChanged",
             System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
-        method?.Invoke(Settings, null);
+
+        if (method is null)
+        {
+            WeatherLogger.LogToHost(
+                MessageState.Warning,
+                "Toolkit reflection failed: Settings.RaiseSettingsChanged was not found. "
+                + "Saved settings may not propagate to pages and dock bands until the Command Palette SDK is updated.");
+            return;
+        }
+
+        method.Invoke(Settings, null);
     }
 }

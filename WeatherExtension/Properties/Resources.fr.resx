@@ -88,8 +88,8 @@ Si le problème persiste, n'hésitez pas à [signaler un bug](https://github.com
   <data name="feels_like_template" xml:space="preserve"><value>{0} — {1} (ressenti {2})</value></data>
   
   
-  <data name="search_hint_examples" xml:space="preserve"><value>Exemples : Paris   Lyon, FR   75001   Bruxelles, Belgique</value></data>
-  <data name="search_hint_pin" xml:space="preserve"><value>Appuie sur Ctrl+D pour ajouter un lieu aux favoris et au dock.</value></data>
+  
+  
   <data name="page_forecast_title" xml:space="preserve"><value>Prévisions</value></data>
   <data name="page_hourly_title" xml:space="preserve"><value>Prévisions horaires</value></data>
   <data name="card_section_next_hours" xml:space="preserve"><value>{0} prochaines heures</value></data>
@@ -104,4 +104,7 @@ Si le problème persiste, n'hésitez pas à [signaler un bug](https://github.com
   <data name="settings_save_button" xml:space="preserve"><value>Enregistrer</value></data>
   
   
-</root>
+<data name="search_hint_examples_title" xml:space="preserve"><value>Exemples :</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>Paris
+Lyon, FR
+75001
+Bruxelles, Belgique</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Appuie sur Ctrl+D pour ajouter un lieu aux favoris et au dock.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Avec plusieurs favoris, la carte développée utilise par défaut ton premier favori. Ajoute d'autres lieux au dock à tout moment via la personnalisation du dock dans la palette de commandes.</value></data></root>

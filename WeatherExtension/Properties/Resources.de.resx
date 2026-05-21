@@ -88,8 +88,8 @@ Wenn du weiterhin Probleme hast, melde gern einen [Fehlerbericht](https://github
   <data name="feels_like_template" xml:space="preserve"><value>{0} — {1} (gefühlt {2})</value></data>
   
   
-  <data name="search_hint_examples" xml:space="preserve"><value>Beispiele: Berlin   München, DE   80331   Wien, Österreich</value></data>
-  <data name="search_hint_pin" xml:space="preserve"><value>Drücke Strg+D, um einen Ort zu Favoriten und Dock hinzuzufügen.</value></data>
+  
+  
   <data name="page_forecast_title" xml:space="preserve"><value>Vorhersage</value></data>
   <data name="page_hourly_title" xml:space="preserve"><value>Stündliche Vorhersage</value></data>
   <data name="card_section_next_hours" xml:space="preserve"><value>Nächste {0} Stunden</value></data>
@@ -104,4 +104,7 @@ Wenn du weiterhin Probleme hast, melde gern einen [Fehlerbericht](https://github
   <data name="settings_save_button" xml:space="preserve"><value>Speichern</value></data>
   
   
-</root>
+<data name="search_hint_examples_title" xml:space="preserve"><value>Beispiele:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>Berlin
+München, DE
+80331
+Wien, Österreich</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Drücke Strg+D, um einen Ort zu Favoriten und Dock hinzuzufügen.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Bei mehreren Favoriten verwendet die erweiterte Karte standardmäßig deinen ersten Favoriten. Weitere Orte kannst du jederzeit über die Dock-Anpassung der Befehlspalette hinzufügen.</value></data></root>

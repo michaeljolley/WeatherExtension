@@ -329,12 +329,8 @@ If you continue to have issues, please [file a bug](https://github.com/michaeljo
   </data>
   
   
-  <data name="search_hint_examples" xml:space="preserve">
-    <value>Examples: London   Paris, FR   90210   Berlin, Germany</value>
-  </data>
-  <data name="search_hint_pin" xml:space="preserve">
-    <value>Press Ctrl+D to add a location to your favorites and the dock.</value>
-  </data>
+  
+  
   <data name="page_forecast_title" xml:space="preserve">
     <value>Forecast</value>
   </data>
@@ -372,4 +368,7 @@ If you continue to have issues, please [file a bug](https://github.com/michaeljo
   </data>
   
   
-</root>
+<data name="search_hint_examples_title" xml:space="preserve"><value>Examples:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>London
+Paris, FR
+90210
+Berlin, Germany</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Press Ctrl+D to add a location to your favorites and the dock.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>With multiple favorites, the expanded card uses your first favorite by default. Add a second (or more) location to the dock anytime from Command Palette dock customization.</value></data></root>

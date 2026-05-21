@@ -191,6 +191,12 @@ public class GeocodingServiceTests
 	}
 
 	[TestMethod]
+	public void MaxFallbackAttempts_IsFiveToAllowSegmentRetry()
+	{
+		Assert.AreEqual(5, GeocodingService.MaxFallbackAttempts);
+	}
+
+	[TestMethod]
 	public async Task SearchLocationAsync_LongCommaInput_CapsAttemptsAtMaxFallbackAttempts()
 	{
 		var callCount = 0;

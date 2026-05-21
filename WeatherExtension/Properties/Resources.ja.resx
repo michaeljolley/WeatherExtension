@@ -88,8 +88,8 @@
   <data name="feels_like_template" xml:space="preserve"><value>{0} — {1} (体感 {2})</value></data>
   
   
-  <data name="search_hint_examples" xml:space="preserve"><value>例: 東京   大阪, JP   100-0001   ソウル, 韓国</value></data>
-  <data name="search_hint_pin" xml:space="preserve"><value>Ctrl+D で場所をお気に入りとドックに追加します。</value></data>
+  
+  
   <data name="page_forecast_title" xml:space="preserve"><value>予報</value></data>
   <data name="page_hourly_title" xml:space="preserve"><value>毎時の予報</value></data>
   <data name="card_section_next_hours" xml:space="preserve"><value>次の {0} 時間</value></data>
@@ -104,4 +104,7 @@
   <data name="settings_save_button" xml:space="preserve"><value>保存</value></data>
   
   
-</root>
+<data name="search_hint_examples_title" xml:space="preserve"><value>例:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>東京
+大阪, JP
+100-0001
+ソウル, 韓国</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Ctrl+D で場所をお気に入りとドックに追加します。</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>お気に入りが複数ある場合、展開カードは既定で最初のお気に入りを参照します。2件目以降はコマンド パレットのドックのカスタマイズからいつでも追加できます。</value></data></root>

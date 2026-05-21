@@ -88,8 +88,8 @@ Jeśli problem się powtarza, [zgłoś błąd](https://github.com/michaeljolley/
   <data name="feels_like_template" xml:space="preserve"><value>{0} — {1} (odczuwalna {2})</value></data>
   
   
-  <data name="search_hint_examples" xml:space="preserve"><value>Przykłady: Warszawa   Kraków, PL   00-001   Berlin, Niemcy</value></data>
-  <data name="search_hint_pin" xml:space="preserve"><value>Naciśnij Ctrl+D, aby dodać miejsce do ulubionych i paska.</value></data>
+  
+  
   <data name="page_forecast_title" xml:space="preserve"><value>Prognoza</value></data>
   <data name="page_hourly_title" xml:space="preserve"><value>Prognoza godzinowa</value></data>
   <data name="card_section_next_hours" xml:space="preserve"><value>Najbliższe {0} godz.</value></data>
@@ -104,4 +104,7 @@ Jeśli problem się powtarza, [zgłoś błąd](https://github.com/michaeljolley/
   <data name="settings_save_button" xml:space="preserve"><value>Zapisz</value></data>
   
   
-</root>
+<data name="search_hint_examples_title" xml:space="preserve"><value>Przykłady:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>Warszawa
+Kraków, PL
+00-001
+Berlin, Niemcy</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Naciśnij Ctrl+D, aby dodać miejsce do ulubionych i paska.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Przy wielu ulubionych rozwinięta karta domyślnie używa pierwszego. Kolejne lokalizacje dodasz w dowolnym momencie w dostosowaniu paska w Palecie poleceń.</value></data></root>

@@ -88,8 +88,8 @@
   <data name="feels_like_template" xml:space="preserve"><value>{0} — {1}（体感 {2}）</value></data>
   
   
-  <data name="search_hint_examples" xml:space="preserve"><value>示例：北京   上海, CN   100000   香港, 中国</value></data>
-  <data name="search_hint_pin" xml:space="preserve"><value>按 Ctrl+D 将位置添加到收藏夹和停靠区。</value></data>
+  
+  
   <data name="page_forecast_title" xml:space="preserve"><value>预报</value></data>
   <data name="page_hourly_title" xml:space="preserve"><value>每小时预报</value></data>
   <data name="card_section_next_hours" xml:space="preserve"><value>接下来 {0} 小时</value></data>
@@ -104,4 +104,7 @@
   <data name="settings_save_button" xml:space="preserve"><value>保存</value></data>
   
   
-</root>
+<data name="search_hint_examples_title" xml:space="preserve"><value>示例：</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>北京
+上海, CN
+100000
+香港, 中国</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>按 Ctrl+D 将位置添加到收藏夹和停靠区。</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>有多个收藏时，展开卡片默认使用第一个收藏。可在命令面板的停靠区自定义中随时添加第二个及更多位置。</value></data></root>

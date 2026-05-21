@@ -88,8 +88,8 @@ Si el problema persiste, [reporta un error](https://github.com/michaeljolley/wea
   <data name="feels_like_template" xml:space="preserve"><value>{0} — {1} (sensación {2})</value></data>
   
   
-  <data name="search_hint_examples" xml:space="preserve"><value>Ejemplos: Madrid   Barcelona, ES   28001   Buenos Aires, Argentina</value></data>
-  <data name="search_hint_pin" xml:space="preserve"><value>Pulsa Ctrl+D para añadir un lugar a favoritos y al dock.</value></data>
+  
+  
   <data name="page_forecast_title" xml:space="preserve"><value>Previsión</value></data>
   <data name="page_hourly_title" xml:space="preserve"><value>Previsión por horas</value></data>
   <data name="card_section_next_hours" xml:space="preserve"><value>Próximas {0} horas</value></data>
@@ -104,4 +104,7 @@ Si el problema persiste, [reporta un error](https://github.com/michaeljolley/wea
   <data name="settings_save_button" xml:space="preserve"><value>Guardar</value></data>
   
   
-</root>
+<data name="search_hint_examples_title" xml:space="preserve"><value>Ejemplos:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>Madrid
+Barcelona, ES
+28001
+Buenos Aires, Argentina</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Pulsa Ctrl+D para añadir un lugar a favoritos y al dock.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Con varios favoritos, la tarjeta expandida usa tu primer favorito por defecto. Añade más ubicaciones al dock cuando quieras desde la personalización del dock en el Panel de comandos.</value></data></root>

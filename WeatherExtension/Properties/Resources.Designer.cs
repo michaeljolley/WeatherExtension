@@ -614,8 +614,10 @@ namespace Microsoft.CmdPal.Ext.Weather {
         public static string weather_snow_showers { get { return ResourceManager.GetString("weather_snow_showers", resourceCulture); } }
         public static string weather_thunderstorm { get { return ResourceManager.GetString("weather_thunderstorm", resourceCulture); } }
         public static string feels_like_template { get { return ResourceManager.GetString("feels_like_template", resourceCulture); } }
-        public static string search_hint_examples { get { return ResourceManager.GetString("search_hint_examples", resourceCulture); } }
-        public static string search_hint_pin { get { return ResourceManager.GetString("search_hint_pin", resourceCulture); } }
+        public static string search_hint_examples_title { get { return ResourceManager.GetString("search_hint_examples_title", resourceCulture); } }
+        public static string search_hint_examples_block { get { return ResourceManager.GetString("search_hint_examples_block", resourceCulture); } }
+        public static string search_hint_favorite_shortcut { get { return ResourceManager.GetString("search_hint_favorite_shortcut", resourceCulture); } }
+        public static string search_hint_multiple_favorites { get { return ResourceManager.GetString("search_hint_multiple_favorites", resourceCulture); } }
         public static string page_forecast_title { get { return ResourceManager.GetString("page_forecast_title", resourceCulture); } }
         public static string page_hourly_title { get { return ResourceManager.GetString("page_hourly_title", resourceCulture); } }
         public static string card_section_next_hours { get { return ResourceManager.GetString("card_section_next_hours", resourceCulture); } }

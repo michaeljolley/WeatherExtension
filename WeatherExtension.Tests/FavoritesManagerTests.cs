@@ -175,6 +175,26 @@ public class FavoritesManagerTests
     }
 
     [TestMethod]
+    public void UnfavoriteOneOfTwo_ThenFavoriteAnother_ReturnsTwo()
+    {
+        var manager = new FavoritesManager(_tempFilePath);
+        var seattle = new GeocodingResult { Name = "Seattle", Latitude = 47.6, Longitude = -122.3 };
+        var portland = new GeocodingResult { Name = "Portland", Latitude = 45.5, Longitude = -122.7 };
+        var vancouver = new GeocodingResult { Name = "Vancouver", Latitude = 49.3, Longitude = -123.1 };
+
+        manager.Favorite(seattle);
+        manager.Favorite(portland);
+        manager.Unfavorite(portland);
+        manager.Favorite(vancouver);
+
+        var favorites = manager.GetFavorites();
+        Assert.AreEqual(2, favorites.Count);
+        Assert.IsTrue(manager.IsFavorite(seattle));
+        Assert.IsFalse(manager.IsFavorite(portland));
+        Assert.IsTrue(manager.IsFavorite(vancouver));
+    }
+
+    [TestMethod]
     public void Unfavorite_OnlyRemovesMatchingLocation()
     {
         var manager = new FavoritesManager(_tempFilePath);

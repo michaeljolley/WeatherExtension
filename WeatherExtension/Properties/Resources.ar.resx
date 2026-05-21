@@ -88,8 +88,8 @@
   <data name="feels_like_template" xml:space="preserve"><value>{0} — {1} (الإحساس الفعلي {2})</value></data>
   
   
-  <data name="search_hint_examples" xml:space="preserve"><value>أمثلة: الرياض   جدة، SA   ١١٤١١   القاهرة، مصر</value></data>
-  <data name="search_hint_pin" xml:space="preserve"><value>اضغط Ctrl+D لإضافة موقع إلى المفضلة والشريط.</value></data>
+  
+  
   <data name="page_forecast_title" xml:space="preserve"><value>التوقّعات</value></data>
   <data name="page_hourly_title" xml:space="preserve"><value>التوقّعات بالساعة</value></data>
   <data name="card_section_next_hours" xml:space="preserve"><value>الساعات القادمة ({0})</value></data>
@@ -104,4 +104,7 @@
   <data name="settings_save_button" xml:space="preserve"><value>حفظ</value></data>
   
   
-</root>
+<data name="search_hint_examples_title" xml:space="preserve"><value>أمثلة:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>الرياض
+جدة، SA
+11411
+القاهرة، مصر</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>اضغط Ctrl+D لإضافة موقع إلى المفضلة والشريط.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>عند وجود عدة مفضلات، تستخدم البطاقة الموسّعة المفضلة الأولى افتراضيًا. أضف مواقع إضافية إلى الشريط في أي وقت من تخصيص الشريط في لوحة الأوامر.</value></data></root>

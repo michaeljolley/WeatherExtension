@@ -88,8 +88,8 @@
   <data name="feels_like_template" xml:space="preserve"><value>{0} — {1} (ощущается как {2})</value></data>
   
   
-  <data name="search_hint_examples" xml:space="preserve"><value>Примеры: Москва   Санкт-Петербург, RU   101000   Минск, Беларусь</value></data>
-  <data name="search_hint_pin" xml:space="preserve"><value>Нажмите Ctrl+D, чтобы добавить место в избранное и в док.</value></data>
+  
+  
   <data name="page_forecast_title" xml:space="preserve"><value>Прогноз</value></data>
   <data name="page_hourly_title" xml:space="preserve"><value>Почасовой прогноз</value></data>
   <data name="card_section_next_hours" xml:space="preserve"><value>Следующие {0} ч.</value></data>
@@ -104,4 +104,7 @@
   <data name="settings_save_button" xml:space="preserve"><value>Сохранить</value></data>
   
   
-</root>
+<data name="search_hint_examples_title" xml:space="preserve"><value>Примеры:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>Москва
+Санкт-Петербург, RU
+101000
+Минск, Беларусь</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Нажмите Ctrl+D, чтобы добавить место в избранное и в док.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>При нескольких избранных развёрнутая карточка по умолчанию использует первое избранное. Добавляйте другие места в док через настройку дока в палитре команд.</value></data></root>
