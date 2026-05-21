@@ -18,20 +18,19 @@ public class CommandInvocationTests
 {
 	private string _settingsPath = string.Empty;
 	private string _favoritesPath = string.Empty;
-	private string _pinnedPath = string.Empty;
+	
 
 	[TestInitialize]
 	public void Setup()
 	{
 		_settingsPath = Path.Combine(Path.GetTempPath(), $"weather-cmd-settings-{Guid.NewGuid()}.json");
 		_favoritesPath = Path.Combine(Path.GetTempPath(), $"weather-cmd-fav-{Guid.NewGuid()}.json");
-		_pinnedPath = Path.Combine(Path.GetTempPath(), $"weather-cmd-pinned-{Guid.NewGuid()}.json");
 	}
 
 	[TestCleanup]
 	public void Cleanup()
 	{
-		foreach (var path in new[] { _settingsPath, _favoritesPath, _pinnedPath })
+		foreach (var path in new[] { _settingsPath, _favoritesPath })
 		{
 			if (File.Exists(path))
 			{
@@ -113,7 +112,7 @@ public class CommandInvocationTests
 			new StubWeatherService(),
 			new StubGeocodingService(),
 			new WeatherSettingsManager(_settingsPath),
-			new PinnedLocationsManager(_pinnedPath),
+			
 			new FavoritesManager(_favoritesPath));
 	}
 
