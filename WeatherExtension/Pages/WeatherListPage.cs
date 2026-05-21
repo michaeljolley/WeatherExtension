@@ -146,30 +146,22 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 				}
 			}
 
-			lock (_sync)
-			{
-				if (generation == _favoritesLoadGeneration)
-				{
-					_isLoading = false;
-				}
-			}
-
-			if (generation == _favoritesLoadGeneration)
-			{
-				RaiseItemsChanged();
-			}
 		}
 		catch (OperationCanceledException)
 		{
 			// Expected when cancelled by a newer favorites reload or page dispose.
-			// A newer generation owns _items/_isLoading — do not touch them here.
 		}
 		catch (Exception ex)
 		{
 			WeatherLogger.LogToHost(
 				MessageState.Error,
 				$"Failed to load favorite locations: {ex.Message}");
-
+		}
+		finally
+		{
+			// If this generation was superseded or cancelled after setting
+			// _isLoading = true, we must clear the flag or GetItems() keeps
+			// returning "Loading weather data…" forever.
 			lock (_sync)
 			{
 				if (generation == _favoritesLoadGeneration)

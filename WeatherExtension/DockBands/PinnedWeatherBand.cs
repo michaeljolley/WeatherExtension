@@ -164,7 +164,13 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 		}
 		catch (OperationCanceledException)
 		{
-			// Timer or settings change cancelled — don't show error
+			// Dispose or a overlapping refresh cancelled this run — avoid leaving
+			// the dock chip stuck on the loading sentinel.
+			if (!_isDisposed && Title == Resources.dock_band_loading)
+			{
+				Title = "--";
+				Subtitle = _location.DisplayName;
+			}
 		}
 		catch (HttpRequestException ex)
 		{
