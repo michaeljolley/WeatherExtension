@@ -1,6 +1,6 @@
 # Weather Extension for Microsoft Command Palette
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>](https://get.microsoft.com/installer/download/9N01D6BS9V98?referrer=appbadge) ![WinGet Package Version](https://img.shields.io/winget/v/BaldBeardedBuilder.WeatherforCommandPalette)
@@ -87,6 +87,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/eneshenderson"><img src="https://avatars.githubusercontent.com/u/49413090?v=4?s=100" width="100px;" alt="Enes Hikmet Kayım"/><br /><sub><b>Enes Hikmet Kayım</b></sub></a><br /><a href="https://github.com/michaeljolley/WeatherExtension/commits?author=eneshenderson" title="Code">💻</a> <a href="https://github.com/michaeljolley/WeatherExtension/commits?author=eneshenderson" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://baldbeardedbuilder.com/"><img src="https://avatars.githubusercontent.com/u/1228996?v=4?s=100" width="100px;" alt="Michael Jolley"/><br /><sub><b>Michael Jolley</b></sub></a><br /><a href="https://github.com/michaeljolley/WeatherExtension/commits?author=michaeljolley" title="Code">💻</a> <a href="https://github.com/michaeljolley/WeatherExtension/commits?author=michaeljolley" title="Tests">⚠️</a> <a href="#design-michaeljolley" title="Design">🎨</a></td>
     </tr>
   </tbody>
 </table>
