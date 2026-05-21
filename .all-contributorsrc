@@ -67,6 +67,16 @@
         "bug",
         "userTesting"
       ]
+    },
+    {
+      "login": "PhantomPixel-0418",
+      "name": "Jinyu Zhang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/158539001?v=4",
+      "profile": "https://github.com/PhantomPixel-0418",
+      "contributions": [
+        "bug",
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7,
