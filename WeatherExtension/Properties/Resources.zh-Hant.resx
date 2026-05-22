@@ -107,4 +107,17 @@
 <data name="search_hint_examples_title" xml:space="preserve"><value>範例：</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>台北
 高雄, TW
 100
-香港, 中國</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>按 Ctrl+D 將位置加入我的最愛與停駐列。</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>有多個我的最愛時，展開卡片預設使用第一個。可隨時從命令面板的停駐列自訂新增第二個及更多位置。</value></data></root>
+香港, 中國</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>按 Ctrl+D 將位置加入我的最愛與停駐列。</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>有多個我的最愛時，展開卡片預設使用第一個。可隨時從命令面板的停駐列自訂新增第二個及更多位置。</value></data>
+  <data name="command_change_location" xml:space="preserve"><value>è®Šæ›´ä½ç½®</value></data>
+  <data name="command_refresh" xml:space="preserve"><value>é‡æ–°æ•´ç†</value></data>
+  <data name="command_view_hourly" xml:space="preserve"><value>æŸ¥çœ‹é€æ™‚</value></data>
+  <data name="dock_band_title_template" xml:space="preserve"><value>å¤©æ°£ - {0}</value></data>
+  <data name="compass_n" xml:space="preserve"><value>åŒ—</value></data>
+  <data name="compass_ne" xml:space="preserve"><value>æ±åŒ—</value></data>
+  <data name="compass_e" xml:space="preserve"><value>æ±</value></data>
+  <data name="compass_se" xml:space="preserve"><value>æ±å—</value></data>
+  <data name="compass_s" xml:space="preserve"><value>å—</value></data>
+  <data name="compass_sw" xml:space="preserve"><value>è¥¿å—</value></data>
+  <data name="compass_w" xml:space="preserve"><value>è¥¿</value></data>
+  <data name="compass_nw" xml:space="preserve"><value>è¥¿åŒ—</value></data>
+</root>

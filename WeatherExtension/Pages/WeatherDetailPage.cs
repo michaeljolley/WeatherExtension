@@ -35,8 +35,8 @@ internal sealed partial class WeatherDetailPage : ListPage, IDisposable
 		_weatherService = weatherService;
 		_settingsManager = settingsManager;
 
-		Name = "Forecast";
-		Title = "Forecast";
+		Name = Resources.page_forecast_title;
+		Title = Resources.page_forecast_title;
 		Icon = Icons.WeatherIcon;
 		Id = $"com.baldbeardedbuilder.cmdpal.weather.detail.{location.Id}";
 		ShowDetails = true;
@@ -116,14 +116,14 @@ internal sealed partial class WeatherDetailPage : ListPage, IDisposable
 			Details = new Details
 			{
 				Title = Resources.current_weather,
-				Body = $"{condition} — {current.Temperature:F0}{tempUnit} (feels like {current.ApparentTemperature:F0}{tempUnit})",
+				Body = WeatherFormatter.FeelsLikeSubtitle(condition, $"{current.Temperature:F0}{tempUnit}", $"{current.ApparentTemperature:F0}{tempUnit}"),
 				Metadata =
 				[
 					new DetailsElement { Key = Resources.temperature, Data = new DetailsLink($"{current.Temperature:F1}{tempUnit}") },
 					new DetailsElement { Key = Resources.feels_like, Data = new DetailsLink($"{current.ApparentTemperature:F1}{tempUnit}") },
 					new DetailsElement { Key = Resources.humidity, Data = new DetailsLink($"{current.RelativeHumidity}%") },
 					new DetailsElement { Key = Resources.wind_speed, Data = new DetailsLink($"{current.WindSpeed:F1} {windUnit}") },
-					new DetailsElement { Key = Resources.wind_direction, Data = new DetailsLink(GetWindDirection(current.WindDirection)) },
+					new DetailsElement { Key = Resources.wind_direction, Data = new DetailsLink(WeatherFormatter.CompassDirection(current.WindDirection)) },
 				],
 			},
 		};
@@ -187,12 +187,7 @@ internal sealed partial class WeatherDetailPage : ListPage, IDisposable
 		return items;
 	}
 
-	private static string GetWindDirection(int degrees)
-	{
-		var directions = new[] { "N", "NE", "E", "SE", "S", "SW", "W", "NW" };
-		var index = (int)Math.Round(degrees / 45.0) % 8;
-		return directions[index];
-	}
+
 
 	public override IListItem[] GetItems()
 	{

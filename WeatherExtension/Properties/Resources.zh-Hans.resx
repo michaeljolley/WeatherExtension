@@ -107,4 +107,17 @@
 <data name="search_hint_examples_title" xml:space="preserve"><value>示例：</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>北京
 上海, CN
 100000
-香港, 中国</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>按 Ctrl+D 将位置添加到收藏夹和停靠区。</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>有多个收藏时，展开卡片默认使用第一个收藏。可在命令面板的停靠区自定义中随时添加第二个及更多位置。</value></data></root>
+香港, 中国</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>按 Ctrl+D 将位置添加到收藏夹和停靠区。</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>有多个收藏时，展开卡片默认使用第一个收藏。可在命令面板的停靠区自定义中随时添加第二个及更多位置。</value></data>
+  <data name="command_change_location" xml:space="preserve"><value>æ›´æ”¹ä½ç½®</value></data>
+  <data name="command_refresh" xml:space="preserve"><value>åˆ·æ–°</value></data>
+  <data name="command_view_hourly" xml:space="preserve"><value>æŸ¥çœ‹é€æ—¶</value></data>
+  <data name="dock_band_title_template" xml:space="preserve"><value>å¤©æ°” - {0}</value></data>
+  <data name="compass_n" xml:space="preserve"><value>åŒ—</value></data>
+  <data name="compass_ne" xml:space="preserve"><value>ä¸œåŒ—</value></data>
+  <data name="compass_e" xml:space="preserve"><value>ä¸œ</value></data>
+  <data name="compass_se" xml:space="preserve"><value>ä¸œå—</value></data>
+  <data name="compass_s" xml:space="preserve"><value>å—</value></data>
+  <data name="compass_sw" xml:space="preserve"><value>è¥¿å—</value></data>
+  <data name="compass_w" xml:space="preserve"><value>è¥¿</value></data>
+  <data name="compass_nw" xml:space="preserve"><value>è¥¿åŒ—</value></data>
+</root>

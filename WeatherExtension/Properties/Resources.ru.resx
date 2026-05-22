@@ -107,4 +107,17 @@
 <data name="search_hint_examples_title" xml:space="preserve"><value>Примеры:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>Москва
 Санкт-Петербург, RU
 101000
-Минск, Беларусь</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Нажмите Ctrl+D, чтобы добавить место в избранное и в док.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>При нескольких избранных развёрнутая карточка по умолчанию использует первое избранное. Добавляйте другие места в док через настройку дока в палитре команд.</value></data></root>
+Минск, Беларусь</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Нажмите Ctrl+D, чтобы добавить место в избранное и в док.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>При нескольких избранных развёрнутая карточка по умолчанию использует первое избранное. Добавляйте другие места в док через настройку дока в палитре команд.</value></data>
+  <data name="command_change_location" xml:space="preserve"><value>Ğ¡Ğ¼ĞµĞ½Ğ¸Ñ‚ÑŒ Ğ¼ĞµÑÑ‚Ğ¾Ğ¿Ğ¾Ğ»Ğ¾Ğ¶ĞµĞ½Ğ¸Ğµ</value></data>
+  <data name="command_refresh" xml:space="preserve"><value>ĞĞ±Ğ½Ğ¾Ğ²Ğ¸Ñ‚ÑŒ</value></data>
+  <data name="command_view_hourly" xml:space="preserve"><value>ĞŸĞ¾Ñ‡Ğ°ÑĞ¾Ğ²Ğ¾Ğ¹ Ğ¿Ñ€Ğ¾Ğ³Ğ½Ğ¾Ğ·</value></data>
+  <data name="dock_band_title_template" xml:space="preserve"><value>ĞŸĞ¾Ğ³Ğ¾Ğ´Ğ° â€” {0}</value></data>
+  <data name="compass_n" xml:space="preserve"><value>Ğ¡</value></data>
+  <data name="compass_ne" xml:space="preserve"><value>Ğ¡Ğ’</value></data>
+  <data name="compass_e" xml:space="preserve"><value>Ğ’</value></data>
+  <data name="compass_se" xml:space="preserve"><value>Ğ®Ğ’</value></data>
+  <data name="compass_s" xml:space="preserve"><value>Ğ®</value></data>
+  <data name="compass_sw" xml:space="preserve"><value>Ğ®Ğ—</value></data>
+  <data name="compass_w" xml:space="preserve"><value>Ğ—</value></data>
+  <data name="compass_nw" xml:space="preserve"><value>Ğ¡Ğ—</value></data>
+</root>

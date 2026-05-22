@@ -107,4 +107,17 @@ Si el problema persiste, [reporta un error](https://github.com/michaeljolley/wea
 <data name="search_hint_examples_title" xml:space="preserve"><value>Ejemplos:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>Madrid
 Barcelona, ES
 28001
-Buenos Aires, Argentina</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Pulsa Ctrl+D para añadir un lugar a favoritos y al dock.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Con varios favoritos, la tarjeta expandida usa tu primer favorito por defecto. Añade más ubicaciones al dock cuando quieras desde la personalización del dock en el Panel de comandos.</value></data></root>
+Buenos Aires, Argentina</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Pulsa Ctrl+D para añadir un lugar a favoritos y al dock.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Con varios favoritos, la tarjeta expandida usa tu primer favorito por defecto. Añade más ubicaciones al dock cuando quieras desde la personalización del dock en el Panel de comandos.</value></data>
+  <data name="command_change_location" xml:space="preserve"><value>Cambiar ubicaciÃ³n</value></data>
+  <data name="command_refresh" xml:space="preserve"><value>Actualizar</value></data>
+  <data name="command_view_hourly" xml:space="preserve"><value>Ver por horas</value></data>
+  <data name="dock_band_title_template" xml:space="preserve"><value>Clima - {0}</value></data>
+  <data name="compass_n" xml:space="preserve"><value>N</value></data>
+  <data name="compass_ne" xml:space="preserve"><value>NE</value></data>
+  <data name="compass_e" xml:space="preserve"><value>E</value></data>
+  <data name="compass_se" xml:space="preserve"><value>SE</value></data>
+  <data name="compass_s" xml:space="preserve"><value>S</value></data>
+  <data name="compass_sw" xml:space="preserve"><value>SO</value></data>
+  <data name="compass_w" xml:space="preserve"><value>O</value></data>
+  <data name="compass_nw" xml:space="preserve"><value>NO</value></data>
+</root>

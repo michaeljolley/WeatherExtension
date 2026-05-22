@@ -15,7 +15,7 @@ internal sealed partial class RefreshWeatherCommand : InvokableCommand
     public RefreshWeatherCommand(WeatherListPage page)
     {
         _page = page;
-        Name = "Refresh";
+        Name = Resources.command_refresh;
     }
 
     public override string Id => "com.baldbeardedbuilder.cmdpal.weather.refresh";

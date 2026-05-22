@@ -107,4 +107,17 @@ Jeśli problem się powtarza, [zgłoś błąd](https://github.com/michaeljolley/
 <data name="search_hint_examples_title" xml:space="preserve"><value>Przykłady:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>Warszawa
 Kraków, PL
 00-001
-Berlin, Niemcy</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Naciśnij Ctrl+D, aby dodać miejsce do ulubionych i paska.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Przy wielu ulubionych rozwinięta karta domyślnie używa pierwszego. Kolejne lokalizacje dodasz w dowolnym momencie w dostosowaniu paska w Palecie poleceń.</value></data></root>
+Berlin, Niemcy</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Naciśnij Ctrl+D, aby dodać miejsce do ulubionych i paska.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Przy wielu ulubionych rozwinięta karta domyślnie używa pierwszego. Kolejne lokalizacje dodasz w dowolnym momencie w dostosowaniu paska w Palecie poleceń.</value></data>
+  <data name="command_change_location" xml:space="preserve"><value>ZmieÅ„ lokalizacjÄ™</value></data>
+  <data name="command_refresh" xml:space="preserve"><value>OdÅ›wieÅ¼</value></data>
+  <data name="command_view_hourly" xml:space="preserve"><value>Widok godzinowy</value></data>
+  <data name="dock_band_title_template" xml:space="preserve"><value>Pogoda â€“ {0}</value></data>
+  <data name="compass_n" xml:space="preserve"><value>N</value></data>
+  <data name="compass_ne" xml:space="preserve"><value>NE</value></data>
+  <data name="compass_e" xml:space="preserve"><value>E</value></data>
+  <data name="compass_se" xml:space="preserve"><value>SE</value></data>
+  <data name="compass_s" xml:space="preserve"><value>S</value></data>
+  <data name="compass_sw" xml:space="preserve"><value>SW</value></data>
+  <data name="compass_w" xml:space="preserve"><value>W</value></data>
+  <data name="compass_nw" xml:space="preserve"><value>NW</value></data>
+</root>

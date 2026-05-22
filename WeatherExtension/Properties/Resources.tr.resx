@@ -232,4 +232,17 @@ Sorun yaşamaya devam ederseniz [hata bildirin](https://github.com/michaeljolley
 <data name="search_hint_examples_title" xml:space="preserve"><value>Örnekler:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>İstanbul
 Ankara, TR
 34122
-Berlin, Almanya</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Bir konumu favorilere ve dock'a eklemek için Ctrl+D'ye basın.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Birden fazla favoriniz varsa genişletilmiş kart varsayılan olarak ilk favoriyi kullanır. İkinci ve sonraki konumları dock'a, Komut Paleti dock özelleştirmesinden isteğe bağlı ekleyebilirsiniz.</value></data></root>
+Berlin, Almanya</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Bir konumu favorilere ve dock'a eklemek için Ctrl+D'ye basın.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Birden fazla favoriniz varsa genişletilmiş kart varsayılan olarak ilk favoriyi kullanır. İkinci ve sonraki konumları dock'a, Komut Paleti dock özelleştirmesinden isteğe bağlı ekleyebilirsiniz.</value></data>
+  <data name="command_change_location" xml:space="preserve"><value>Konum DeÄŸiÅŸtir</value></data>
+  <data name="command_refresh" xml:space="preserve"><value>Yenile</value></data>
+  <data name="command_view_hourly" xml:space="preserve"><value>Saatlik GÃ¶rÃ¼ntÃ¼le</value></data>
+  <data name="dock_band_title_template" xml:space="preserve"><value>Hava Durumu - {0}</value></data>
+  <data name="compass_n" xml:space="preserve"><value>K</value></data>
+  <data name="compass_ne" xml:space="preserve"><value>KD</value></data>
+  <data name="compass_e" xml:space="preserve"><value>D</value></data>
+  <data name="compass_se" xml:space="preserve"><value>GD</value></data>
+  <data name="compass_s" xml:space="preserve"><value>G</value></data>
+  <data name="compass_sw" xml:space="preserve"><value>GB</value></data>
+  <data name="compass_w" xml:space="preserve"><value>B</value></data>
+  <data name="compass_nw" xml:space="preserve"><value>KB</value></data>
+</root>

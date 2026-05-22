@@ -107,4 +107,17 @@ Si le problème persiste, n'hésitez pas à [signaler un bug](https://github.com
 <data name="search_hint_examples_title" xml:space="preserve"><value>Exemples :</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>Paris
 Lyon, FR
 75001
-Bruxelles, Belgique</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Appuie sur Ctrl+D pour ajouter un lieu aux favoris et au dock.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Avec plusieurs favoris, la carte développée utilise par défaut ton premier favori. Ajoute d'autres lieux au dock à tout moment via la personnalisation du dock dans la palette de commandes.</value></data></root>
+Bruxelles, Belgique</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Appuie sur Ctrl+D pour ajouter un lieu aux favoris et au dock.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Avec plusieurs favoris, la carte développée utilise par défaut ton premier favori. Ajoute d'autres lieux au dock à tout moment via la personnalisation du dock dans la palette de commandes.</value></data>
+  <data name="command_change_location" xml:space="preserve"><value>Changer de lieu</value></data>
+  <data name="command_refresh" xml:space="preserve"><value>Actualiser</value></data>
+  <data name="command_view_hourly" xml:space="preserve"><value>Afficher par heure</value></data>
+  <data name="dock_band_title_template" xml:space="preserve"><value>MÃ©tÃ©o - {0}</value></data>
+  <data name="compass_n" xml:space="preserve"><value>N</value></data>
+  <data name="compass_ne" xml:space="preserve"><value>NE</value></data>
+  <data name="compass_e" xml:space="preserve"><value>E</value></data>
+  <data name="compass_se" xml:space="preserve"><value>SE</value></data>
+  <data name="compass_s" xml:space="preserve"><value>S</value></data>
+  <data name="compass_sw" xml:space="preserve"><value>SO</value></data>
+  <data name="compass_w" xml:space="preserve"><value>O</value></data>
+  <data name="compass_nw" xml:space="preserve"><value>NO</value></data>
+</root>

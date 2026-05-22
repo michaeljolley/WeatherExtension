@@ -24,7 +24,7 @@ public class LocalizationTests
 		var failures = new List<string>();
 		var hintKeys = GetSearchHintResourceAccessors();
 
-		Assert.AreEqual(4, hintKeys.Count,
+		Assert.AreEqual(4, hintKeys.Length,
 			"Expected title, examples block, shortcut, and multiple-favorites hint keys.");
 
 		try
@@ -58,7 +58,7 @@ public class LocalizationTests
 		var failures = new List<string>();
 		var weatherKeys = GetWeatherResourceAccessors();
 
-		Assert.IsTrue(weatherKeys.Count >= 11,
+		Assert.IsTrue(weatherKeys.Length >= 11,
 			"Expected at least the WMO category keys plus weather_service_error.");
 
 		try
@@ -163,7 +163,7 @@ public class LocalizationTests
 		}
 	}
 
-	private static IReadOnlyList<(string Key, Func<string> Accessor)> GetSearchHintResourceAccessors()
+	private static (string Key, Func<string> Accessor)[] GetSearchHintResourceAccessors()
 	{
 		return typeof(Resources)
 			.GetProperties(BindingFlags.Public | BindingFlags.Static)
@@ -176,7 +176,7 @@ public class LocalizationTests
 			.ToArray();
 	}
 
-	private static IReadOnlyList<(string Key, Func<string> Accessor)> GetWeatherResourceAccessors()
+	private static (string Key, Func<string> Accessor)[] GetWeatherResourceAccessors()
 	{
 		return typeof(Resources)
 			.GetProperties(BindingFlags.Public | BindingFlags.Static)

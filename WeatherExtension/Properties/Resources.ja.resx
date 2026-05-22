@@ -107,4 +107,17 @@
 <data name="search_hint_examples_title" xml:space="preserve"><value>例:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>東京
 大阪, JP
 100-0001
-ソウル, 韓国</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Ctrl+D で場所をお気に入りとドックに追加します。</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>お気に入りが複数ある場合、展開カードは既定で最初のお気に入りを参照します。2件目以降はコマンド パレットのドックのカスタマイズからいつでも追加できます。</value></data></root>
+ソウル, 韓国</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Ctrl+D で場所をお気に入りとドックに追加します。</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>お気に入りが複数ある場合、展開カードは既定で最初のお気に入りを参照します。2件目以降はコマンド パレットのドックのカスタマイズからいつでも追加できます。</value></data>
+  <data name="command_change_location" xml:space="preserve"><value>å ´æ‰€ã‚’å¤‰æ›´</value></data>
+  <data name="command_refresh" xml:space="preserve"><value>æ›´æ–°</value></data>
+  <data name="command_view_hourly" xml:space="preserve"><value>æ¯æ™‚è¡¨ç¤º</value></data>
+  <data name="dock_band_title_template" xml:space="preserve"><value>å¤©æ°— - {0}</value></data>
+  <data name="compass_n" xml:space="preserve"><value>åŒ—</value></data>
+  <data name="compass_ne" xml:space="preserve"><value>åŒ—æ±</value></data>
+  <data name="compass_e" xml:space="preserve"><value>æ±</value></data>
+  <data name="compass_se" xml:space="preserve"><value>å—æ±</value></data>
+  <data name="compass_s" xml:space="preserve"><value>å—</value></data>
+  <data name="compass_sw" xml:space="preserve"><value>å—è¥¿</value></data>
+  <data name="compass_w" xml:space="preserve"><value>è¥¿</value></data>
+  <data name="compass_nw" xml:space="preserve"><value>åŒ—è¥¿</value></data>
+</root>

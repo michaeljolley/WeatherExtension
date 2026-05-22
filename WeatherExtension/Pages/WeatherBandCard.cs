@@ -128,7 +128,7 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
 		var windUnit = _settings.WindSpeedUnit == "mph" ? "mph" : "km/h";
 
 		var currentTemp = "--";
-		var currentCondition = "Unknown";
+		var currentCondition = Resources.card_condition_unknown;
 		var currentIcon = "\uD83C\uDF24\uFE0F";
 		var feelsLike = "--";
 		var humidity = "--";
@@ -185,7 +185,7 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
 					continue;
 				}
 
-				var time = hourTime.ToString("h tt", CultureInfo.CurrentCulture);
+				var time = WeatherFormatter.Hour(hourTime, _settings.Use24HourClock);
 				var weatherCode = hourly.Hourly.WeatherCode?[i] ?? 0;
 				var icon = GetEmojiForWeatherCode(weatherCode);
 				var temp = $"{hourly.Hourly.Temperature?[i]:F0}{tempUnit}";
@@ -338,12 +338,12 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
 
 	private static string GetLoadingData()
 	{
-		return """
+		return $$"""
         {
-            "locationName": "Loading...",
+            "locationName": "{{Resources.loading}}",
             "currentIcon": "🌤️",
             "currentTemp": "--",
-            "currentCondition": "Loading weather data...",
+            "currentCondition": "{{Resources.loading_data}}",
             "feelsLike": "--",
             "todayHighLow": "--",
             "humidity": "--",
@@ -418,7 +418,7 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
 
 	private static string GetCardTemplate()
 	{
-		return """
+		return $$"""
         {
             "type": "AdaptiveCard",
             "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -440,7 +440,7 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                             "items": [
                                 {
                                     "type": "TextBlock",
-                                    "text": "Current",
+                                    "text": "{{Resources.card_section_current}}",
                                     "weight": "bolder",
                                     "size": "medium"
                                 }
@@ -453,7 +453,7 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                             "items": [
                                 {
                                     "type": "TextBlock",
-                                    "text": "Next Three Hours",
+                                    "text": "{{Resources.card_section_next_three_hours}}",
                                     "weight": "bolder",
                                     "size": "medium"
                                 }
@@ -474,7 +474,7 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                                     "columns": [
                                         {
                                             "type": "Column",
-                                            "width": "1",
+                                            "width": "auto",
                                             "verticalContentAlignment": "center",
                                             "horizontalAlignment": "center",
                                             "items": [
@@ -504,17 +504,17 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                                         },
                                         {
                                             "type": "Column",
-                                            "width": "1",
+                                            "width": "stretch",
                                             "spacing": "large",
                                             "verticalContentAlignment": "center",
                                             "items": [
                                                 {
                                                     "type": "FactSet",
                                                     "facts": [
-                                                        { "title": "Feels like", "value": "${feelsLike}" },
-                                                        { "title": "High / Low", "value": "${todayHighLow}" },
-                                                        { "title": "Humidity", "value": "${humidity}" },
-                                                        { "title": "Wind", "value": "${wind}" }
+                                                        { "title": "{{Resources.feels_like}}", "value": "${feelsLike}" },
+                                                        { "title": "{{Resources.card_label_high_low}}", "value": "${todayHighLow}" },
+                                                        { "title": "{{Resources.humidity}}", "value": "${humidity}" },
+                                                        { "title": "{{Resources.wind_speed}}", "value": "${wind}" }
                                                     ]
                                                 }
                                             ]
@@ -563,7 +563,7 @@ internal sealed partial class WeatherBandCard : ContentPage, IDisposable
                 },
                 {
                     "type": "TextBlock",
-                    "text": "3-Day Forecast",
+                    "text": "{{Resources.card_section_three_day_forecast}}",
                     "size": "medium",
                     "weight": "bolder",
                     "separator": true,

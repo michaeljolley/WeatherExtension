@@ -28,6 +28,10 @@ internal static class WeatherFormatter
 	private static string? _feelsLikeFormatCulture;
 	private static readonly Lock _feelsLikeSync = new();
 
+	private static System.Text.CompositeFormat? _dockBandFormat;
+	private static string? _dockBandFormatCulture;
+	private static readonly Lock _dockBandSync = new();
+
 	private static System.Text.CompositeFormat GetFeelsLikeFormat()
 	{
 		var current = CultureInfo.CurrentUICulture.Name;
@@ -41,6 +45,22 @@ internal static class WeatherFormatter
 			_feelsLikeFormat = System.Text.CompositeFormat.Parse(Resources.feels_like_template);
 			_feelsLikeFormatCulture = current;
 			return _feelsLikeFormat;
+		}
+	}
+
+	private static System.Text.CompositeFormat GetDockBandTitleFormat()
+	{
+		var current = CultureInfo.CurrentUICulture.Name;
+		lock (_dockBandSync)
+		{
+			if (_dockBandFormat != null && _dockBandFormatCulture == current)
+			{
+				return _dockBandFormat;
+			}
+
+			_dockBandFormat = System.Text.CompositeFormat.Parse(Resources.dock_band_title_template);
+			_dockBandFormatCulture = current;
+			return _dockBandFormat;
 		}
 	}
 
@@ -105,10 +125,28 @@ internal static class WeatherFormatter
 			Temperature(current.Temperature, temperatureUnit),
 			Temperature(current.ApparentTemperature, temperatureUnit));
 
+	public static string FeelsLikeSubtitle(string condition, string temperatureString, string feelsLikeString)
+		=> string.Format(
+			CultureInfo.CurrentCulture,
+			GetFeelsLikeFormat(),
+			condition,
+			temperatureString,
+			feelsLikeString);
+
+	public static string DockBandTitle(string locationName)
+		=> string.Format(
+			CultureInfo.CurrentCulture,
+			GetDockBandTitleFormat(),
+			locationName);
+
 	public static string CompassDirection(int degrees)
 	{
 		// 8-point compass: round to nearest 45° wedge.
-		var directions = new[] { "N", "NE", "E", "SE", "S", "SW", "W", "NW" };
+		var directions = new[]
+		{
+			Resources.compass_n, Resources.compass_ne, Resources.compass_e, Resources.compass_se,
+			Resources.compass_s, Resources.compass_sw, Resources.compass_w, Resources.compass_nw,
+		};
 		var index = ((int)Math.Round(degrees / 45.0) % 8 + 8) % 8;
 		return directions[index];
 	}

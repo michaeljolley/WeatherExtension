@@ -107,4 +107,17 @@ Wenn du weiterhin Probleme hast, melde gern einen [Fehlerbericht](https://github
 <data name="search_hint_examples_title" xml:space="preserve"><value>Beispiele:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>Berlin
 München, DE
 80331
-Wien, Österreich</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Drücke Strg+D, um einen Ort zu Favoriten und Dock hinzuzufügen.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Bei mehreren Favoriten verwendet die erweiterte Karte standardmäßig deinen ersten Favoriten. Weitere Orte kannst du jederzeit über die Dock-Anpassung der Befehlspalette hinzufügen.</value></data></root>
+Wien, Österreich</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Drücke Strg+D, um einen Ort zu Favoriten und Dock hinzuzufügen.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>Bei mehreren Favoriten verwendet die erweiterte Karte standardmäßig deinen ersten Favoriten. Weitere Orte kannst du jederzeit über die Dock-Anpassung der Befehlspalette hinzufügen.</value></data>
+  <data name="command_change_location" xml:space="preserve"><value>Standort Ã¤ndern</value></data>
+  <data name="command_refresh" xml:space="preserve"><value>Aktualisieren</value></data>
+  <data name="command_view_hourly" xml:space="preserve"><value>StÃ¼ndlich anzeigen</value></data>
+  <data name="dock_band_title_template" xml:space="preserve"><value>Wetter â€“ {0}</value></data>
+  <data name="compass_n" xml:space="preserve"><value>N</value></data>
+  <data name="compass_ne" xml:space="preserve"><value>NO</value></data>
+  <data name="compass_e" xml:space="preserve"><value>O</value></data>
+  <data name="compass_se" xml:space="preserve"><value>SO</value></data>
+  <data name="compass_s" xml:space="preserve"><value>S</value></data>
+  <data name="compass_sw" xml:space="preserve"><value>SW</value></data>
+  <data name="compass_w" xml:space="preserve"><value>W</value></data>
+  <data name="compass_nw" xml:space="preserve"><value>NW</value></data>
+</root>

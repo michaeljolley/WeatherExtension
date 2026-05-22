@@ -45,8 +45,8 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 		_settingsManager = settingsManager;
 		_favoritesManager = favoritesManager;
 
-		Name = "Weather";
-		Title = "Weather";
+		Name = Resources.plugin_name;
+		Title = Resources.plugin_name;
 		Icon = Icons.WeatherIcon;
 		Id = "com.baldbeardedbuilder.cmdpal.weather.list";
 		PlaceholderText = Resources.search_placeholder;

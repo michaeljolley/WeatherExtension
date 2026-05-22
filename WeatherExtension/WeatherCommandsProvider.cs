@@ -2,6 +2,7 @@
 // Bald Bearded Builder LLC licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Globalization;
 using Microsoft.CmdPal.Ext.Weather.DockBands;
 using Microsoft.CmdPal.Ext.Weather.Pages;
 using Microsoft.CmdPal.Ext.Weather.Services;
@@ -142,7 +143,7 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 			[pinnedBand],
 			FormattableString.Invariant(
 				$"com.baldbeardedbuilder.cmdpal.weather.pinnedBand.{location.Latitude}_{location.Longitude}"),
-			$"Weather - {location.DisplayName}");
+			WeatherFormatter.DockBandTitle(location.DisplayName));
 
 		dockItem.Icon = Icons.WeatherIcon;
 		pinnedBand.DockItem = dockItem;

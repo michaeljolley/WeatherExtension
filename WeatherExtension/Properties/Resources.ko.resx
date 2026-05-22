@@ -107,4 +107,17 @@
 <data name="search_hint_examples_title" xml:space="preserve"><value>예:</value></data><data name="search_hint_examples_block" xml:space="preserve"><value>서울
 부산, KR
 04524
-도쿄, 일본</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Ctrl+D로 위치를 즐겨찾기와 독에 추가합니다.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>즐겨찾기가 여러 개이면 펼친 카드는 기본적으로 첫 번째 즐겨찾기를 사용합니다. 두 번째 이상은 명령 팔레트 독 사용자 지정에서 언제든 추가할 수 있습니다.</value></data></root>
+도쿄, 일본</value></data><data name="search_hint_favorite_shortcut" xml:space="preserve"><value>Ctrl+D로 위치를 즐겨찾기와 독에 추가합니다.</value></data><data name="search_hint_multiple_favorites" xml:space="preserve"><value>즐겨찾기가 여러 개이면 펼친 카드는 기본적으로 첫 번째 즐겨찾기를 사용합니다. 두 번째 이상은 명령 팔레트 독 사용자 지정에서 언제든 추가할 수 있습니다.</value></data>
+  <data name="command_change_location" xml:space="preserve"><value>ìœ„ì¹˜ ë³€ê²½</value></data>
+  <data name="command_refresh" xml:space="preserve"><value>ìƒˆë¡œê³ ì¹¨</value></data>
+  <data name="command_view_hourly" xml:space="preserve"><value>ì‹œê°„ë³„ ë³´ê¸°</value></data>
+  <data name="dock_band_title_template" xml:space="preserve"><value>ë‚ ì”¨ - {0}</value></data>
+  <data name="compass_n" xml:space="preserve"><value>ë¶</value></data>
+  <data name="compass_ne" xml:space="preserve"><value>ë¶ë™</value></data>
+  <data name="compass_e" xml:space="preserve"><value>ë™</value></data>
+  <data name="compass_se" xml:space="preserve"><value>ë‚¨ë™</value></data>
+  <data name="compass_s" xml:space="preserve"><value>ë‚¨</value></data>
+  <data name="compass_sw" xml:space="preserve"><value>ë‚¨ì„œ</value></data>
+  <data name="compass_w" xml:space="preserve"><value>ì„œ</value></data>
+  <data name="compass_nw" xml:space="preserve"><value>ë¶ì„œ</value></data>
+</root>
