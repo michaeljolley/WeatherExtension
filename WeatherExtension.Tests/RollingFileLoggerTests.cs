@@ -68,12 +68,14 @@ public class RollingFileLoggerTests
 	// ---------------------------------------------------------------
 
 	[DataTestMethod]
-	[DataRow(LogLevel.Debug, "DEBUG")]
-	[DataRow(LogLevel.Info, "INFO")]
-	[DataRow(LogLevel.Warning, "WARN")]
-	[DataRow(LogLevel.Error, "ERROR")]
-	public void Log_EntryFormat_ContainsTimestampLevelAndMessage(LogLevel level, string expectedTag)
+	[DataRow(0, "DEBUG")]  // LogLevel.Debug
+	[DataRow(1, "INFO")]   // LogLevel.Info
+	[DataRow(2, "WARN")]   // LogLevel.Warning
+	[DataRow(3, "ERROR")]  // LogLevel.Error
+	public void Log_EntryFormat_ContainsTimestampLevelAndMessage(int levelInt, string expectedTag)
 	{
+		// LogLevel is internal; use int parameter to avoid CS0051 accessibility mismatch.
+		var level = (LogLevel)levelInt;
 		var marker = $"format-check-{Guid.NewGuid()}";
 
 		RollingFileLogger.Instance.Log(level, marker);
