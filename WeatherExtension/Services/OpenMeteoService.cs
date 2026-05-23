@@ -16,8 +16,8 @@ public sealed partial class OpenMeteoService : IWeatherService, IDisposable
 	private const string BaseUrl = "https://api.open-meteo.com/v1/forecast";
 	private const string ConnectivityProbeUrl = "https://connectivitycheck.gstatic.com/generate_204";
 	private const int CurrentWeatherCacheMinutes = 15;
-	private const int ForecastCacheMinutes = 60;
-	private const int HourlyCacheMinutes = 30;
+	private const int ForecastCacheMinutes = 180;
+	private const int HourlyCacheMinutes = 45;
 
 	private WeatherData? _cachedWeather;
 	private DateTime _weatherCacheTime;
