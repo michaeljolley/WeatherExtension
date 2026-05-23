@@ -5,7 +5,6 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using BaldBeardedBuilder.WeatherExtension;
-using BaldBeardedBuilder.WeatherExtension;
 
 namespace Microsoft.CmdPal.Ext.Weather.UnitTests;
 
