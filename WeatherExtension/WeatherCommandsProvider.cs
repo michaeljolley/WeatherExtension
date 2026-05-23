@@ -19,6 +19,7 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 	private readonly FavoritesManager _favoritesManager = new();
 	private readonly WeatherListPage _weatherPage;
 	private readonly WeatherSettingsPage _settingsPage;
+	private readonly SubmitBugPage _submitBugPage = new();
 	private readonly ICommandItem[] _topLevelItems;
 	private readonly Lock _bandsSync = new();
 
@@ -63,7 +64,7 @@ public sealed partial class WeatherCommandsProvider : CommandProvider
 			{
 				Icon = Icons.WeatherIcon,
 				Title = Resources.plugin_name,
-				MoreCommands = [new CommandContextItem(_settingsPage)],
+				MoreCommands = [new CommandContextItem(_settingsPage), new CommandContextItem(_submitBugPage)],
 			},
 		];
 	}

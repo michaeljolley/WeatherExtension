@@ -641,5 +641,11 @@ namespace Microsoft.CmdPal.Ext.Weather {
         public static string compass_w { get { return ResourceManager.GetString("compass_w", resourceCulture); } }
         public static string compass_nw { get { return ResourceManager.GetString("compass_nw", resourceCulture); } }
 
+        public static string bug_report_title { get { return ResourceManager.GetString("bug_report_title", resourceCulture); } }
+        public static string bug_report_save_logs { get { return ResourceManager.GetString("bug_report_save_logs", resourceCulture); } }
+        public static string bug_report_open_github { get { return ResourceManager.GetString("bug_report_open_github", resourceCulture); } }
+        public static string bug_report_instructions { get { return ResourceManager.GetString("bug_report_instructions", resourceCulture); } }
+        public static string bug_report_logs_saved { get { return ResourceManager.GetString("bug_report_logs_saved", resourceCulture); } }
+
     }
 }
