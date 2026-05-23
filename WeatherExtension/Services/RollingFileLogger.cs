@@ -18,7 +18,7 @@ internal enum LogLevel
 /// Thread-safe rolling file logger. One file per day, 7-day retention,
 /// 5 MB cap per file. Zero external dependencies — AOT-safe System.IO only.
 /// </summary>
-internal sealed class RollingFileLogger : IDisposable
+internal sealed partial class RollingFileLogger : IDisposable
 {
 	private const int MaxFileSizeBytes = 5 * 1024 * 1024; // 5 MB
 	private const int RetentionDays = 7;
