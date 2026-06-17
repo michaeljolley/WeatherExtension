@@ -4,6 +4,8 @@
 
 using System.IO.Pipes;
 using System.Threading;
+using BaldBeardedBuilder.WeatherExtension;
+using Microsoft.CommandPalette.Extensions;
 
 namespace WeatherExtension;
 
