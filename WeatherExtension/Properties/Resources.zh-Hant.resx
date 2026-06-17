@@ -120,16 +120,16 @@
   <data name="compass_sw" xml:space="preserve"><value>è¥¿å—</value></data>
   <data name="compass_w" xml:space="preserve"><value>è¥¿</value></data>
   <data name="compass_nw" xml:space="preserve"><value>è¥¿åŒ—</value></data>
-  <data name="bug_report_title" xml:space="preserve"><value>Submit a Bug Report</value></data>
-  <data name="bug_report_save_logs" xml:space="preserve"><value>Save Logs to Desktop</value></data>
-  <data name="bug_report_open_github" xml:space="preserve"><value>Open GitHub Issues</value></data>
-  <data name="bug_report_instructions" xml:space="preserve"><value>## How to report a bug
+  <data name="bug_report_title" xml:space="preserve"><value>提交錯誤報告</value></data>
+  <data name="bug_report_save_logs" xml:space="preserve"><value>將日誌儲存到桌面</value></data>
+  <data name="bug_report_open_github" xml:space="preserve"><value>開啟 GitHub Issues</value></data>
+  <data name="bug_report_instructions" xml:space="preserve"><value>## 如何回報錯誤
 
-1. Click **Save Logs to Desktop** below to collect diagnostic logs
-2. Click **Open GitHub Issues** to create a new issue
-3. Describe the problem you encountered
-4. Drag and drop the log zip file into the issue body
+1. 點擊下方的 **將日誌儲存到桌面** 來收集診斷日誌
+2. 點擊 **開啟 GitHub Issues** 建立新 Issue
+3. 描述您遇到的問題
+4. 將 ZIP 檔案拖放到 Issue 內文中
 
-The zip file will be saved to your Desktop.</value></data>
-  <data name="bug_report_logs_saved" xml:space="preserve"><value>Logs saved to Desktop</value></data>
+ZIP 檔案將儲存到您的桌面。</value></data>
+  <data name="bug_report_logs_saved" xml:space="preserve"><value>日誌已儲存到桌面</value></data>
 </root>

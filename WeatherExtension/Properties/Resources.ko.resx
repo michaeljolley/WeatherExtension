@@ -120,16 +120,16 @@
   <data name="compass_sw" xml:space="preserve"><value>ë‚¨ì„œ</value></data>
   <data name="compass_w" xml:space="preserve"><value>ì„œ</value></data>
   <data name="compass_nw" xml:space="preserve"><value>ë¶ì„œ</value></data>
-  <data name="bug_report_title" xml:space="preserve"><value>Submit a Bug Report</value></data>
-  <data name="bug_report_save_logs" xml:space="preserve"><value>Save Logs to Desktop</value></data>
-  <data name="bug_report_open_github" xml:space="preserve"><value>Open GitHub Issues</value></data>
-  <data name="bug_report_instructions" xml:space="preserve"><value>## How to report a bug
+  <data name="bug_report_title" xml:space="preserve"><value>버그 신고</value></data>
+  <data name="bug_report_save_logs" xml:space="preserve"><value>로그를 바탕화면에 저장</value></data>
+  <data name="bug_report_open_github" xml:space="preserve"><value>GitHub Issues 열기</value></data>
+  <data name="bug_report_instructions" xml:space="preserve"><value>## 버그 신고 방법
 
-1. Click **Save Logs to Desktop** below to collect diagnostic logs
-2. Click **Open GitHub Issues** to create a new issue
-3. Describe the problem you encountered
-4. Drag and drop the log zip file into the issue body
+1. 아래의 **로그를 바탕화면에 저장**을 클릭하여 진단 로그를 수집합니다
+2. **GitHub Issues 열기**를 클릭하여 새 Issue를 생성합니다
+3. 발생한 문제를 설명합니다
+4. ZIP 파일을 Issue 본문에 끌어다 놓습니다
 
-The zip file will be saved to your Desktop.</value></data>
-  <data name="bug_report_logs_saved" xml:space="preserve"><value>Logs saved to Desktop</value></data>
+ZIP 파일이 바탕화면에 저장됩니다.</value></data>
+  <data name="bug_report_logs_saved" xml:space="preserve"><value>로그가 바탕화면에 저장됨</value></data>
 </root>

@@ -120,16 +120,16 @@ Wien, Österreich</value></data><data name="search_hint_favorite_shortcut" xml:s
   <data name="compass_sw" xml:space="preserve"><value>SW</value></data>
   <data name="compass_w" xml:space="preserve"><value>W</value></data>
   <data name="compass_nw" xml:space="preserve"><value>NW</value></data>
-  <data name="bug_report_title" xml:space="preserve"><value>Submit a Bug Report</value></data>
-  <data name="bug_report_save_logs" xml:space="preserve"><value>Save Logs to Desktop</value></data>
-  <data name="bug_report_open_github" xml:space="preserve"><value>Open GitHub Issues</value></data>
-  <data name="bug_report_instructions" xml:space="preserve"><value>## How to report a bug
+  <data name="bug_report_title" xml:space="preserve"><value>Fehlerbericht einreichen</value></data>
+  <data name="bug_report_save_logs" xml:space="preserve"><value>Protokolle auf Desktop speichern</value></data>
+  <data name="bug_report_open_github" xml:space="preserve"><value>GitHub Issues öffnen</value></data>
+  <data name="bug_report_instructions" xml:space="preserve"><value>## So melden Sie einen Fehler
 
-1. Click **Save Logs to Desktop** below to collect diagnostic logs
-2. Click **Open GitHub Issues** to create a new issue
-3. Describe the problem you encountered
-4. Drag and drop the log zip file into the issue body
+1. Klicken Sie unten auf **Protokolle auf Desktop speichern**, um Diagnoseprotokolle zu sammeln
+2. Klicken Sie auf **GitHub Issues öffnen**, um ein neues Issue zu erstellen
+3. Beschreiben Sie das aufgetretene Problem
+4. Ziehen Sie die ZIP-Datei in den Issue-Text
 
-The zip file will be saved to your Desktop.</value></data>
-  <data name="bug_report_logs_saved" xml:space="preserve"><value>Logs saved to Desktop</value></data>
+Die ZIP-Datei wird auf Ihrem Desktop gespeichert.</value></data>
+  <data name="bug_report_logs_saved" xml:space="preserve"><value>Protokolle auf Desktop gespeichert</value></data>
 </root>

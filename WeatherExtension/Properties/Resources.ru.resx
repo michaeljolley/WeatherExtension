@@ -120,16 +120,16 @@
   <data name="compass_sw" xml:space="preserve"><value>Ğ®Ğ—</value></data>
   <data name="compass_w" xml:space="preserve"><value>Ğ—</value></data>
   <data name="compass_nw" xml:space="preserve"><value>Ğ¡Ğ—</value></data>
-  <data name="bug_report_title" xml:space="preserve"><value>Submit a Bug Report</value></data>
-  <data name="bug_report_save_logs" xml:space="preserve"><value>Save Logs to Desktop</value></data>
-  <data name="bug_report_open_github" xml:space="preserve"><value>Open GitHub Issues</value></data>
-  <data name="bug_report_instructions" xml:space="preserve"><value>## How to report a bug
+  <data name="bug_report_title" xml:space="preserve"><value>Отправить отчёт об ошибке</value></data>
+  <data name="bug_report_save_logs" xml:space="preserve"><value>Сохранить журналы на рабочий стол</value></data>
+  <data name="bug_report_open_github" xml:space="preserve"><value>Открыть GitHub Issues</value></data>
+  <data name="bug_report_instructions" xml:space="preserve"><value>## Как сообщить об ошибке
 
-1. Click **Save Logs to Desktop** below to collect diagnostic logs
-2. Click **Open GitHub Issues** to create a new issue
-3. Describe the problem you encountered
-4. Drag and drop the log zip file into the issue body
+1. Нажмите **Сохранить журналы на рабочий стол**, чтобы собрать диагностические журналы
+2. Нажмите **Открыть GitHub Issues**, чтобы создать новый тикет
+3. Опишите возникшую проблему
+4. Перетащите ZIP-файл в текст тикета
 
-The zip file will be saved to your Desktop.</value></data>
-  <data name="bug_report_logs_saved" xml:space="preserve"><value>Logs saved to Desktop</value></data>
+ZIP-файл будет сохранён на рабочем столе.</value></data>
+  <data name="bug_report_logs_saved" xml:space="preserve"><value>Журналы сохранены на рабочий стол</value></data>
 </root>

@@ -245,16 +245,16 @@ Berlin, Almanya</value></data><data name="search_hint_favorite_shortcut" xml:spa
   <data name="compass_sw" xml:space="preserve"><value>GB</value></data>
   <data name="compass_w" xml:space="preserve"><value>B</value></data>
   <data name="compass_nw" xml:space="preserve"><value>KB</value></data>
-  <data name="bug_report_title" xml:space="preserve"><value>Submit a Bug Report</value></data>
-  <data name="bug_report_save_logs" xml:space="preserve"><value>Save Logs to Desktop</value></data>
-  <data name="bug_report_open_github" xml:space="preserve"><value>Open GitHub Issues</value></data>
-  <data name="bug_report_instructions" xml:space="preserve"><value>## How to report a bug
+  <data name="bug_report_title" xml:space="preserve"><value>Hata Bildirimi Gönder</value></data>
+  <data name="bug_report_save_logs" xml:space="preserve"><value>Günlükleri Masaüstüne Kaydet</value></data>
+  <data name="bug_report_open_github" xml:space="preserve"><value>GitHub Issues'ı Aç</value></data>
+  <data name="bug_report_instructions" xml:space="preserve"><value>## Hata nasıl bildirilir
 
-1. Click **Save Logs to Desktop** below to collect diagnostic logs
-2. Click **Open GitHub Issues** to create a new issue
-3. Describe the problem you encountered
-4. Drag and drop the log zip file into the issue body
+1. Tanılama günlüklerini toplamak için aşağıdaki **Günlükleri Masaüstüne Kaydet**'e tıklayın
+2. Yeni bir issue oluşturmak için **GitHub Issues'ı Aç**'a tıklayın
+3. Karşılaştığınız sorunu açıklayın
+4. ZIP dosyasını issue gövdesine sürükleyip bırakın
 
-The zip file will be saved to your Desktop.</value></data>
-  <data name="bug_report_logs_saved" xml:space="preserve"><value>Logs saved to Desktop</value></data>
+ZIP dosyası masaüstünüze kaydedilecektir.</value></data>
+  <data name="bug_report_logs_saved" xml:space="preserve"><value>Günlükler masaüstüne kaydedildi</value></data>
 </root>
