@@ -120,4 +120,16 @@
   <data name="compass_sw" xml:space="preserve"><value>å—è¥¿</value></data>
   <data name="compass_w" xml:space="preserve"><value>è¥¿</value></data>
   <data name="compass_nw" xml:space="preserve"><value>åŒ—è¥¿</value></data>
+  <data name="bug_report_title" xml:space="preserve"><value>バグを報告する</value></data>
+  <data name="bug_report_save_logs" xml:space="preserve"><value>ログをデスクトップに保存</value></data>
+  <data name="bug_report_open_github" xml:space="preserve"><value>GitHub Issues を開く</value></data>
+  <data name="bug_report_instructions" xml:space="preserve"><value>## バグの報告方法
+
+1. 下の **ログをデスクトップに保存** をクリックして診断ログを収集します
+2. **GitHub Issues を開く** をクリックして新しい Issue を作成します
+3. 発生した問題を説明してください
+4. ZIP ファイルを Issue 本文にドラッグ アンド ドロップしてください
+
+ZIP ファイルはデスクトップに保存されます。</value></data>
+  <data name="bug_report_logs_saved" xml:space="preserve"><value>ログをデスクトップに保存しました</value></data>
 </root>

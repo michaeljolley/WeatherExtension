@@ -120,4 +120,16 @@ Lugano, Svizzera</value></data><data name="search_hint_favorite_shortcut" xml:sp
   <data name="compass_sw" xml:space="preserve"><value>SO</value></data>
   <data name="compass_w" xml:space="preserve"><value>O</value></data>
   <data name="compass_nw" xml:space="preserve"><value>NO</value></data>
+  <data name="bug_report_title" xml:space="preserve"><value>Invia una segnalazione di bug</value></data>
+  <data name="bug_report_save_logs" xml:space="preserve"><value>Salva log sul Desktop</value></data>
+  <data name="bug_report_open_github" xml:space="preserve"><value>Apri GitHub Issues</value></data>
+  <data name="bug_report_instructions" xml:space="preserve"><value>## Come segnalare un bug
+
+1. Fai clic su **Salva log sul Desktop** per raccogliere i log di diagnostica
+2. Fai clic su **Apri GitHub Issues** per creare una nuova segnalazione
+3. Descrivi il problema riscontrato
+4. Trascina il file ZIP nel corpo della segnalazione
+
+Il file ZIP verrà salvato sul Desktop.</value></data>
+  <data name="bug_report_logs_saved" xml:space="preserve"><value>Log salvati sul Desktop</value></data>
 </root>

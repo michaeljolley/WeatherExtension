@@ -120,4 +120,16 @@
   <data name="compass_sw" xml:space="preserve"><value>Ø¬.Øº</value></data>
   <data name="compass_w" xml:space="preserve"><value>Øº</value></data>
   <data name="compass_nw" xml:space="preserve"><value>Ø´.Øº</value></data>
+  <data name="bug_report_title" xml:space="preserve"><value>إرسال تقرير عن خطأ</value></data>
+  <data name="bug_report_save_logs" xml:space="preserve"><value>حفظ السجلات على سطح المكتب</value></data>
+  <data name="bug_report_open_github" xml:space="preserve"><value>فتح GitHub Issues</value></data>
+  <data name="bug_report_instructions" xml:space="preserve"><value>## كيفية الإبلاغ عن خطأ
+
+1. انقر على **حفظ السجلات على سطح المكتب** لجمع سجلات التشخيص
+2. انقر على **فتح GitHub Issues** لإنشاء مشكلة جديدة
+3. صِف المشكلة التي واجهتها
+4. اسحب ملف ZIP وأفلته في نص المشكلة
+
+سيتم حفظ ملف ZIP على سطح المكتب.</value></data>
+  <data name="bug_report_logs_saved" xml:space="preserve"><value>تم حفظ السجلات على سطح المكتب</value></data>
 </root>

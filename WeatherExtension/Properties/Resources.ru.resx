@@ -120,4 +120,16 @@
   <data name="compass_sw" xml:space="preserve"><value>Ğ®Ğ—</value></data>
   <data name="compass_w" xml:space="preserve"><value>Ğ—</value></data>
   <data name="compass_nw" xml:space="preserve"><value>Ğ¡Ğ—</value></data>
+  <data name="bug_report_title" xml:space="preserve"><value>Отправить отчёт об ошибке</value></data>
+  <data name="bug_report_save_logs" xml:space="preserve"><value>Сохранить журналы на рабочий стол</value></data>
+  <data name="bug_report_open_github" xml:space="preserve"><value>Открыть GitHub Issues</value></data>
+  <data name="bug_report_instructions" xml:space="preserve"><value>## Как сообщить об ошибке
+
+1. Нажмите **Сохранить журналы на рабочий стол**, чтобы собрать диагностические журналы
+2. Нажмите **Открыть GitHub Issues**, чтобы создать новый тикет
+3. Опишите возникшую проблему
+4. Перетащите ZIP-файл в текст тикета
+
+ZIP-файл будет сохранён на рабочем столе.</value></data>
+  <data name="bug_report_logs_saved" xml:space="preserve"><value>Журналы сохранены на рабочий стол</value></data>
 </root>

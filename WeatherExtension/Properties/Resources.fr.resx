@@ -120,4 +120,16 @@ Bruxelles, Belgique</value></data><data name="search_hint_favorite_shortcut" xml
   <data name="compass_sw" xml:space="preserve"><value>SO</value></data>
   <data name="compass_w" xml:space="preserve"><value>O</value></data>
   <data name="compass_nw" xml:space="preserve"><value>NO</value></data>
+  <data name="bug_report_title" xml:space="preserve"><value>Soumettre un rapport de bug</value></data>
+  <data name="bug_report_save_logs" xml:space="preserve"><value>Enregistrer les journaux sur le bureau</value></data>
+  <data name="bug_report_open_github" xml:space="preserve"><value>Ouvrir GitHub Issues</value></data>
+  <data name="bug_report_instructions" xml:space="preserve"><value>## Comment signaler un bug
+
+1. Cliquez sur **Enregistrer les journaux sur le bureau** pour collecter les journaux de diagnostic
+2. Cliquez sur **Ouvrir GitHub Issues** pour créer un nouveau ticket
+3. Décrivez le problème rencontré
+4. Glissez-déposez le fichier ZIP dans le corps du ticket
+
+Le fichier ZIP sera enregistré sur votre bureau.</value></data>
+  <data name="bug_report_logs_saved" xml:space="preserve"><value>Journaux enregistrés sur le bureau</value></data>
 </root>

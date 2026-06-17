@@ -120,4 +120,16 @@ Wien, Österreich</value></data><data name="search_hint_favorite_shortcut" xml:s
   <data name="compass_sw" xml:space="preserve"><value>SW</value></data>
   <data name="compass_w" xml:space="preserve"><value>W</value></data>
   <data name="compass_nw" xml:space="preserve"><value>NW</value></data>
+  <data name="bug_report_title" xml:space="preserve"><value>Fehlerbericht einreichen</value></data>
+  <data name="bug_report_save_logs" xml:space="preserve"><value>Protokolle auf Desktop speichern</value></data>
+  <data name="bug_report_open_github" xml:space="preserve"><value>GitHub Issues öffnen</value></data>
+  <data name="bug_report_instructions" xml:space="preserve"><value>## So melden Sie einen Fehler
+
+1. Klicken Sie unten auf **Protokolle auf Desktop speichern**, um Diagnoseprotokolle zu sammeln
+2. Klicken Sie auf **GitHub Issues öffnen**, um ein neues Issue zu erstellen
+3. Beschreiben Sie das aufgetretene Problem
+4. Ziehen Sie die ZIP-Datei in den Issue-Text
+
+Die ZIP-Datei wird auf Ihrem Desktop gespeichert.</value></data>
+  <data name="bug_report_logs_saved" xml:space="preserve"><value>Protokolle auf Desktop gespeichert</value></data>
 </root>

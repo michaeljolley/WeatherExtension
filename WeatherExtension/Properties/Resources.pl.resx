@@ -120,4 +120,16 @@ Berlin, Niemcy</value></data><data name="search_hint_favorite_shortcut" xml:spac
   <data name="compass_sw" xml:space="preserve"><value>SW</value></data>
   <data name="compass_w" xml:space="preserve"><value>W</value></data>
   <data name="compass_nw" xml:space="preserve"><value>NW</value></data>
+  <data name="bug_report_title" xml:space="preserve"><value>Zgłoś błąd</value></data>
+  <data name="bug_report_save_logs" xml:space="preserve"><value>Zapisz logi na pulpicie</value></data>
+  <data name="bug_report_open_github" xml:space="preserve"><value>Otwórz GitHub Issues</value></data>
+  <data name="bug_report_instructions" xml:space="preserve"><value>## Jak zgłosić błąd
+
+1. Kliknij poniżej **Zapisz logi na pulpicie**, aby zebrać logi diagnostyczne
+2. Kliknij **Otwórz GitHub Issues**, aby utworzyć nowe zgłoszenie
+3. Opisz napotkany problem
+4. Przeciągnij i upuść plik ZIP do treści zgłoszenia
+
+Plik ZIP zostanie zapisany na pulpicie.</value></data>
+  <data name="bug_report_logs_saved" xml:space="preserve"><value>Logi zapisano na pulpicie</value></data>
 </root>

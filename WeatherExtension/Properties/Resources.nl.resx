@@ -120,4 +120,16 @@ Brussel, België</value></data><data name="search_hint_favorite_shortcut" xml:sp
   <data name="compass_sw" xml:space="preserve"><value>ZW</value></data>
   <data name="compass_w" xml:space="preserve"><value>W</value></data>
   <data name="compass_nw" xml:space="preserve"><value>NW</value></data>
+  <data name="bug_report_title" xml:space="preserve"><value>Een bugrapport indienen</value></data>
+  <data name="bug_report_save_logs" xml:space="preserve"><value>Logbestanden opslaan op bureaublad</value></data>
+  <data name="bug_report_open_github" xml:space="preserve"><value>GitHub Issues openen</value></data>
+  <data name="bug_report_instructions" xml:space="preserve"><value>## Hoe een bug te melden
+
+1. Klik hieronder op **Logbestanden opslaan op bureaublad** om diagnoselogbestanden te verzamelen
+2. Klik op **GitHub Issues openen** om een nieuw issue aan te maken
+3. Beschrijf het probleem dat u bent tegengekomen
+4. Sleep het ZIP-bestand naar de body van het issue
+
+Het ZIP-bestand wordt op uw bureaublad opgeslagen.</value></data>
+  <data name="bug_report_logs_saved" xml:space="preserve"><value>Logbestanden opgeslagen op bureaublad</value></data>
 </root>

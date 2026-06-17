@@ -120,4 +120,16 @@ Buenos Aires, Argentina</value></data><data name="search_hint_favorite_shortcut"
   <data name="compass_sw" xml:space="preserve"><value>SO</value></data>
   <data name="compass_w" xml:space="preserve"><value>O</value></data>
   <data name="compass_nw" xml:space="preserve"><value>NO</value></data>
+  <data name="bug_report_title" xml:space="preserve"><value>Enviar un informe de error</value></data>
+  <data name="bug_report_save_logs" xml:space="preserve"><value>Guardar registros en el escritorio</value></data>
+  <data name="bug_report_open_github" xml:space="preserve"><value>Abrir GitHub Issues</value></data>
+  <data name="bug_report_instructions" xml:space="preserve"><value>## Cómo informar de un error
+
+1. Haz clic en **Guardar registros en el escritorio** para recopilar registros de diagnóstico
+2. Haz clic en **Abrir GitHub Issues** para crear un nuevo issue
+3. Describe el problema que encontraste
+4. Arrastra y suelta el archivo ZIP en el cuerpo del issue
+
+El archivo ZIP se guardará en tu escritorio.</value></data>
+  <data name="bug_report_logs_saved" xml:space="preserve"><value>Registros guardados en el escritorio</value></data>
 </root>
