@@ -93,6 +93,10 @@ internal sealed partial class HourlyForecastPage : ListPage, IDisposable
 		var windUnit = _settingsManager.WindSpeedUnit == "mph" ? "mph" : "km/h";
 		var now = DateTime.Now;
 
+		// Parse sunrise/sunset times for night determination
+		var sunriseTimes = ParseDailyTimes(hourlyData.Daily?.Sunrise);
+		var sunsetTimes = ParseDailyTimes(hourlyData.Daily?.Sunset);
+
 		var count = hourly.Time?.Count ?? 0;
 		for (var i = 0; i < count; i++)
 		{
@@ -122,6 +126,7 @@ internal sealed partial class HourlyForecastPage : ListPage, IDisposable
 			var temperature = hourly.Temperature[i];
 			var feelsLike = hourly.ApparentTemperature[i];
 			var condition = Icons.GetWeatherDescription(weatherCode);
+			var isNight = IsNightTime(time, sunriseTimes, sunsetTimes);
 
 			var precipProb = hourly.PrecipitationProbability != null && i < hourly.PrecipitationProbability.Count
 				? hourly.PrecipitationProbability[i]
@@ -139,7 +144,7 @@ internal sealed partial class HourlyForecastPage : ListPage, IDisposable
 			{
 				Title = WeatherFormatter.Hour(time, _settingsManager.Use24HourClock),
 				Subtitle = $"{condition} — {temperature:F0}{tempUnit}",
-				Icon = Icons.GetIconForWeatherCode(weatherCode),
+				Icon = Icons.GetIconForWeatherCode(weatherCode, isNight),
 				Details = new Details
 				{
 					Title = WeatherFormatter.Hour(time, _settingsManager.Use24HourClock),
@@ -157,6 +162,39 @@ internal sealed partial class HourlyForecastPage : ListPage, IDisposable
 		}
 
 		return items;
+	}
+
+	private static List<DateTime> ParseDailyTimes(List<string>? times)
+	{
+		var result = new List<DateTime>();
+		if (times == null)
+		{
+			return result;
+		}
+
+		foreach (var t in times)
+		{
+			if (DateTime.TryParse(t, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed))
+			{
+				result.Add(parsed);
+			}
+		}
+
+		return result;
+	}
+
+	private static bool IsNightTime(DateTime time, List<DateTime> sunriseTimes, List<DateTime> sunsetTimes)
+	{
+		// Find the sunrise/sunset for the same day
+		var sunrise = sunriseTimes.FirstOrDefault(s => s.Date == time.Date);
+		var sunset = sunsetTimes.FirstOrDefault(s => s.Date == time.Date);
+
+		if (sunrise == default || sunset == default)
+		{
+			return false;
+		}
+
+		return time < sunrise || time >= sunset;
 	}
 
 	public override IListItem[] GetItems()

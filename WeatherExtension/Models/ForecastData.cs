@@ -39,12 +39,21 @@ public sealed class DailyForecast
 
     [JsonPropertyName("precipitation_probability_max")]
     public List<int>? PrecipitationProbabilityMax { get; set; }
+
+    [JsonPropertyName("sunrise")]
+    public List<string>? Sunrise { get; set; }
+
+    [JsonPropertyName("sunset")]
+    public List<string>? Sunset { get; set; }
 }
 
 public sealed class HourlyForecastData
 {
     [JsonPropertyName("hourly")]
     public HourlyForecast? Hourly { get; set; }
+
+    [JsonPropertyName("daily")]
+    public HourlyDailyInfo? Daily { get; set; }
 
     [JsonPropertyName("latitude")]
     public double Latitude { get; set; }
@@ -78,6 +87,15 @@ public sealed class HourlyForecast
 
     [JsonPropertyName("relative_humidity_2m")]
     public List<int>? RelativeHumidity { get; set; }
+}
+
+public sealed class HourlyDailyInfo
+{
+    [JsonPropertyName("sunrise")]
+    public List<string>? Sunrise { get; set; }
+
+    [JsonPropertyName("sunset")]
+    public List<string>? Sunset { get; set; }
 }
 
 #pragma warning restore SA1402 // File may only contain a single type

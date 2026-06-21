@@ -45,6 +45,9 @@ public sealed class CurrentWeather
 
     [JsonPropertyName("wind_direction_10m")]
     public int WindDirection { get; set; }
+
+    [JsonPropertyName("is_day")]
+    public int IsDay { get; set; } = 1;
 }
 
 #pragma warning restore SA1402 // File may only contain a single type

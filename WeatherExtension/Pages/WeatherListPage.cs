@@ -284,7 +284,7 @@ internal sealed partial class WeatherListPage : DynamicListPage, IDisposable
 		{
 			Title = location.DisplayName,
 			Subtitle = WeatherFormatter.CurrentSubtitle(current, _settingsManager.TemperatureUnit),
-			Icon = Icons.GetIconForWeatherCode(current.WeatherCode),
+			Icon = Icons.GetIconForWeatherCode(current.WeatherCode, isNight: current.IsDay == 0),
 			Tags = tags.ToArray(),
 			Details = new Details
 			{

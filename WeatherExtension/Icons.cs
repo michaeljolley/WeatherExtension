@@ -50,13 +50,22 @@ internal sealed class Icons
 
     internal static IconInfo ThunderstormHail { get; } = new IconInfo("⛈️");
 
-    internal static IconInfo GetIconForWeatherCode(int weatherCode)
+    // Nighttime variants
+    internal static IconInfo ClearSkyNight { get; } = new IconInfo("🌙");
+
+    internal static IconInfo MainlyClearNight { get; } = new IconInfo("🌙");
+
+    internal static IconInfo PartlyCloudyNight { get; } = new IconInfo("☁️");
+
+    internal static IconInfo WeatherIconNight { get; } = new IconInfo("🌙");
+
+    internal static IconInfo GetIconForWeatherCode(int weatherCode, bool isNight = false)
     {
         return weatherCode switch
         {
-            0 => ClearSky,
-            1 or 2 => MainlyClear,
-            3 => PartlyCloudy,
+            0 => isNight ? ClearSkyNight : ClearSky,
+            1 or 2 => isNight ? MainlyClearNight : MainlyClear,
+            3 => isNight ? PartlyCloudyNight : PartlyCloudy,
             45 or 48 => Fog,
             51 or 53 or 55 => Drizzle,
             56 or 57 => DrizzleFreezing,
@@ -67,7 +76,7 @@ internal sealed class Icons
             85 or 86 => SnowShowers,
             95 => Thunderstorm,
             96 or 99 => ThunderstormHail,
-            _ => WeatherIcon,
+            _ => isNight ? WeatherIconNight : WeatherIcon,
         };
     }
 
