@@ -85,6 +85,15 @@
       "contributions": [
         "design"
       ]
+    },
+    {
+      "login": "DewSeek",
+      "name": "Myroslav",
+      "avatar_url": "https://avatars.githubusercontent.com/u/51229845?v=4",
+      "profile": "https://github.com/DewSeek",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
