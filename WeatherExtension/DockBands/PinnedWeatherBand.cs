@@ -107,7 +107,7 @@ internal sealed partial class PinnedWeatherBand : ListItem, IDisposable
 					"{0} {1}",
 					WeatherFormatter.Temperature(current.Temperature, tempUnit),
 					condition);
-				Icon = Icons.GetIconForWeatherCode(current.WeatherCode);
+				Icon = Icons.GetIconForWeatherCode(current.WeatherCode, isNight: current.IsDay == 0);
 
 				if (DockItem is CommandItem dockCommandItem)
 				{

@@ -112,7 +112,7 @@ internal sealed partial class WeatherDetailPage : ListPage, IDisposable
 		{
 			Title = Resources.current_weather,
 			Subtitle = $"{condition} — {current.Temperature:F0}{tempUnit}",
-			Icon = Icons.GetIconForWeatherCode(current.WeatherCode),
+			Icon = Icons.GetIconForWeatherCode(current.WeatherCode, isNight: current.IsDay == 0),
 			Details = new Details
 			{
 				Title = Resources.current_weather,

@@ -10,6 +10,7 @@ namespace Microsoft.CmdPal.Ext.Weather.Services;
 [JsonSerializable(typeof(WeatherData))]
 [JsonSerializable(typeof(ForecastData))]
 [JsonSerializable(typeof(HourlyForecastData))]
+[JsonSerializable(typeof(HourlyDailyInfo))]
 [JsonSerializable(typeof(List<NominatimResult>))]
 [JsonSerializable(typeof(NominatimAddress))]
 [JsonSerializable(typeof(List<PinnedLocation>))]
